@@ -1,5 +1,27 @@
-- Install Python 2.7.x
-- Install Google App Engine SDK for Python: https://cloud.google.com/appengine/downloads#Google_App_Engine_SDK_for_Python
-- Install Aptana Studio 3
-- Install pip
-- "pip install Jinja2"
+HOW TO SETUP THE ENVIRONMENT:
+------------------------------------
+1. Download and install 2.7.x - https://www.python.org/downloads/
+2. Download and install Aptana Studio 3 - http://www.aptana.com/products/studio3/download.html
+3. Download and install Google App Engine SDK for Python - https://cloud.google.com/appengine/downloads#Google_App_Engine_SDK_for_Python
+4. Download and install GitHub for Windows - https://windows.github.com/
+5. In GitHub for Windows: Clone "siage" from github.
+6. Rename the cloned "siage" folder to "siage2"
+7. In Aptana Studio 3: Create a new Google App Engine project called "siage".
+7.1 Under new -> other -> PyDev -> PyDev Google App Engine project
+7.2 Follow the guide and create an empty project for "si-age-league". This is probably not important.
+8. Copy content of "siage2" into "siage".
+9. In GitHub for Windows: Locate the siage folder again if necessary.
+
+HOW TO MAKE YOUR FIRST LOCAL CHANGE:
+------------------------------------
+1. Start Google App Engine Launcher (SDK)
+2. File -> Add Existing Application -> Select the "siage" folder.
+3. Start it and browse it.
+4. Make changes in Aptana Studio 3 and see the changes live.
+
+HOW TO DEPLOY CHANGES 
+------------------------------------
+1. Commit to github
+2a. Wait 10min for the build engine to detect the change
+2b. Or manually deploy it: http://104.154.82.208/jenkins/
+2c. Deploy it with Google App Engine SDK
