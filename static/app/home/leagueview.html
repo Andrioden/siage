@@ -1,0 +1,35 @@
+﻿<div id="main_content" ng-controller="LeagueController">
+    <div class="right_content">
+
+    </div>
+    <div class="left_content">
+        <table>
+            <thead>
+                <tr>
+                    <td>Player</td>
+                    <td>Rating</td>
+                    <td>Win</td>
+                    <td>Best civ</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="player in players | orderBy:['-rating','name']">
+                    <td>{{player.nick}}</td>
+                    <td>{{player.rating}}</td>
+                    <td>{{player.winrate + "%"}}</td>
+                    <td>{{player.bestcivilization}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+    #nav_bar li a#home {
+        background-color: white;
+        color: #666;
+        -webkit-box-shadow: 6px 4px 38px -8px rgba(0,0,0,0.47);
+        -moz-box-shadow: 6px 4px 38px -8px rgba(0,0,0,0.47);
+        box-shadow: 6px 4px 38px -8px rgba(0,0,0,0.47);
+    }
+</style>

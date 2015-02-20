@@ -12,8 +12,8 @@ handlers:
   static_files: favicon.ico
   upload: favicon\.ico
 
-- url: /ajax/.*
-  script: ajax.app
+- url: /api/.*
+  script: api.app
 
 - url: /.*
   script: main.app
