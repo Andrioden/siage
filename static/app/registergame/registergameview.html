@@ -1,10 +1,92 @@
 ﻿<div id="main_content" ng-controller="RegisterGameController">
-    <div class="right_content">
+    <form name="resgisterGameForm" action="#" method="post">
+        <div class="right_content">
+            <table class="gamesettings">
+                <thead>
+                <tr>
+                    <b>Game Settings</b>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>Game</td>
+                    <td><select ng-model="game.gameType" ng-options="gametype.label for gametype in gametypes"></select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Map style</td>
+                    <td><select ng-model="game.mapStyle" ng-options="mapstyle.label for mapstyle in mapstyles"></select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Location</td>
+                    <td><select ng-model="game.location" ng-options="location.label for location in locations"></select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Size</td>
+                    <td><select ng-model="game.size" ng-options="size.label for size in sizes"></select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Resources</td>
+                    <td><select ng-model="game.resources" ng-options="resources.label for resources in resourcesList"></select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Game Speed</td>
+                    <td><select ng-model="game.gameSpeed" ng-options="gamespeed.label for gamespeed in gameSpeeds"></select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Victory</td>
+                    <td><select ng-model="game.victory" ng-options="victory.label for victory in victoryList"></select>
+                    </td>
+                </tr>
 
-    </div>
-    <div class="left_content">
+                </tbody>
+            </table>
+        </div>
+        <div class="left_content">
 
-    </div>
+            <table id="playerinputtable">
+                <thead>
+                <tr>
+                    <td>Player</td>
+                    <td>Civilization</td>
+                    <td>Team</td>
+                    <td>Score</td>
+                    <td>Won</td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="player in game.players">
+                    <td><input type="text" name="nickname" ng-model="player.nickname" placeholder="Nickname..." list="allPlayersList" /></td>
+                    <td><select ng-model="player.civilization" ng-options="civ.label for civ in civilizations"></select>
+                    </td>
+                    <td><select ng-model="player.team" ng-options="n for n in [] | range:0:9"></select></td>
+                    <td><input type="number" name="score" ng-model="player.score" placeholder="Score..." min="0"/></td>
+                    <td class="small"><input class="checkbox" type="checkbox" name="iswinner" ng-model="player.iswinner" /></td>
+                </tr>
+                </tbody>
+            </table>
+            <br/>
+            <table class="buttoncontainer">
+                <tr>
+                    <td>
+                        <input class="button submit" type="submit" value="Save"/>
+                    </td>
+                    <td>
+                        <input class="button clear" type="reset" value="Clear"/>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </form>
+
+    <datalist id="allPlayersList">
+        <option ng-repeat="player in allPlayers" value="{{player.nickname}}">
+    </datalist>
 </div>
 
 
@@ -12,8 +94,8 @@
     #nav_bar li a#registergame {
         background-color: white;
         color: #666;
-        -webkit-box-shadow: 6px 4px 38px -8px rgba(0,0,0,0.47);
-        -moz-box-shadow: 6px 4px 38px -8px rgba(0,0,0,0.47);
-        box-shadow: 6px 4px 38px -8px rgba(0,0,0,0.47);
+        -webkit-box-shadow: 6px 4px 38px -8px rgba(0, 0, 0, 0.47);
+        -moz-box-shadow: 6px 4px 38px -8px rgba(0, 0, 0, 0.47);
+        box-shadow: 6px 4px 38px -8px rgba(0, 0, 0, 0.47);
     }
 </style>

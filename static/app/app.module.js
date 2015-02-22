@@ -1,1 +1,1 @@
-﻿var siAgeApp = angular.module('SiAgeApp', ['ngRoute']);
+﻿var siAgeApp = angular.module('SiAgeApp', ['ngRoute', 'ngResource']);
