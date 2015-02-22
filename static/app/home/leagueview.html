@@ -13,8 +13,8 @@
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="player in players | orderBy:['-rating','name']">
-                    <td>{{player.nick}}</td>
+                <tr ng-repeat="player in players | orderBy:['-rating','nickname']">
+                    <td>{{player.nickname}}</td>
                     <td>{{player.rating}}</td>
                     <td>{{player.winrate + "%"}}</td>
                     <td>{{player.bestcivilization}}</td>
