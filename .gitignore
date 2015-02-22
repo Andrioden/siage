@@ -63,3 +63,12 @@ docs/_build/
 
 # PyBuilder
 target/
+.idea/workspace.xml
+.idea/.name
+.idea/dictionaries/BjørnTore.xml
+.idea/encodings.xml
+.idea/scopes/scope_settings.xml
+.idea/misc.xml
+.idea/siage.iml
+.idea/vcs.xml
+.idea/modules.xml
