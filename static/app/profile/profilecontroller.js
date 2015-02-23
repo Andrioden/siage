@@ -1,5 +1,6 @@
 ﻿var siAgeApp = angular.module('SiAgeApp');
 
-siAgeApp.controller('ProfileController', ['$scope', function ($scope) {
+siAgeApp.controller('ProfileController',
+    function ($scope) {
 
-}]);
+});
