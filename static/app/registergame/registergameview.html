@@ -1,5 +1,5 @@
 ﻿<div id="main_content" ng-controller="RegisterGameController">
-    <form name="resgisterGameForm" action="#" method="post">
+    <form name="resgisterGameForm">
         <div class="right_content">
             <table class="gamesettings">
                 <thead>
@@ -74,7 +74,7 @@
             <table class="buttoncontainer">
                 <tr>
                     <td>
-                        <input class="button submit" type="submit" value="Save"/>
+                        <input class="button submit" type="submit" ng-click="SaveGame()" value="Save"/>
                     </td>
                     <td>
                         <input class="button clear" type="reset" value="Clear"/>
