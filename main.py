@@ -21,5 +21,5 @@ class MainHandler(webapp2.RequestHandler):
         self.response.write(template.render(data))
         
 app = webapp2.WSGIApplication([
-    ('/', MainHandler),
+    ('/.*', MainHandler),
 ], debug=True)
