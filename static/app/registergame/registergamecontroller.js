@@ -1,6 +1,6 @@
 ﻿var siAgeApp = angular.module('SiAgeApp');
 
-siAgeApp.controller('RegisterGameController', //['$scope', '$http','GameSettings',
+siAgeApp.controller('RegisterGameController',
     function ($scope, GameSettings, Players) {
         $scope.game = {gameType: "", mapStyle: "", location: "", size: "", resources: "", gameSpeed: "", victory: "", players: []};
         $scope.gametypes = GameSettings.query({settingName: "gametypes"});
