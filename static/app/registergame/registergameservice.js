@@ -3,7 +3,7 @@
 siAgeApp
     .factory('GameSettings', function ($resource) {
         return $resource('/api/gamesettings/:settingName', {}, {
-            query: {method: 'GET', params: {settingName: 'settingName'}, isArray: true}
+            query: {method: 'GET', params: {settingName: 'settingName'}, isArray: true, cache: true}
         })
     })
     .factory('Players', function ($resource) {
