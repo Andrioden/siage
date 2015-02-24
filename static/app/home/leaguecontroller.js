@@ -2,5 +2,10 @@
 
 siAgeApp.controller('LeagueController',
     function ($scope, Players) {
-        $scope.players = Players.query();
+        Players.query(
+            function (data) {
+            $scope.players = data;}
+            ,function(error){
+             $scope.playerListError = "Unable to load player list!";
+            });
     });

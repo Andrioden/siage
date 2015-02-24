@@ -1,4 +1,4 @@
-﻿var siAgeApp = angular.module('SiAgeApp');
+var siAgeApp = angular.module('SiAgeApp');
 
 siAgeApp
     .factory('GameSettings', function ($resource) {
@@ -8,7 +8,10 @@ siAgeApp
     })
     .factory('Players', function ($resource) {
         return $resource('/api/players/:playerId', {}, {
-            query: {method: 'GET', params: {playerId: 'playerId'}, isArray: true}
+            get: {method: 'GET', params: {playerId: 'playerId'}, isArray: false},
+            save: {method: 'POST'},
+            update: {method: 'PUT'},
+            query: {method: 'GET', isArray: true}
         })
     });
 /*.factory('Game', ['$resources',

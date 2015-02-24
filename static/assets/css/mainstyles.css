@@ -245,3 +245,8 @@ input:focus, textarea:focus {
     background-color: #d32a0e;
     border-color: #b1240c;
 }
+
+
+.error{
+    color: red;
+}
