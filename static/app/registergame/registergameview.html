@@ -1,5 +1,5 @@
 ﻿<div id="main_content" ng-controller="RegisterGameController">
-    <form name="resgisterGameForm">
+    <form ng-submit="submitGame()">
         <div class="right_content">
             <table class="gamesettings">
                 <thead>
@@ -30,12 +30,14 @@
                 </tr>
                 <tr>
                     <td>Resources</td>
-                    <td><select ng-model="game.resources" ng-options="resources.label for resources in resourcesList"></select>
+                    <td><select ng-model="game.resources"
+                                ng-options="resources.label for resources in resourcesList"></select>
                     </td>
                 </tr>
                 <tr>
                     <td>Game Speed</td>
-                    <td><select ng-model="game.gameSpeed" ng-options="gamespeed.label for gamespeed in gameSpeeds"></select>
+                    <td><select ng-model="game.gameSpeed"
+                                ng-options="gamespeed.label for gamespeed in gameSpeeds"></select>
                     </td>
                 </tr>
                 <tr>
@@ -61,12 +63,15 @@
                 </thead>
                 <tbody>
                 <tr ng-repeat="player in game.players">
-                    <td><input type="text" name="nickname" ng-model="player.nickname" placeholder="Nickname..." list="allPlayersList" /></td>
+                    <td><input type="text" name="nickname" ng-model="player.nickname" placeholder="Nickname..."
+                               list="allPlayersList"/></td>
                     <td><select ng-model="player.civilization" ng-options="civ.label for civ in civilizations"></select>
                     </td>
                     <td><select ng-model="player.team" ng-options="n for n in [] | range:0:9"></select></td>
-                    <td><input type="number" name="score" ng-model="player.score" placeholder="Score..." min="0"/></td>
-                    <td class="small"><input class="checkbox" type="checkbox" name="iswinner" ng-model="player.iswinner" /></td>
+                    <td><input type="number" name="score" ng-model="player.score" placeholder="Score..." min="0"
+                               valid-number/></td>
+                    <td class="small"><input class="checkbox" type="checkbox" name="iswinner"
+                                             ng-model="player.iswinner"/></td>
                 </tr>
                 </tbody>
             </table>
@@ -74,13 +79,10 @@
             <table class="buttoncontainer">
                 <tr>
                     <td>
-                        <input class="button submit" type="submit" ng-click="SaveGame()" value="Save"/>
+                        <input class="button submit" type="submit" value="Save"/>
                     </td>
                     <td>
                         <input class="button clear" type="reset" value="Clear"/>
-                    </td>
-                    <td>
-                        <span style="color: red">{{serviceError}}</span>
                     </td>
                 </tr>
             </table>

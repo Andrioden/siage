@@ -28,6 +28,33 @@ class PlayerHandler(webapp2.RequestHandler):
         self.response.headers['Content-Type'] = 'application/json'
         self.response.out.write("PUT (Update) received with data: " + self.request.body)
 
+class GamesListHandler(webapp2.RequestHandler):
+    def get(self):
+        self.response.headers['Content-Type'] = 'application/json'
+        obj = [
+            {'gameId:': 1},
+            {'gameId': 2}
+        ]
+        self.response.out.write(json.dumps(obj))
+
+    def post(self):
+        self.response.headers['Content-Type'] = 'application/text'
+        self.response.out.write("POST (Save) received with data: " + self.request.body)
+
+
+class GameHandler(webapp2.RequestHandler):
+    def get(self, gameId):
+        self.response.headers['Content-Type'] = 'application/json'
+        obj = [
+            {'gameId': 1}
+        ]
+        self.response.out.write(json.dumps(obj))
+
+    def put(self, gameId):
+        self.response.headers['Content-Type'] = 'application/text'
+        self.response.out.write("PUT (Update) received with data: " + self.request.body)
+
+
 class GameTypesHandler(webapp2.RequestHandler):
     def get(self, settingname=None):
         self.response.headers['Content-Type'] = 'application/json'
@@ -84,6 +111,8 @@ class GameTypesHandler(webapp2.RequestHandler):
 app = webapp2.WSGIApplication([
     webapp2.Route(r'/api/players/', handler=PlayersListHandler, name='players'),
     webapp2.Route(r'/api/players/<playerId:(\d+)>', handler=PlayerHandler, name='player'),
+    webapp2.Route(r'/api/games/', handler=GamesListHandler, name='games'),
+    webapp2.Route(r'/api/games/<gameId:(\d+)>', handler=GameHandler, name='game'),
     webapp2.Route(r'/api/gamesettings/<settingname>', handler=GameTypesHandler, name='gamesetting')
 ], debug=True)
 
