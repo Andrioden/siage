@@ -1,0 +1,58 @@
+﻿<div id="main_content" ng-controller="RegisterPlayerController">
+    <div class="right_content">
+
+    </div>
+    <div class="left_content">
+        <form ng-submit="submitPlayer()">
+            <table>
+                <tbody>
+                <tr>
+                    <td>Nickname:</td>
+                    <td><input type="text" required="true" minlength="1" ng-model="newplayer.nick"/></td>
+                </tr>
+                </tbody>
+            </table>
+
+
+            <br/>
+            <table class="buttoncontainer">
+                <tr>
+                    <td>
+                        <input class="button submit" type="submit" value="Save"/>
+                    </td>
+                    <td>
+                        <input class="button clear" type="reset" value="Clear"/>
+                    </td>
+                </tr>
+            </table>
+        </form>
+
+        <br />
+        <br />
+        <br />
+        <table>
+            <thead>
+            <tr>
+                <td>Players</td>
+            </tr>
+            </thead>
+
+            <tbody>
+            <span class="error">{{playerListError}}</span>
+            <tr ng-repeat="player in players | orderBy:['nickname']">
+                <td>{{player.nickname}}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+    #nav_bar li a#registerplayer {
+        background-color: white;
+        color: #666;
+        -webkit-box-shadow: 6px 4px 38px -8px rgba(0, 0, 0, 0.47);
+        -moz-box-shadow: 6px 4px 38px -8px rgba(0, 0, 0, 0.47);
+        box-shadow: 6px 4px 38px -8px rgba(0, 0, 0, 0.47);
+    }
+</style>

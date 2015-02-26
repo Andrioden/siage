@@ -6,23 +6,31 @@ siAgeApp.config(['$routeProvider', '$locationProvider',
             when('/home', {
                 templateUrl: 'static/app/home/leagueview.html',
                 controller: 'LeagueController'
-            }).
-            when('/registergame', {
+            })
+            .when('/registergame', {
                 templateUrl: 'static/app/registergame/registergameview.html',
                 controller: 'RegisterGameController'
-            }).
-            when('/profile', {
-                templateUrl: 'static/app/profile/profileview.html',
-                controller: 'ProfileController'
-            }).
-            otherwise({
+            })
+            .when('/player/:playerId', {
+                templateUrl: 'static/app/player/playerview.html',
+                controller: 'PlayerController'
+            })
+            .when('/registerplayer', {
+                templateUrl: 'static/app/registerplayer/registerplayerview.html',
+                controller: 'RegisterPlayerController'
+            })
+            .when('/game/:gameId', {
+                templateUrl: 'static/app/player/playerview.html',
+                controller: 'PlayerController'
+            })
+            .otherwise({
                 redirectTo: '/home'
             });
 
         $locationProvider.html5Mode(true);
     }]);
 
-siAgeApp.config(['$resourceProvider', function($resourceProvider) {
+siAgeApp.config(['$resourceProvider', function ($resourceProvider) {
     // Don't strip trailing slashes from calculated URLs
     $resourceProvider.defaults.stripTrailingSlashes = false;
 }]);
