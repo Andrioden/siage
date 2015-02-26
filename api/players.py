@@ -17,10 +17,11 @@ class PlayersListHandler(webapp2.RequestHandler):
 
     def post(self):
         # PROCESS REQUEST
-        Player(nick = "lolnick").put()
+        data = json.loads(self.request.body)
+        Player(nick = data['nick']).put()
         
         # RETURN RESPONSE
-        self.response.headers['Content-Type'] = 'application/json'
+        self.response.headers['Content-Type'] = 'application/text'
         self.response.out.write("POST (Save) received with data: " + self.request.body)
 
 class PlayerHandler(webapp2.RequestHandler):
@@ -32,7 +33,7 @@ class PlayerHandler(webapp2.RequestHandler):
         self.response.out.write(json.dumps(obj))
 
     def put(self, playerId):
-        self.response.headers['Content-Type'] = 'application/json'
+        self.response.headers['Content-Type'] = 'application/text'
         self.response.out.write("PUT (Update) received with data: " + self.request.body)
 
 app = webapp2.WSGIApplication([
