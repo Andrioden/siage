@@ -9,7 +9,7 @@ class PlayersListHandler(webapp2.RequestHandler):
         # BUILD DATA
         players_data = []
         for player in Player().query():
-            players_data.append({'nick': player.nick})
+            players_data.append(player.get_data())
         
         # RETURN RESPONSE
         self.response.headers['Content-Type'] = 'application/json'
@@ -25,6 +25,10 @@ class PlayersListHandler(webapp2.RequestHandler):
 
 class PlayerHandler(webapp2.RequestHandler):
     def get(self, playerId):
+        # BUILD DATA
+        print "Finding player"
+        player_data = Player.get_by_id() 
+        
         self.response.headers['Content-Type'] = 'application/json'
         obj = [
             {'nickname': 'Andrioden', 'rating': 1670, 'winrate': '55', 'bestcivilization': 'Huns'}
