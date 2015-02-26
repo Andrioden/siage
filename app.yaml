@@ -12,10 +12,10 @@ handlers:
   static_files: favicon.ico
   upload: favicon\.ico
 
-- url: /api/players/*
+- url: /api/players/.*
   script: api.players.app
 
-- url: /api/games/*
+- url: /api/games/.*
   script: api.games.app
 
 - url: /.*
