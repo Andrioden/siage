@@ -27,14 +27,8 @@ siAgeApp.controller('RegisterGameController',
         }
 
         $scope.game.submitted = false;
-        $scope.submitGame = function() {
-
-                Game.save($scope.game);
-
-
-             /*   $scope.game.submitted = true;
-                alert('Failed validation');*/
-
+        $scope.submitGame = function () {
+            $scope.game.save();
         }
     });
 
