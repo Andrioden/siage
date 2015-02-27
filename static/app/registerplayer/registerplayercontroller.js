@@ -16,7 +16,15 @@ siAgeApp.controller('RegisterPlayerController',
         $scope.submitPlayer = function () {
             Player.save($scope.newplayer).$promise.then(
                 //success
-                function( value ){ alert('Saved player') },
+                function( value ){ 
+                 Player.query(
+            function (data) {
+                $scope.players = data;
+            }
+            , function (error) {
+                $scope.playerListError = "Unable to load players list!";
+            });
+		},
                 //error
                 function( error ){ alert('Failed to save player. Error: ' + error)}
             )

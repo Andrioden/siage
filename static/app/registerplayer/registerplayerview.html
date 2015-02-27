@@ -37,13 +37,13 @@
             </tr>
             </thead>
 
-            <tbody>
-            <span class="error">{{playerListError}}</span>
+            <tbody>            
             <tr ng-repeat="player in players | orderBy:['nickname']">
                 <td>{{player.nick}}</td>
             </tr>
             </tbody>
         </table>
+		<span class="error">{{playerListError}}</span>
     </div>
 </div>
 
