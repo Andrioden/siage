@@ -251,6 +251,10 @@ input:focus, textarea:focus {
     color: red;
 }
 
+.success{
+    color: lawngreen;
+}
+
 
 /* Remove spinner from number fields */
 input[type=number]::-webkit-inner-spin-button,

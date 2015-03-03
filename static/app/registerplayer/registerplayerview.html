@@ -3,7 +3,7 @@
 
     </div>
     <div class="left_content">
-        <form ng-submit="submitPlayer()">
+        <form name="playerForm" ng-submit="submitPlayer()">
             <table>
                 <tbody>
                 <tr>
@@ -12,8 +12,6 @@
                 </tr>
                 </tbody>
             </table>
-
-
             <br/>
             <table class="buttoncontainer">
                 <tr>
@@ -29,21 +27,21 @@
 
         <br />
         <br />
+        <span class="error">{{error}}</span>
         <br />
         <table>
             <thead>
             <tr>
-                <td>Players</td>
+                <td ng-show="players.length > 0">Players</td>
             </tr>
             </thead>
 
             <tbody>            
-            <tr ng-repeat="player in players | orderBy:['nickname']">
+            <tr ng-repeat="player in players | orderBy:['nick']">
                 <td>{{player.nick}}</td>
             </tr>
             </tbody>
         </table>
-		<span class="error">{{playerListError}}</span>
     </div>
 </div>
 
