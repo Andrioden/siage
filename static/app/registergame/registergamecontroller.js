@@ -3,7 +3,6 @@
 siAgeApp.controller('RegisterGameController',
     function ($scope, GameSetting, Player, Game, $timeout) {
         initGame();
-
         $scope.gametypes = GameSetting.query({settingName: "gametypes"});
         $scope.mapstyles = GameSetting.query({settingName: "mapstyles"});
         $scope.locations = GameSetting.query({settingName: "location"});
