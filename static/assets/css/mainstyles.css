@@ -134,6 +134,12 @@ body, html {
     width: 80px;
 }
 
+#main_view table.buttoncontainer tbody td.message{
+    overflow: hidden;
+    width: 600px;
+    padding-left: 10px;
+}
+
 #main_view .right_content {
     float: right;
     padding: 0px;
@@ -252,7 +258,7 @@ input:focus, textarea:focus {
 }
 
 .success{
-    color: lawngreen;
+    color: limegreen;
 }
 
 

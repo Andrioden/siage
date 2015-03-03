@@ -1,5 +1,5 @@
 ﻿<div id="main_content" ng-controller="RegisterGameController">
-    <form ng-submit="submitGame()">
+    <form name="registerGameForm" ng-submit="submitGame()">
         <div class="right_content">
             <table class="gamesettings">
                 <thead>
@@ -62,19 +62,21 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat="player in game.players">
-                    <td><input type="text" name="nickname" ng-model="player.nickname" placeholder="Nickname..."
-                               list="allPlayersList"/></td>
-                    <td><select ng-model="player.civilization" ng-options="civ.label for civ in civilizations"></select>
+                <tr ng-repeat="playerResult in game.playerResults">
+                    <td><select ng-model="playerResult.playerId"
+                                ng-options="player.id as player.nick for player in allPlayers"></select></td>
+                    <td><select ng-model="playerResult.civilization"
+                                ng-options="civ.label for civ in civilizations"></select>
                     </td>
-                    <td><select ng-model="player.team" ng-options="n for n in [] | range:0:9"></select></td>
-                    <td><input type="number" name="score" ng-model="player.score" placeholder="Score..." min="0"
+                    <td><select ng-model="playerResult.team" ng-options="n for n in [] | range:0:9"></select></td>
+                    <td><input type="number" name="score" ng-model="playerResult.score" placeholder="Score..." min="0"
                                valid-number/></td>
                     <td class="small"><input class="checkbox" type="checkbox" name="iswinner"
-                                             ng-model="player.iswinner"/></td>
+                                             ng-model="playerResult.iswinner"/></td>
                 </tr>
                 </tbody>
             </table>
+
             <br/>
             <table class="buttoncontainer">
                 <tr>
@@ -84,13 +86,19 @@
                     <td>
                         <input class="button clear" type="reset" value="Clear"/>
                     </td>
+                    <td class="message">
+                        <span class="success">{{success}}</span>
+                        <span class="error">{{error}}</span>
+                    </td>
                 </tr>
             </table>
+            <br/>
+
         </div>
     </form>
 
     <datalist id="allPlayersList">
-        <option ng-repeat="player in allPlayers" value="{{player.nickname}}">
+        <option ng-repeat="player in allPlayers" value="{{player.nick}}"/>
     </datalist>
 </div>
 

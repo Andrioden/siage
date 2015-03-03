@@ -1,7 +1,7 @@
 ﻿var siAgeApp = angular.module('SiAgeApp');
 
 siAgeApp.controller('RegisterPlayerController',
-    function ($scope, Player) {
+    function ($scope, Player, $timeout) {
         $scope.newplayer = new Player();
 
         Player.query(
@@ -19,10 +19,15 @@ siAgeApp.controller('RegisterPlayerController',
                     $scope.players.push($scope.newplayer);
                     $scope.newplayer = new Player();
                     $scope.error = "";
+                    $scope.success = "Player saved";
+                    $timeout(function(){
+                        $scope.success = "";
+                    }, 3000);
                 },
                 //error
                 function (error) {
-                    $scope.error = 'Failed to save player.  ' + error.statusText;
+                    console.log(error);
+                    $scope.error = 'Failed to save player: ' + error.data;
                 }
             )
         }
