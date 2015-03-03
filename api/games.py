@@ -2,7 +2,8 @@
 
 import webapp2
 import json
-import models
+from models import Game
+from datetime import datetime
 
 class GamesListHandler(webapp2.RequestHandler):
     def get(self):
@@ -14,6 +15,23 @@ class GamesListHandler(webapp2.RequestHandler):
         self.response.out.write(json.dumps(obj))
 
     def post(self):
+        #Player(nick = request_data['nick']).put()
+        Game(
+            date = datetime.now(),
+            game_type = "GameType 1",
+            map_size = "small",
+            map_type = "typex",
+            starting_age = "Dark Age",
+            resources = "low",
+            difficulty = "easy",
+            fixed_position = True,
+            reveal_map = False,
+            full_technology = False,
+            population = 200,
+            duration_seconds = 500,
+            trebuchet_allowed = True
+        ).put()
+        
         self.response.headers['Content-Type'] = 'application/text'
         self.response.out.write("POST (Save) received with data: " + self.request.body)
 
