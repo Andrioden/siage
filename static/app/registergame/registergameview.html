@@ -84,7 +84,7 @@
                         <option ng-repeat="player in allPlayers | orderBy:['first','nick']"
                                 ng-selected="player.id === playerResult.player_id"
                                 value="{{player.id}}"
-                                ng-disabled="player.isinuse === true">{{player.nick}}</option>
+                                ng-hide="player.isinuse === true">{{player.nick}}</option>
                                 </select></td>
                     <td><select ng-model="playerResult.civilization"
                                 ng-options="civ for civ in civilizations"></select>
