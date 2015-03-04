@@ -1,9 +1,20 @@
 ﻿<div id="main_content">
     <div class="right_content">
-
+        <table>
+            <thead>
+            <tr>
+                <td>Recent games</td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="game in games">
+                <td><a href="/games/{{game.id}}" title="View game">{{game.game_type}}</a></td>
+            </tr>
+            </tbody>
+        </table>
     </div>
     <div class="left_content">
-        <table ng-show="players.length > 0">
+        <table>
             <thead>
                 <tr>
                     <td>Player</td>

@@ -9,8 +9,8 @@ class GamesListHandler(webapp2.RequestHandler):
     def get(self):
         self.response.headers['Content-Type'] = 'application/json'
         obj = [
-            {'id:': 1},
-            {'id': 2}
+            {'id': 1, 'game_type': "Game type 1"},
+            {'id': 2, 'game_type': "Game type 2"}
         ]
         self.response.out.write(json.dumps(obj))
 
@@ -23,7 +23,7 @@ class GameHandler(webapp2.RequestHandler):
         logging.info("Returning data for game_id: %s", game_id)
 
         self.response.headers['Content-Type'] = 'application/json'
-        obj = {'game_id': game_id}
+        obj = {'game_id': game_id, 'game_type': game_id} #kun for testdata
 
         self.response.out.write(json.dumps(obj))
 
