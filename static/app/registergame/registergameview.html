@@ -80,8 +80,12 @@
                 </thead>
                 <tbody>
                 <tr ng-repeat="playerResult in game.playerResults">
-                    <td><select ng-model="playerResult.player_id"
-                                ng-options="player.id as player.nick for player in allPlayers | orderBy:'nick'"></select></td>
+                    <td><select ng-model="playerResult.player_id" ng-change="removeSelectedPlayersFromList()">
+                        <option ng-repeat="player in allPlayers | orderBy:['first','nick']"
+                                ng-selected="player.id === playerResult.player_id"
+                                value="{{player.id}}"
+                                ng-disabled="player.isinuse === true">{{player.nick}}</option>
+                                </select></td>
                     <td><select ng-model="playerResult.civilization"
                                 ng-options="civ for civ in civilizations"></select>
                     </td>

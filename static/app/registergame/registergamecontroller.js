@@ -24,7 +24,8 @@ siAgeApp.controller('RegisterGameController',
 
         Player.query().$promise.then(
             function (value) {
-                $scope.allPlayers = value;
+                emptyPlayerHelper = [{'player_id': "", 'first': true}];
+                $scope.allPlayers = emptyPlayerHelper.concat(value);
             },
             function (value) {
                 $scope.error = "Unable to load players";
@@ -57,7 +58,19 @@ siAgeApp.controller('RegisterGameController',
                         $scope.game.playerResults.splice(i, 1);
                         i--;
                     }
-                    ;
+                }
+            }
+        };
+
+        $scope.removeSelectedPlayersFromList = function () {
+            for (j = 0; j < $scope.allPlayers.length; j++) {
+                $scope.allPlayers[j].isinuse = false;
+            }
+            for (i = 0; i < $scope.game.playerResults.length; i++) {
+                for (j = 0; j < $scope.allPlayers.length; j++) {
+                    if ($scope.game.playerResults[i].player_id == $scope.allPlayers[j].id) {
+                        $scope.allPlayers[j].isinuse = true;
+                    }
                 }
             }
         };
@@ -66,7 +79,14 @@ siAgeApp.controller('RegisterGameController',
             $scope.game = new Game();
             $scope.game.playerResults = [];
             for (i = 0; i < 8; i++) {
-                $scope.game.playerResults.push({ 'player_id': "", 'civilization': "", 'team': 0, 'score': "", 'is_winner': false });
+                $scope.game.playerResults.push({
+                    'player_id': "",
+                    'civilization': "",
+                    'team': 0,
+                    'score': "",
+                    'is_winner': false
+                });
             }
         };
     });
+
