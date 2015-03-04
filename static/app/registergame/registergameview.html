@@ -1,5 +1,6 @@
 ﻿<div id="main_content">
-    <form name="registerGameForm" ng-submit="submitGame()">
+    <div id="loadingMessage" ng-show="submitting"> <span class="helper">Saving game</span><img src="static/assets/img/ajax-loader.gif"></div>
+    <form name="registerGameForm" ng-submit="submitGame()" ng-show="submitting != true">
         <div class="right_content">
             <table class="gamesettings">
                 <thead>

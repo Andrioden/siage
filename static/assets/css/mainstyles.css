@@ -279,3 +279,24 @@ input[type=number]::-webkit-outer-spin-button {
     -webkit-appearance: none;
     margin: 0;
 }
+
+
+#loadingMessage {
+    height: 25px;      /* equals max image height */
+    width: 160px;
+    white-space: nowrap;
+    text-align: center; margin: 1em 0;
+}
+
+#loadingMessage.helper {
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle;
+}
+
+#loadingMessage img {
+    vertical-align: middle;
+    max-height: 25px;
+    max-width: 160px;
+    padding-left: 10px;
+}
