@@ -3,31 +3,51 @@
 siAgeApp.controller('RegisterGameController',
     function ($scope, GameSetting, Player, Game, $timeout) {
         initGame();
-        $scope.gametypes = GameSetting.query({settingName: "gametypes"});
-        $scope.mapstyles = GameSetting.query({settingName: "mapstyles"});
-        $scope.locations = GameSetting.query({settingName: "location"});
-        $scope.sizes = GameSetting.query({settingName: "sizes"});
-        $scope.resourcesList = GameSetting.query({settingName: "resourceslist"});
-        $scope.gameSpeeds = GameSetting.query({settingName: "gamespeeds"});
-        $scope.victoryList = GameSetting.query({settingName: "victorylist"});
-        $scope.civilizations = GameSetting.query({settingName: "civilizations"});
-        $scope.allPlayers = Player.query();
+        GameSetting.query().$promise.then(
+            function (value){
+                $scope.error = "";
+                $scope.game_types = value.game_types;
+                $scope.map_types = value.map_type;
+                $scope.map_sizes = value.map_size;
+                $scope.resources_list = value.resources;
+                $scope.gameSpeeds = [];
+                $scope.victoryList = [];
+                $scope.teams = value.teams;
+                $scope.civilizations = value.civilizations;
+                $scope.starting_ages = value.starting_age;
+                $scope.populations = value.population;
+            },
+            function (error){
+                $scope.error = "Unable to load settings";
+            }
+        )
+
+        Player.query().$promise.then(
+            function (value){
+                $scope.allPlayers = value;
+            },
+            function (value){
+                $scope.error = "Unable to load players";
+            }
+        )
+
 
         $scope.submitGame = function () {
+            /*cleanPlayerResults();*/
             Game.save($scope.game).$promise.then(
                 //success
                 function (value) {
                     initGame();
                     $scope.error = "";
-                    $scope.success = "Game saved";
-                    $timeout(function(){
+                    $scope.success = value.response;
+                    $timeout(function () {
                         $scope.success = "";
-                    }, 3000);
+                    }, 5000);
 
                 },
                 //error
                 function (error) {
-                    $scope.error = 'Failed to save game. ' + error.data;
+                    $scope.error = error.data;
                 }
             )
         };
@@ -36,26 +56,16 @@ siAgeApp.controller('RegisterGameController',
         function initGame() {
             $scope.game = new Game();
             $scope.game.playerResults = [];
-            $scope.game.gameType = "";
-            $scope.game.mapStyle = "";
-            $scope.game.location = "";
-            $scope.game.size = "";
-            $scope.game.resources = "";
-            $scope.game.gameSpeed = "";
-            $scope.game.victory = "";
             for (i = 0; i < 8; i++) {
                 $scope.game.playerResults.push({'playerId': "", 'civilization': "", 'team': 0, 'iswinner': false});
             }
         };
+
+        /*function cleanPlayerResults(){
+         for (i = 0; i < $scope.game.playerResults.length; i++) {
+         if($scope.game.playerResults[i]["playerId"] == ""){
+         $scope.game.playerResults.splice(i, 1);
+         };
+         }
+         };*/
     });
-
-
-siAgeApp.filter('range', function () {
-    return function (input, min, max) {
-        min = parseInt(min); //Make string input int
-        max = parseInt(max);
-        for (var i = min; i < max; i++)
-            input.push(i);
-        return input;
-    }
-});

@@ -19,16 +19,20 @@ siAgeApp.controller('RegisterPlayerController',
                     $scope.players.push($scope.newplayer);
                     $scope.newplayer = new Player();
                     $scope.error = "";
-                    $scope.success = "Player saved";
+                    $scope.success = value.response;
                     $timeout(function(){
                         $scope.success = "";
-                    }, 3000);
+                    }, 5000);
                 },
                 //error
                 function (error) {
                     console.log(error);
-                    $scope.error = 'Failed to save player: ' + error.data;
+                    $scope.error = error.data;
                 }
             )
+        }
+
+        $scope.hideError = function(){
+            $scope.error = "";
         }
     });

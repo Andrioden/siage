@@ -19,7 +19,6 @@ class PlayersListHandler(webapp2.RequestHandler):
     def post(self):
         # PROCESS REQUEST
         request_data = json.loads(self.request.body)
-        self.response.headers['Content-Type'] = 'application/text'
 
         players_data = []
         for player in Player().query(Player.nick == request_data['nick']):
@@ -27,13 +26,15 @@ class PlayersListHandler(webapp2.RequestHandler):
 
         # CHECK IF PLAYER EXISTS
         if(players_data):
+            self.response.headers['Content-Type'] = 'application/text'
             self.response.write('Nickname is taken')
             self.response.set_status(403)
 
         # PLAYER DOES NOT EXIST. SAVE PLAYER
         else:
+            self.response.headers['Content-Type'] = 'application/json'
             Player(nick = request_data['nick']).put()
-            self.response.out.write("Player " + request_data['nick'] + " saved successfully")
+            self.response.out.write(json.dumps({'response': "Player " + request_data['nick'] + " saved successfully"}))
 
 class PlayerHandler(webapp2.RequestHandler):
     def get(self, player_id):

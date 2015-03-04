@@ -31,13 +31,20 @@ class Game(ndb.Model):
             'difficulty': list(cls.difficulty._choices),
             'population': list(cls.population._choices)
         }
-    
+
 class PlayerResult(ndb.Model):
     player = ndb.KeyProperty(required=True, kind=Player)
     game = ndb.KeyProperty(required=True, kind=Game)
     is_winner = ndb.BooleanProperty(default=False)
     score = ndb.IntegerProperty(required=True)
+    team = ndb.IntegerProperty(required=True, choices=[0,1,2,3,4,5,6,7,8])
     civilization = ndb.StringProperty(required=True, choices=['Aztec', 'Franks'])
+    @classmethod
+    def _playerresult_settings_data(cls):
+        return {
+            'teams': list(cls.team._choices),
+            'civilizations': list(cls.civilization._choices)
+        }
     
 class PlayerResultStats(ndb.Model):
     player_result = ndb.KeyProperty(required=True, kind=PlayerResult)

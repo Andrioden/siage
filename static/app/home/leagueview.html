@@ -3,7 +3,7 @@
 
     </div>
     <div class="left_content">
-        <table>
+        <table ng-show="players.length > 0">
             <thead>
                 <tr>
                     <td>Player</td>
@@ -16,7 +16,7 @@
                 <tr ng-repeat="player in players | orderBy:['-rating','nickname']">
                     <td>{{player.nick}}</td>
                     <td>{{player.rating}}</td>
-                    <td>{{player.winrate + "%"}}</td>
+                    <td>{{player.winrate}}</td>
                     <td>{{player.bestcivilization}}</td>
                 </tr>
             </tbody>

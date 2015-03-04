@@ -10,39 +10,56 @@
                 <tbody>
                 <tr>
                     <td>Game</td>
-                    <td><select ng-model="game.gameType" ng-options="gametype.label for gametype in gametypes"></select>
+                    <td><select ng-model="game.gameType"
+                                ng-options="gametype for gametype in game_types | orderBy:false"></select>
                     </td>
                 </tr>
                 <tr>
                     <td>Map style</td>
-                    <td><select ng-model="game.mapStyle" ng-options="mapstyle.label for mapstyle in mapstyles"></select>
+                    <td><select ng-model="game.mapStyle"
+                                ng-options="mapstyle for mapstyle in map_types | orderBy:false"></select>
                     </td>
                 </tr>
                 <tr>
                     <td>Location</td>
-                    <td><select ng-model="game.location" ng-options="location.label for location in locations"></select>
+                    <td><select ng-model="game.location"
+                                ng-options="location for location in locations | orderBy:false"></select>
                     </td>
                 </tr>
                 <tr>
                     <td>Size</td>
-                    <td><select ng-model="game.size" ng-options="size.label for size in sizes"></select>
+                    <td><select ng-model="game.size"
+                                ng-options="size for size in map_sizes | orderBy:false"></select>
                     </td>
                 </tr>
                 <tr>
                     <td>Resources</td>
                     <td><select ng-model="game.resources"
-                                ng-options="resources.label for resources in resourcesList"></select>
+                                ng-options="resources for resources in resources_list | orderBy:false"></select>
                     </td>
                 </tr>
                 <tr>
                     <td>Game Speed</td>
                     <td><select ng-model="game.gameSpeed"
-                                ng-options="gamespeed.label for gamespeed in gameSpeeds"></select>
+                                ng-options="gamespeed for gamespeed in gameSpeeds | orderBy:false"></select>
                     </td>
                 </tr>
                 <tr>
                     <td>Victory</td>
-                    <td><select ng-model="game.victory" ng-options="victory.label for victory in victoryList"></select>
+                    <td><select ng-model="game.victory"
+                                ng-options="victory for victory in victoryList | orderBy:false"></select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Starting age</td>
+                    <td><select ng-model="game.starting_age"
+                                ng-options="starting_age for starting_age in starting_ages | orderBy:false"></select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Population</td>
+                    <td><select ng-model="game.population"
+                                ng-options="population for population in populations | orderBy:false"></select>
                     </td>
                 </tr>
 
@@ -66,9 +83,9 @@
                     <td><select ng-model="playerResult.playerId"
                                 ng-options="player.id as player.nick for player in allPlayers"></select></td>
                     <td><select ng-model="playerResult.civilization"
-                                ng-options="civ.label for civ in civilizations"></select>
+                                ng-options="civ for civ in civilizations"></select>
                     </td>
-                    <td><select ng-model="playerResult.team" ng-options="n for n in [] | range:0:9"></select></td>
+                    <td><select ng-model="playerResult.team" ng-options="team for team in teams"></select></td>
                     <td><input type="number" name="score" ng-model="playerResult.score" placeholder="Score..." min="0"
                                valid-number/></td>
                     <td class="small"><input class="checkbox" type="checkbox" name="iswinner"

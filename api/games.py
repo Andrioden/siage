@@ -14,8 +14,8 @@ class GamesListHandler(webapp2.RequestHandler):
         self.response.out.write(json.dumps(obj))
 
     def post(self):
-        self.response.headers['Content-Type'] = 'application/text'
-        self.response.out.write("POST (Save) received with data: " + self.request.body)
+        self.response.headers['Content-Type'] = 'application/json'
+        self.response.out.write(json.dumps({'response': "Game saved"}))
 
 
 class GameHandler(webapp2.RequestHandler):
