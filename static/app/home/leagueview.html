@@ -13,15 +13,15 @@
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="player in players | orderBy:['-rating','nickname']">
-                    <td>{{player.nick}}</td>
+                <tr ng-repeat="player in players | orderBy:['-rating','nick']">
+                    <td><a href="/players/{{player.nick}}" title="View profile">{{player.nick}}</a></td>
                     <td>{{player.rating}}</td>
                     <td>{{player.winrate}}</td>
                     <td>{{player.bestcivilization}}</td>
                 </tr>
             </tbody>
         </table>
-        <span class="error">{{playerListError}}</span>
+        <span class="error">{{error}}</span>
     </div>
 </div>
 

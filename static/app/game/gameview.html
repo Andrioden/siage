@@ -3,13 +3,15 @@
 
     </div>
     <div class="left_content">
-        {{player}}
-        <span class="error">{{playerListError}}</span>
+        <h3>Game {{game.game_id}}</h3>
+        Raw data: {{game}}
+
+        <span class="error">{{error}}</span>
     </div>
 </div>
 
 <style>
-    #nav_bar li a#home {
+    #nav_bar li a#game {
         background-color: white;
         color: #666;
         -webkit-box-shadow: 6px 4px 38px -8px rgba(0, 0, 0, 0.47);

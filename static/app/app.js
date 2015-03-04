@@ -11,7 +11,7 @@ siAgeApp.config(['$routeProvider', '$locationProvider',
                 templateUrl: 'static/app/registergame/registergameview.html',
                 controller: 'RegisterGameController'
             })
-            .when('/player/:playerId', {
+            .when('/players/:playerId', {
                 templateUrl: 'static/app/player/playerview.html',
                 controller: 'PlayerController'
             })
@@ -19,9 +19,9 @@ siAgeApp.config(['$routeProvider', '$locationProvider',
                 templateUrl: 'static/app/registerplayer/registerplayerview.html',
                 controller: 'RegisterPlayerController'
             })
-            .when('/game/:gameId', {
-                templateUrl: 'static/app/player/playerview.html',
-                controller: 'PlayerController'
+            .when('/games/:gameId', {
+                templateUrl: 'static/app/game/gameview.html',
+                controller: 'GameController'
             })
             .otherwise({
                 redirectTo: '/home'

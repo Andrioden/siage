@@ -2,6 +2,7 @@
 
 import webapp2
 import json
+import logging
 import models
 
 class GamesListHandler(webapp2.RequestHandler):
@@ -17,13 +18,13 @@ class GamesListHandler(webapp2.RequestHandler):
         self.response.headers['Content-Type'] = 'application/json'
         self.response.out.write(json.dumps({'response': "Game saved"}))
 
-
 class GameHandler(webapp2.RequestHandler):
-    def get(self, gameId):
+    def get(self, game_id):
+        logging.info("Returning data for game_id: %s", game_id)
+
         self.response.headers['Content-Type'] = 'application/json'
-        obj = [
-            {'gameId': 1}
-        ]
+        obj = {'game_id': game_id}
+
         self.response.out.write(json.dumps(obj))
 
     def put(self, gameId):
@@ -32,8 +33,8 @@ class GameHandler(webapp2.RequestHandler):
 
 
 app = webapp2.WSGIApplication([
-    webapp2.Route(r'/api/games/', handler=GamesListHandler, name='games'),
-    webapp2.Route(r'/api/games/<gameId:(\d+)>', handler=GameHandler, name='game')
+    (r'/api/games/', GamesListHandler),
+    (r'/api/games/(\d+)', GameHandler),
 ], debug=True)
 
 

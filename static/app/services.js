@@ -7,16 +7,16 @@ siAgeApp
         })
     })
     .factory('Player', function ($resource) {
-        return $resource('/api/players/:playerId', {}, {
-            get: {method: 'GET', params: {playerId: 'playerId'}, isArray: false},
+        return $resource('/api/players/:player_id', {player_id: '@playerId'}, {
+            get: {method: 'GET', isArray: false},
             query: {method: 'GET', isArray: true},
             save: {method: 'POST'},
-            update: {method: 'PUT', }
+            update: {method: 'PUT'}
         })
     })
     .factory('Game', function ($resource) {
-        return $resource('/api/games/:gameId', {}, {
-            get: {method: 'GET', params: {gameId: 'gameId'}, isArray: false},
+        return $resource('/api/games/:game_id', {game_id: '@gameId'}, {
+            get: {method: 'GET', isArray: false},
             query: {method: 'GET', isArray: true},
             save: {method: 'POST'},
             update: {method: 'PUT'}
