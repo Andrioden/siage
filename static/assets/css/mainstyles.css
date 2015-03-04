@@ -90,7 +90,7 @@ body, html {
     table-layout: fixed;
 }
 
-#main_view .left_content table thead {
+#main_view table thead {
     font-weight: bold;
 }
 
@@ -100,7 +100,7 @@ body, html {
 #main_view .left_content table tbody tr:nth-child(even) {
 }
 
-#main_view .left_content table tbody {
+#main_view table tbody {
     border: 0px;
     margin: 0px;
 }
@@ -162,6 +162,10 @@ aside.right_content ul {
 a {
     text-decoration: none;
     color: #666;
+}
+
+a:hover {
+    color: royalblue;
 }
 
 td.wide {
