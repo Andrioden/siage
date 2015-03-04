@@ -8,16 +8,21 @@
                     <td>Game Settings</td>
                 </tr>
                 </thead>
+                <tr>
+                    <td>Date</td>
+                    <td><input id="gameDateInput" ng-model="game.game_date" type="date" />
+                    </td>
+                </tr>
                 <tbody>
                 <tr>
                     <td>Game</td>
-                    <td><select ng-model="game.gameType"
+                    <td><select ng-model="game.game_type"
                                 ng-options="gametype for gametype in game_types | orderBy:false"></select>
                     </td>
                 </tr>
                 <tr>
                     <td>Map style</td>
-                    <td><select ng-model="game.mapStyle"
+                    <td><select ng-model="game.map_style"
                                 ng-options="mapstyle for mapstyle in map_types | orderBy:false"></select>
                     </td>
                 </tr>
@@ -41,7 +46,7 @@
                 </tr>
                 <tr>
                     <td>Game Speed</td>
-                    <td><select ng-model="game.gameSpeed"
+                    <td><select ng-model="game.game_speed"
                                 ng-options="gamespeed for gamespeed in gameSpeeds | orderBy:false"></select>
                     </td>
                 </tr>
@@ -100,22 +105,26 @@
             </table>
 
             <br/>
-            <table class="buttoncontainer">
-                <tr>
-                    <td>
-                        <input class="button submit" type="submit" value="Save"/>
-                    </td>
-                    <td>
-                        <input class="button clear" type="reset" value="Clear"/>
-                    </td>
-                    <td class="message">
-                        <span class="success">{{success}}</span>
-                        <span class="error">{{error}}</span>
-                    </td>
-                </tr>
-            </table>
-            <br/>
 
+
+        </div>
+
+        <div class="bottom_content">
+        <table class="buttoncontainer">
+            <tr>
+                <td>
+                    <input class="button submit" type="submit" value="Save"/>
+                </td>
+                <td>
+                    <input class="button clear" type="reset" value="Clear"/>
+                </td>
+                <td class="message">
+                    <span class="success">{{success}}</span>
+                    <span class="error">{{error}}</span>
+                </td>
+            </tr>
+        </table>
+        <br/>
         </div>
     </form>
 </div>

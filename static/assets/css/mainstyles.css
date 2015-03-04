@@ -7,7 +7,7 @@ body, html {
 
 #main_wrapper {
     position: relative;
-    width: 1400px;
+    width: 1500px;
     margin-left: auto;
     margin-right: auto;
     height: auto !important;
@@ -27,7 +27,7 @@ body, html {
 #Header {
     position: relative;
     height: 100px;
-    width: 1400px;
+    width: 1500px;
     margin-right: auto;
     margin-left: auto;
 }
@@ -38,7 +38,7 @@ body, html {
 }
 
 #main_view {
-    width: 1075px;
+    width: 1175px;
     min-height: 400px;
     float: left;
     padding: 20px 45px 20px 45px;
@@ -126,7 +126,11 @@ body, html {
 
 #main_view table.gamesettings select {
     overflow: hidden;
-    width: 160px;
+    width: 192px;
+}
+
+#main_view table.gamesettings input{
+    overflow: hidden;
 }
 
 #main_view table.buttoncontainer tbody td {
@@ -142,6 +146,13 @@ body, html {
 
 #main_view .right_content {
     float: right;
+    padding: 0px;
+    margin: 0px;
+}
+
+#main_view .bottom_content {
+    width: 100%;
+    float: left;
     padding: 0px;
     margin: 0px;
 }
