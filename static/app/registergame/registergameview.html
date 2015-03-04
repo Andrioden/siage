@@ -80,7 +80,7 @@
                 </thead>
                 <tbody>
                 <tr ng-repeat="playerResult in game.playerResults">
-                    <td><select ng-model="playerResult.player_id" ng-change="removeSelectedPlayersFromList()">
+                    <td><select class="wide" ng-model="playerResult.player_id" ng-change="removeSelectedPlayersFromList()">
                         <option ng-repeat="player in allPlayers | orderBy:['first','nick']"
                                 ng-selected="player.id === playerResult.player_id"
                                 value="{{player.id}}"

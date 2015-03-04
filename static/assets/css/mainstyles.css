@@ -219,6 +219,10 @@ select {
     margin-left: 3px;
 }
 
+select.wide {
+    width: 170px;
+}
+
 input:hover, textarea:hover,
 input:focus, textarea:focus {
     border-color: #C9C9C9;
