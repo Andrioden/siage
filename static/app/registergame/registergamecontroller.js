@@ -66,7 +66,7 @@ siAgeApp.controller('RegisterGameController',
             $scope.game = new Game();
             $scope.game.playerResults = [];
             for (i = 0; i < 8; i++) {
-                $scope.game.playerResults.push({'player_id': "", 'civilization': "", 'team': 0, 'iswinner': false});
+                $scope.game.playerResults.push({ 'player_id': "", 'civilization': "", 'team': 0, 'score': "", 'is_winner': false });
             }
         };
     });
