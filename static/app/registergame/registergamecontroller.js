@@ -82,51 +82,76 @@ siAgeApp.controller('RegisterGameController',
         };
 
         $scope.setWinnersByWinToggle = function (playerResult) {
-            console.log(playerResult);
-            if (playerResult.is_winner & playerResult.team != 0) {
-                for (j = 0; j < $scope.game.playerResults.length; j++) {
-                    if (playerResult.player_id != $scope.game.playerResults[j].player_id) {
-                        if (playerResult.team == $scope.game.playerResults[j].team) {
-                            $scope.game.playerResults[j].is_winner = true;
-                        } else {
+            if (playerResult.player_id != "") {
+                if (playerResult.is_winner && playerResult.team != 0) {
+                    for (j = 0; j < $scope.game.playerResults.length; j++) {
+                        if (playerResult.player_id != $scope.game.playerResults[j].player_id) {
+                            if (playerResult.team == $scope.game.playerResults[j].team) {
+                                $scope.game.playerResults[j].is_winner = true;
+                            } else {
+                                $scope.game.playerResults[j].is_winner = false;
+                            }
+                        }
+                    }
+                }
+                else if (playerResult.is_winner && playerResult.team == 0) {
+                    for (j = 0; j < $scope.game.playerResults.length; j++) {
+                        if (playerResult.player_id != $scope.game.playerResults[j].player_id) {
                             $scope.game.playerResults[j].is_winner = false;
                         }
                     }
                 }
-            }
-            else if (playerResult.is_winner & playerResult.team == 0) {
-                for (j = 0; j < $scope.game.playerResults.length; j++) {
-                    if (playerResult.player_id != $scope.game.playerResults[j].player_id) {
-                        $scope.game.playerResults[j].is_winner = false;
-                    }
-                }
-            }
 
-            else if (playerResult.is_winner == false & playerResult.team != 0) {
-                for (j = 0; j < $scope.game.playerResults.length; j++) {
-                    if (playerResult.player_id != $scope.game.playerResults[j].player_id) {
-                        if (playerResult.team == $scope.game.playerResults[j].team) {
-                            $scope.game.playerResults[j].is_winner = false;
+                else if (playerResult.is_winner == false && playerResult.team != 0) {
+                    for (j = 0; j < $scope.game.playerResults.length; j++) {
+                        if (playerResult.player_id != $scope.game.playerResults[j].player_id) {
+                            if (playerResult.team == $scope.game.playerResults[j].team) {
+                                $scope.game.playerResults[j].is_winner = false;
+                            }
                         }
                     }
+                }
+            }
+            for (j = 0; j < $scope.game.playerResults.length; j++) {
+                if ($scope.game.playerResults[j].player_id == "") {
+                    $scope.game.playerResults[j].is_winner = false;
                 }
             }
         }
 
+
         $scope.setWinnersByTeamChange = function (playerResult) {
-            if (playerResult.team != 0) {
-                for (j = 0; j < $scope.game.playerResults.length; j++) {
-                    if (playerResult.player_id != $scope.game.playerResults[j].player_id) {
-                        if (playerResult.team == $scope.game.playerResults[j].team) {
-                            playerResult.is_winner = $scope.game.playerResults[j].is_winner;
+            if (playerResult.player_id != "") {
+                if (playerResult.is_winner == false && playerResult.team != 0) {
+                    for (j = 0; j < $scope.game.playerResults.length; j++) {
+                        if (playerResult.player_id != $scope.game.playerResults[j].player_id) {
+                            if (playerResult.team == $scope.game.playerResults[j].team) {
+                                playerResult.is_winner = $scope.game.playerResults[j].is_winner;
+                            }
+                        }
+                    }
+                }else if (playerResult.is_winner && playerResult.team != 0) {
+                    for (j = 0; j < $scope.game.playerResults.length; j++) {
+                        if (playerResult.player_id != $scope.game.playerResults[j].player_id) {
+                            if (playerResult.team == $scope.game.playerResults[j].team) {
+                                $scope.game.playerResults[j].is_winner = playerResult.is_winner;
+                            }else{
+                                $scope.game.playerResults[j].is_winner =!playerResult.is_winner;
+                            }
                         }
                     }
                 }
-            } else if (playerResult.is_winner & playerResult.team == 0) {
-                for (j = 0; j < $scope.game.playerResults.length; j++) {
-                    if (playerResult.player_id != $scope.game.playerResults[j].player_id) {
-                        $scope.game.playerResults[j].is_winner = false;
+                else if (playerResult.is_winner && playerResult.team == 0) {
+                    for (j = 0; j < $scope.game.playerResults.length; j++) {
+                        if (playerResult.player_id != $scope.game.playerResults[j].player_id) {
+                            $scope.game.playerResults[j].is_winner = false;
+                        }
                     }
+                }
+            }
+            for (j = 0; j < $scope.game.playerResults.length; j++) {
+                if ($scope.game.playerResults[j].player_id == "") {
+                    $scope.game.playerResults[j].is_winner = false;
                 }
             }
         }
@@ -162,5 +187,6 @@ siAgeApp.controller('RegisterGameController',
                 $scope.allPlayers[j].isinuse = false;
             }
         };
-    });
+    })
+;
 
