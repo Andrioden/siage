@@ -80,8 +80,8 @@
                 </thead>
                 <tbody>
                 <tr ng-repeat="playerResult in game.playerResults">
-                    <td><select ng-model="playerResult.playerId"
-                                ng-options="player.id as player.nick for player in allPlayers"></select></td>
+                    <td><select ng-model="playerResult.player_id"
+                                ng-options="player.id as player.nick for player in allPlayers | orderBy:'nick'"></select></td>
                     <td><select ng-model="playerResult.civilization"
                                 ng-options="civ for civ in civilizations"></select>
                     </td>
@@ -113,10 +113,6 @@
 
         </div>
     </form>
-
-    <datalist id="allPlayersList">
-        <option ng-repeat="player in allPlayers" value="{{player.nick}}"/>
-    </datalist>
 </div>
 
 
