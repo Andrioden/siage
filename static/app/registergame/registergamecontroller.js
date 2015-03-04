@@ -52,7 +52,7 @@ siAgeApp.controller('RegisterGameController',
                 //error
                 function (error) {
                     var result = "";
-                    if(error.data) result = error.data;
+                    if (error.data) result = error.data;
                     else result = error.statusText;
                     $scope.error = "Save game failed: " + result;
                     reAddEmptyPlayers();
@@ -81,6 +81,56 @@ siAgeApp.controller('RegisterGameController',
             }
         };
 
+        $scope.setWinnersByWinToggle = function (playerResult) {
+            console.log(playerResult);
+            if (playerResult.is_winner & playerResult.team != 0) {
+                for (j = 0; j < $scope.game.playerResults.length; j++) {
+                    if (playerResult.player_id != $scope.game.playerResults[j].player_id) {
+                        if (playerResult.team == $scope.game.playerResults[j].team) {
+                            $scope.game.playerResults[j].is_winner = true;
+                        } else {
+                            $scope.game.playerResults[j].is_winner = false;
+                        }
+                    }
+                }
+            }
+            else if (playerResult.is_winner & playerResult.team == 0) {
+                for (j = 0; j < $scope.game.playerResults.length; j++) {
+                    if (playerResult.player_id != $scope.game.playerResults[j].player_id) {
+                        $scope.game.playerResults[j].is_winner = false;
+                    }
+                }
+            }
+
+            else if (playerResult.is_winner == false & playerResult.team != 0) {
+                for (j = 0; j < $scope.game.playerResults.length; j++) {
+                    if (playerResult.player_id != $scope.game.playerResults[j].player_id) {
+                        if (playerResult.team == $scope.game.playerResults[j].team) {
+                            $scope.game.playerResults[j].is_winner = false;
+                        }
+                    }
+                }
+            }
+        }
+
+        $scope.setWinnersByTeamChange = function (playerResult) {
+            if (playerResult.team != 0) {
+                for (j = 0; j < $scope.game.playerResults.length; j++) {
+                    if (playerResult.player_id != $scope.game.playerResults[j].player_id) {
+                        if (playerResult.team == $scope.game.playerResults[j].team) {
+                            playerResult.is_winner = $scope.game.playerResults[j].is_winner;
+                        }
+                    }
+                }
+            } else if (playerResult.is_winner & playerResult.team == 0) {
+                for (j = 0; j < $scope.game.playerResults.length; j++) {
+                    if (playerResult.player_id != $scope.game.playerResults[j].player_id) {
+                        $scope.game.playerResults[j].is_winner = false;
+                    }
+                }
+            }
+        }
+
         function initGame() {
             $scope.game = new Game();
             $scope.game.playerResults = [];
@@ -95,8 +145,8 @@ siAgeApp.controller('RegisterGameController',
             }
         };
 
-        function reAddEmptyPlayers(){
-            while($scope.game.playerResults.length < 8) {
+        function reAddEmptyPlayers() {
+            while ($scope.game.playerResults.length < 8) {
                 $scope.game.playerResults.push({
                     'player_id': "",
                     'civilization': "",
@@ -107,7 +157,7 @@ siAgeApp.controller('RegisterGameController',
             }
         };
 
-        function resetAllPlayers(){
+        function resetAllPlayers() {
             for (j = 0; j < $scope.allPlayers.length; j++) {
                 $scope.allPlayers[j].isinuse = false;
             }
