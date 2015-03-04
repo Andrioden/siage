@@ -9,8 +9,8 @@ class GamesListHandler(webapp2.RequestHandler):
     def get(self):
         self.response.headers['Content-Type'] = 'application/json'
         obj = [
-            {'gameId:': 1},
-            {'gameId': 2}
+            {'id:': 1},
+            {'id': 2}
         ]
         self.response.out.write(json.dumps(obj))
 
