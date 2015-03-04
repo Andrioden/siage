@@ -39,6 +39,7 @@ siAgeApp.controller('RegisterGameController',
                 //success
                 function (value) {
                     initGame();
+                    resetAllPlayers();
                     $scope.error = "";
                     $scope.success = value.response;
                     $timeout(function () {
@@ -63,9 +64,7 @@ siAgeApp.controller('RegisterGameController',
         };
 
         $scope.removeSelectedPlayersFromList = function () {
-            for (j = 0; j < $scope.allPlayers.length; j++) {
-                $scope.allPlayers[j].isinuse = false;
-            }
+            resetAllPlayers();
             for (i = 0; i < $scope.game.playerResults.length; i++) {
                 for (j = 0; j < $scope.allPlayers.length; j++) {
                     if ($scope.game.playerResults[i].player_id == $scope.allPlayers[j].id) {
@@ -86,6 +85,12 @@ siAgeApp.controller('RegisterGameController',
                     'score': "",
                     'is_winner': false
                 });
+            }
+        };
+
+        function resetAllPlayers(){
+            for (j = 0; j < $scope.allPlayers.length; j++) {
+                $scope.allPlayers[j].isinuse = false;
             }
         };
     });
