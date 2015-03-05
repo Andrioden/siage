@@ -4,63 +4,56 @@ import webapp2
 import json
 import logging
 from models import Player
+from utils import error_400
 
-class PlayersListHandler(webapp2.RequestHandler):
-    def get(self):
+class PlayersHandler(webapp2.RequestHandler):
+    def get(self): 
+        """ GET PLAYERLIST """
         # BUILD DATA
-        players_data = []
-        for player in Player().query():
-            players_data.append(player.get_data())
+        players_data = [player.get_data() for player in Player().query()]
         
         # RETURN RESPONSE
         self.response.headers['Content-Type'] = 'application/json'
         self.response.out.write(json.dumps(players_data))
 
-    def post(self):
-        # PROCESS REQUEST
+    def post(self): 
+        """ CREATE PLAYER """
         request_data = json.loads(self.request.body)
-
-        players_data = []
-        for player in Player().query(Player.nick == request_data['nick']):
-            players_data.append(player.get_data())
-
-        # CHECK IF PLAYER EXISTS
-        if(players_data):
-            self.response.headers['Content-Type'] = 'application/text'
-            self.response.write('Nickname is taken')
-            self.response.set_status(403)
-
-        # PLAYER DOES NOT EXIST. SAVE PLAYER
+        nick = request_data['nick']
+        
+        existing_player_with_nick = Player.query(Player.nick == nick).get()
+        if existing_player_with_nick:
+            error_400(self.response, "NICK_TAKEN", "Nick %s is taken" % nick)
         else:
+            Player(nick = nick).put()
             self.response.headers['Content-Type'] = 'application/json'
-            Player(nick = request_data['nick']).put()
             self.response.out.write(json.dumps({'response': "Player " + request_data['nick'] + " saved successfully"}))
 
 class PlayerHandler(webapp2.RequestHandler):
-    def get(self, player_id):
-        logging.info("Returning data for player_id: %s", player_id)
+    def get(self, player_id_or_nick): 
+        """ GET SINGLE PLAYER """
+        logging.info("Returning data for player_id_or_nick: %s", player_id_or_nick)
         
         # BUILD DATA
-        players_data = "";
-        if(player_id.isdigit()):
-            player = Player.get_by_id(int(player_id))
+        if player_id_or_nick.isdigit():
+            player = Player.get_by_id(int(player_id_or_nick))
         else:
-            for player in Player().query(Player.nick == player_id):
-                players_data = player.get_data()
-
+            player = Player.query(Player.nick == player_id_or_nick).get()
+            
         # RETURN RESPONSE
-        self.response.headers['Content-Type'] = 'application/json'
         if player:
+            self.response.headers['Content-Type'] = 'application/json'
             self.response.out.write(json.dumps(player.get_data()))
         else:
-            self.response.out.write(json.dumps({'data': player}))
+            self.response.out.write(json.dumps({'error': "PLAYER_NOT_FOUND"}))
 
-    def put(self, playerId):
+    def put(self, player_id_or_nick): 
+        """ UPDATE SINGLE PLAYER """
         self.response.headers['Content-Type'] = 'application/text'
         self.response.out.write("PUT (Update) received with data: " + self.request.body)
 
 app = webapp2.WSGIApplication([
-    (r'/api/players/', PlayersListHandler),
+    (r'/api/players/', PlayersHandler),
     (r'/api/players/(\d+)', PlayerHandler),
     (r'/api/players/(\S+)', PlayerHandler)
 ], debug=True)

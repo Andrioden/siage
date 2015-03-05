@@ -29,7 +29,7 @@ class Game(ndb.Model):
             'starting_age': list(cls.starting_age._choices),
             'resources': list(cls.resources._choices),
             'difficulty': list(cls.difficulty._choices),
-            'population': list(cls.population._choices)
+            'population': list(cls.population._choices),
         }
 
 class PlayerResult(ndb.Model):
@@ -40,7 +40,7 @@ class PlayerResult(ndb.Model):
     team = ndb.IntegerProperty(required=True, choices=[0,1,2,3,4,5,6,7,8])
     civilization = ndb.StringProperty(required=True, choices=['Aztec', 'Franks'])
     @classmethod
-    def _playerresult_settings_data(cls):
+    def _settings_data(cls):
         return {
             'teams': list(cls.team._choices),
             'civilizations': list(cls.civilization._choices)
