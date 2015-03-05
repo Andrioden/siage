@@ -7,24 +7,30 @@ class Player(ndb.Model):
         return {'id': self.key.id(), 'nick': self.nick}
 
 class Game(ndb.Model):
-    date = ndb.DateProperty(required=True)
-    game_type = ndb.StringProperty(required=True, choices=['GameType 1', 'GameType 2'])
-    map_size = ndb.StringProperty(required=True, choices=['small', 'LOL', 'big'])
-    map_type = ndb.StringProperty(required=True, choices=['typex', 'typey'])
-    starting_age = ndb.StringProperty(required=True, choices=['Dark Age', 'Feudual Age', 'Castle Age', 'Imperial Age'])
-    resources = ndb.StringProperty(required=True, choices=['low'])
-    difficulty = ndb.StringProperty(required=True, choices=['easy'])
-    fixed_position = ndb.BooleanProperty(required=True)
-    reveal_map = ndb.BooleanProperty(required=True)
-    full_technology = ndb.BooleanProperty(required=True)
-    population = ndb.IntegerProperty(required=True, choices=[50,100,200])
-    duration_seconds = ndb.IntegerProperty(required=True)
-    trebuchet_allowed = ndb.BooleanProperty(required=True)
+    # Settings from lobby Game Settings
+    size = ndb.StringProperty(required=False, choices=['small', 'LOL', 'big'])
+    difficulty = ndb.StringProperty(required=False, choices=['Standard', '??'])
+    resources = ndb.StringProperty(required=False, choices=['Standard', '??'])
+    population = ndb.IntegerProperty(required=False, choices=[50,100,200])
+    game_speed = ndb.StringProperty(required=False, choices=['Slow', 'Normal', 'Fast'])
+    reveal_map = ndb.BooleanProperty(required=False)
+    starting_age = ndb.StringProperty(required=False, choices=['Dark Age', 'Feudual Age', 'Castle Age', 'Imperial Age'])
+    treaty_length = ndb.StringProperty(required=False, choices=['None', '????'])
+    victory = ndb.StringProperty(required=False, choices=['Conquest'])
+    team_together = ndb.BooleanProperty(required=False)
+    all_techs = ndb.BooleanProperty(required=False)
+    # Settings from Objective screen ingame
+    game_type = ndb.StringProperty(required=False, choices=['Standard Game', 'GameType 2'])
+    map_type = ndb.StringProperty(required=False, choices=['typex', 'typey'])
+    # Special settings
+    date = ndb.DateProperty(required=False)
+    duration_seconds = ndb.IntegerProperty(required=False)
+    trebuchet_allowed = ndb.BooleanProperty(required=False)
     @classmethod
     def _settings_data(cls):
         return {
             'game_types': list(cls.game_type._choices),
-            'map_size': list(cls.map_type._choices),
+            'map_size': list(cls.map_size._choices),
             'map_type': list(cls.map_type._choices),
             'starting_age': list(cls.starting_age._choices),
             'resources': list(cls.resources._choices),
@@ -33,8 +39,8 @@ class Game(ndb.Model):
         }
 
 class PlayerResult(ndb.Model):
-    player = ndb.KeyProperty(required=True, kind=Player)
-    game = ndb.KeyProperty(required=True, kind=Game)
+    player = ndb.KeyProperty(kind=Player, required=True)
+    game = ndb.KeyProperty(kind=Game, required=True)
     is_winner = ndb.BooleanProperty(default=False)
     score = ndb.IntegerProperty(required=True)
     team = ndb.IntegerProperty(required=True, choices=[0,1,2,3,4,5,6,7,8])
@@ -46,6 +52,14 @@ class PlayerResult(ndb.Model):
             'civilizations': list(cls.civilization._choices)
         }
     
-class PlayerResultStats(ndb.Model):
-    player_result = ndb.KeyProperty(required=True, kind=PlayerResult)
-    rating = ndb.IntegerProperty(required=True)
+# class PlayerResultStats(ndb.Model):
+#     player_result = ndb.KeyProperty(required=True, kind=PlayerResult)
+#     rating = ndb.IntegerProperty(required=True)
+#     next_stats = ndb.KeyProperty(kind='PlayerResultStats', default=None) # 'PlayerResultStats' is a string to allow circular reference.
+#     @classmethod
+#     def _last_stats(cls, player_result_key):
+#         last_stats_query = cls.query(cls.player_result == player_result_key, cls.next_stats == None)
+#         if last_stats_query.count() > 1:
+#             raise Exception("Attempted to get last player result stats for player %s, found %s PlayerResultStats without next_stats set. Should only be 1." % (player_result_key.get().player.get().nick, last_stats_query.count()))
+#         else:
+#             return last_stats_query.get()

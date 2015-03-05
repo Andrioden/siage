@@ -1,2 +1,1 @@
-- FIks så det blir 1 handler, eller så det gir mere mening på PlayerHandler api.
-- Enforce uniqueness på player, ved kanskje get_or_insert.
+- Muligens så må vi flate bort stats delen, eller så kan jeg kanskje reffe til player objektet på playerresultstats.

@@ -20,7 +20,7 @@ siAgeApp.controller('RegisterGameController',
             function (error) {
                 $scope.error = "Unable to load settings";
             }
-        )
+        );
 
         Player.query().$promise.then(
             function (value) {
@@ -30,7 +30,7 @@ siAgeApp.controller('RegisterGameController',
             function (value) {
                 $scope.error = "Unable to load players";
             }
-        )
+        );
 
         $scope.submitting = false;
         $scope.submitGame = function () {
@@ -58,7 +58,7 @@ siAgeApp.controller('RegisterGameController',
                     reAddEmptyPlayers();
                     $scope.submitting = false;
                 }
-            )
+            );
 
             function cleanPlayerResults() {
                 for (i = 0; i < $scope.game.playerResults.length; i++) {
@@ -117,7 +117,7 @@ siAgeApp.controller('RegisterGameController',
                     $scope.game.playerResults[j].is_winner = false;
                 }
             }
-        }
+        };
 
 
         $scope.setWinnersByTeamChange = function (playerResult) {
@@ -154,7 +154,7 @@ siAgeApp.controller('RegisterGameController',
                     $scope.game.playerResults[j].is_winner = false;
                 }
             }
-        }
+        };
 
         function initGame() {
             $scope.game = new Game();
