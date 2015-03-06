@@ -18,5 +18,5 @@ siAgeApp.controller('LeagueController',
         
         $scope.navigate = function (route) {
             $location.path(route);
-        }
+        };
     });
