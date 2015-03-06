@@ -10,7 +10,7 @@ class PlayersHandler(webapp2.RequestHandler):
     def get(self): 
         """ GET PLAYERLIST """
         # BUILD DATA
-        players_data = [player.get_data() for player in Player().query()]
+        players_data = [player.get_data() for player in Player.query()]
         
         # RETURN RESPONSE
         self.response.headers['Content-Type'] = 'application/json'

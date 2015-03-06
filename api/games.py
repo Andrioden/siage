@@ -3,7 +3,7 @@
 import webapp2
 import json
 import logging
-from models import Game, Player, PlayerResult, PlayerResultStats
+from models import Game, Player, PlayerResult
 from datetime import datetime
 from google.appengine.ext import ndb
 
@@ -12,12 +12,12 @@ PLAYER_RATING_START_VALUE = 1000
 class GamesHandler(webapp2.RequestHandler):
     def get(self):
         """ --------- GET GAMELIST --------- """
+        # BUILD DATA
+        game_data = [game.get_data() for game in Game.query()]
+        
+        # RETURN RESPONSE
         self.response.headers['Content-Type'] = 'application/json'
-        obj = [
-            {'id': 1, 'game_type': "Game type 1"},
-            {'id': 2, 'game_type': "Game type 2"}
-        ]
-        self.response.out.write(json.dumps(obj))
+        self.response.out.write(json.dumps(game_data))
 
     #@ndb.transactional
     def post(self):
@@ -25,18 +25,6 @@ class GamesHandler(webapp2.RequestHandler):
         request_data = json.loads(self.request.body)
         logging.info(request_data)
         
-        """
-        xx {u'map_style': u'typex', 
-        xx u'resources': u'low', 
-        u'playerResults': [
-            {u'score': 6, u'team': 1, u'player_id': u'5629499534213120', u'civilization': u'Aztec', u'is_winner': True}, 
-            {u'score': 8, u'team': 2, u'player_id': u'6296903092273152', u'civilization': u'Franks', u'is_winner': False}
-        ], 
-        xx u'starting_age': u'Castle Age', 
-        xx u'population': 50, 
-        xx u'game_type': u'GameType 1', 
-        xx u'size': u'typex'}
-        """
         # CREATE GAME OBJECT
         game_key = Game(
             # Settings from lobby Game Settings
@@ -65,35 +53,29 @@ class GamesHandler(webapp2.RequestHandler):
         for player_result in request_data['playerResults']:
             player_key = ndb.Key(Player, player_result['player_id'])
             
-            # Create Player result
-            player_result_key = PlayerResult(
+            last_player_result = PlayerResult._last_result(player_key)
+            if last_player_result: # Might be first game
+                rating = next_rating_for_player(last_player_result.stats_rating, player_result['is_winner'])
+            else:
+                rating = next_rating_for_player(PLAYER_RATING_START_VALUE, player_result['is_winner'])
+                
+            # Create PlayerResult
+            new_player_result_key = PlayerResult(
                 player = player_key,
                 game = game_key,
                 is_winner = player_result['is_winner'],
                 score = player_result['score'],
                 team = player_result['team'],
                 civilization = player_result['civilization'],
+                stats_rating = rating
             ).put()
             
-#             # Create Player result stats
-#             last_player_result_stats = PlayerResultStats._last_stats(player_result_key)
-#             if last_player_result_stats: # Might be first game
-#                 rating = next_rating_for_player(last_player_result_stats.rating, player_result['is_winner'])
-#             else:
-#                 rating = next_rating_for_player(PLAYER_RATING_START_VALUE, player_result['is_winner'])
-#             
-#             new_stats = PlayerResultStats(
-#                 player_result = player_result_key,
-#                 rating = rating
-#             ).put()
-#             
-#             # Update previous/last player result stats setting the new player result stats as the next_stats
-#             if last_player_result_stats:
-#                 last_player_result_stats.next_stats = new_stats
-#                 last_player_result_stats.put()
+            # Update previous/last player result stats setting the new player result stats as the next_stats
+            if last_player_result:
+                last_player_result.next_player_result = new_player_result_key
+                last_player_result.put()
         
-        
-        self.abort(500) # Just so data doesnt have to be retyped in at gui
+#         self.abort(500) # Just so data doesnt have to be retyped in at gui
         
         self.response.headers['Content-Type'] = 'application/json'
         self.response.out.write(json.dumps({'response': "Game saved"}))

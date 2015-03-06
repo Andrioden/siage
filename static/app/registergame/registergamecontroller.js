@@ -39,8 +39,8 @@ siAgeApp.controller('RegisterGameController',
             Game.save($scope.game).$promise.then(
                 //success
                 function (value) {
-                    initGame();
-                    resetAllPlayers();
+                    //initGame();
+                    //resetAllPlayers();
                     $scope.error = "";
                     $scope.success = value.response;
                     $scope.submitting = false;
