@@ -4,7 +4,17 @@ class Player(ndb.Model):
     nick = ndb.StringProperty(required=True)
     
     def get_data(self):
-        return {'id': self.key.id(), 'nick': self.nick}
+        player_result = PlayerResult._last_result(self.key)
+        if player_result:
+            rating = player_result.stats_rating
+        else:
+            rating = 0
+        
+        return {
+            'id': self.key.id(), 
+            'nick': self.nick, 
+            'rating': '?????' #TODO
+        }
 
 class Game(ndb.Model):
     # Finish settings

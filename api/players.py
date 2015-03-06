@@ -8,7 +8,7 @@ from utils import error_400
 
 class PlayersHandler(webapp2.RequestHandler):
     def get(self): 
-        """ GET PLAYERLIST """
+        """ --------- GET PLAYERLIST --------- """
         # BUILD DATA
         players_data = [player.get_data() for player in Player.query()]
         
@@ -17,7 +17,7 @@ class PlayersHandler(webapp2.RequestHandler):
         self.response.out.write(json.dumps(players_data))
 
     def post(self): 
-        """ CREATE PLAYER """
+        """ --------- CREATE PLAYER --------- """
         request_data = json.loads(self.request.body)
         nick = request_data['nick']
         
@@ -31,7 +31,7 @@ class PlayersHandler(webapp2.RequestHandler):
 
 class PlayerHandler(webapp2.RequestHandler):
     def get(self, player_id_or_nick): 
-        """ GET SINGLE PLAYER """
+        """ --------- GET SINGLE PLAYER --------- """
         logging.info("Returning data for player_id_or_nick: %s", player_id_or_nick)
         
         # BUILD DATA
@@ -48,7 +48,7 @@ class PlayerHandler(webapp2.RequestHandler):
             self.response.out.write(json.dumps({'error': "PLAYER_NOT_FOUND"}))
 
     def put(self, player_id_or_nick): 
-        """ UPDATE SINGLE PLAYER """
+        """ --------- UPDATE SINGLE PLAYER --------- """
         self.response.headers['Content-Type'] = 'application/text'
         self.response.out.write("PUT (Update) received with data: " + self.request.body)
 
