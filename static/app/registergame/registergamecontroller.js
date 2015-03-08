@@ -7,15 +7,17 @@ siAgeApp.controller('RegisterGameController',
             function (value) {
                 $scope.error = "";
                 $scope.game_types = value.game_types;
-                $scope.map_types = value.map_type;
-                $scope.map_sizes = value.map_size;
+                $scope.map_types = value.map_types;
+                $scope.sizes = value.sizes;
                 $scope.resources_list = value.resources;
-                $scope.gameSpeeds = [];
-                $scope.victoryList = [];
+                $scope.game_speeds = value.game_speeds;
+                $scope.victory_list = value.victory;
                 $scope.teams = value.teams;
                 $scope.civilizations = value.civilizations;
-                $scope.starting_ages = value.starting_age;
-                $scope.populations = value.population;
+                $scope.starting_ages = value.starting_ages;
+                $scope.populations = value.populations;
+                $scope.difficulties = value.difficulties;
+                $scope.reveal_map = value.reveal_map;
             },
             function (error) {
                 $scope.error = "Unable to load settings";

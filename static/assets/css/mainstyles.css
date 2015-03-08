@@ -111,17 +111,17 @@ body, html {
 
 #main_view table tbody td {
     overflow: hidden;
-    width: 100px;
+    width: auto;
 }
 
 #main_view table tbody td.small {
     overflow: hidden;
-    width: 20px;
+    width: auto;
 }
 
 #main_view table.gamesettings tbody td {
     overflow: hidden;
-    width: 130px;
+    width: auto;
 }
 
 #main_view table.gamesettings select {
@@ -310,4 +310,8 @@ input[type=number]::-webkit-outer-spin-button {
     max-height: 25px;
     max-width: 160px;
     padding-left: 10px;
+}
+
+#main_view .info_table td{
+    width: 220px;
 }

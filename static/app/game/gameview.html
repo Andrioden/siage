@@ -1,11 +1,74 @@
 <div id="main_content">
     <div class="right_content">
-
+            <h4>Players</h4>
     </div>
     <div class="left_content">
-        <h1>Game {{game.game_id}}</h1>
-        Raw data: {{game}}
-
+        <h1>Game</h1>
+        <table class="info_table">
+            <tbody>
+            <tr>
+                <td>Date</td>
+                <td>{{game.date}}</td>
+            </tr>
+            <tr>
+                <td>Duration</td>
+                <td>{{game.duration}} minutes</td>
+            </tr>
+            <tr>
+                <td>Game type</td>
+                <td>{{game.game_type}}</td>
+            </tr>
+            <tr>
+                <td>Map type</td>
+                <td>{{game.map_type}}</td>
+            </tr>
+            <tr>
+                <td>Size</td>
+                <td>{{game.size}}</td>
+            </tr>
+            <tr>
+                <td>Difficulty</td>
+                <td>{{game.difficulty}}</td>
+            </tr>
+            <tr>
+                <td>Resources</td>
+                <td>{{game.resources}}</td>
+            </tr>
+            <tr>
+                <td>Game speed</td>
+                <td>{{game.game_speed}}</td>
+            </tr>
+            <tr>
+                <td>Reveal map</td>
+                <td>{{game.reveal_map}}</td>
+            </tr>
+            <tr>
+                <td>Victory</td>
+                <td>{{game.victory}}</td>
+            </tr>
+            <tr>
+                <td>Starting age</td>
+                <td>{{game.starting_age}}</td>
+            </tr>
+            <tr>
+                <td>Population</td>
+                <td>{{game.population}}</td>
+            </tr>
+            <tr>
+                <td>All techs</td>
+                <td>{{game.all_techs}}</td>
+            </tr>
+            <tr>
+                <td>Teams together</td>
+                <td>{{game.team_together}}</td>
+            </tr>
+            <tr>
+                <td>Trebuchet</td>
+                <td>{{game.trebuchet_allowed}}</td>
+            </tr>
+            </tbody>
+        </table>
+        {{game.player_results}}
         <span class="error">{{error}}</span>
     </div>
 </div>

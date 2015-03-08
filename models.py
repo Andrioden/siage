@@ -18,42 +18,60 @@ class Player(ndb.Model):
 
 class Game(ndb.Model):
     # Finish settings
-    date = ndb.DateProperty(required=False)
+    date = ndb.StringProperty(required=False)
     duration_seconds = ndb.IntegerProperty(required=False)
     # Settings from lobby Game Settings
-    game_type = ndb.StringProperty(required=False, choices=['Random Map', 'Death Match'])
-    size = ndb.StringProperty(required=False, choices=['small', 'LOL', 'big'])
-    difficulty = ndb.StringProperty(required=False, choices=['Standard', '??'])
-    resources = ndb.StringProperty(required=False, choices=['Standard', '??'])
-    population = ndb.IntegerProperty(required=False, choices=[50,100,200])
+    game_type = ndb.StringProperty(required=False, choices=['Random Map', 'Turbo Random Map', 'Regicide', 'Death Match', 'Scenario', 'King of the Hill', 'Wonder Race', 'Defend the Wonder', 'Capture the Relic'])
+    size = ndb.StringProperty(required=False, choices=['Tiny (2 player)', 'Small (3 player)', 'Medium (3 player)', 'Normal (6 player)', 'Large (8 player)', 'Giant', 'LudiKRIS'])
+    difficulty = ndb.StringProperty(required=False, choices=['Easiest', 'Standard', 'Moderate', 'Hard', 'Hardest'])
+    resources = ndb.StringProperty(required=False, choices=['Standard', 'Low', 'Medium', 'High'])
+    population = ndb.IntegerProperty(required=False, choices=[25, 50, 75, 100, 125, 150, 175, 200, 300, 400, 500])
     game_speed = ndb.StringProperty(required=False, choices=['Slow', 'Normal', 'Fast'])
-    reveal_map = ndb.BooleanProperty(required=False)
-    starting_age = ndb.StringProperty(required=False, choices=['Dark Age', 'Feudual Age', 'Castle Age', 'Imperial Age'])
-    treaty_length = ndb.StringProperty(required=False, choices=['None', '????'])
-    victory = ndb.StringProperty(required=False, choices=['Conquest'])
-    team_together = ndb.BooleanProperty(required=False)
-    all_techs = ndb.BooleanProperty(required=False)
+    reveal_map = ndb.StringProperty(required=False, choices=['Normal', 'Explored', 'All Visible'])
+    starting_age = ndb.StringProperty(required=False, choices=['Standard','Dark Age', 'Feudual Age', 'Castle Age', 'Imperial Age', 'Post-Imperial Age'])
+    treaty_length = ndb.StringProperty(required=False, choices=['None', '5', '10', '15', '20', '25', '30', '35', '40', '45', '50', '55', '60', '90'])
+    victory = ndb.StringProperty(required=False, choices=['Standad', 'Conquest', 'Time Limit', 'Score', 'Last Man Standing'])
+    team_together = ndb.StringProperty(required=False)
+    all_techs = ndb.StringProperty(required=False)
     # Settings from Objective screen ingame
     map_type = ndb.StringProperty(required=False, choices=['typex', 'typey'])
     # Special settings
-    trebuchet_allowed = ndb.BooleanProperty(required=False)
+    trebuchet_allowed = ndb.StringProperty(required=False)
     def get_data(self):
         return {
             'id': self.key.id(),
-            'title': "fuck dea %s" % self.key.id(),
-            'game_type': self.game_type
+            'date': self.date,
+            'duration_seconds': self.duration_seconds,
+            'title': self.game_type + ' ' + self.map_type,
+            'game_type': self.game_type,
+            'size': self.size,
+            'difficulty': self.difficulty,
+            'resources': self.resources,
+            'population': self.population,
+            'game_speed': self.game_speed,
+            'reveal_map': self.reveal_map,
+            'starting_age': self.starting_age,
+            'treaty_length': self.treaty_length,
+            'victory': self.victory,
+            'team_together': self.team_together,
+            'all_techs': self.all_techs,
+            'map_type': self.map_type,
+            'trebuchet_allowed': self.trebuchet_allowed
         }
     @classmethod
     def _settings_data(cls):
         return {
-            #TODO add alle, rename til size(S)SSS
             'game_types': list(cls.game_type._choices),
-            'map_size': list(cls.size._choices), #rename til size
-            'map_type': list(cls.map_type._choices),
-            'starting_age': list(cls.starting_age._choices),
+            'sizes': list(cls.size._choices),
+            'difficulties': list(cls.difficulty._choices),
             'resources': list(cls.resources._choices),
-            'difficulty': list(cls.difficulty._choices),
-            'population': list(cls.population._choices),
+            'populations': list(cls.population._choices),
+            'game_speeds': list(cls.game_speed._choices),
+            'reveal_map': list(cls.reveal_map._choices),
+            'starting_ages': list(cls.starting_age._choices),
+            'treaty_length': list(cls.treaty_length._choices),
+            'victory': list(cls.victory._choices),
+            'map_types': list(cls.map_type._choices)
         }
 
 class PlayerResult(ndb.Model):
@@ -78,3 +96,16 @@ class PlayerResult(ndb.Model):
             raise Exception("Attempted to get last player result for player %s, found %s PlayerResult without next_stats set. Should only be 1." % (player_key.get().nick, last_player_result_query.count()))
         else:
             return last_player_result_query.get()
+
+    @classmethod
+    def get_data(self):
+        return{
+            'player': self.player,
+            'game': self.game,
+            'is_winner': self.is_winner,
+            'score': self.score,
+            'team': self.team,
+            'civilization': self.civilization,
+            'stats_rating': self.stats_rating,
+            'next_player_result': self.next_player_result
+        }

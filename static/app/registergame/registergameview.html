@@ -1,5 +1,6 @@
 ﻿<div id="main_content">
-    <div id="loadingMessage" ng-show="submitting"> <span class="helper">Saving game</span><img src="static/assets/img/ajax-loader.gif"></div>
+    <div id="loadingMessage" ng-show="submitting"><span class="helper">Saving game</span><img
+            src="static/assets/img/ajax-loader.gif"></div>
     <form name="registerGameForm" ng-submit="submitGame()" ng-show="submitting != true">
         <div class="right_content">
             <table class="gamesettings">
@@ -8,12 +9,17 @@
                     <td>Game Settings</td>
                 </tr>
                 </thead>
+                <tbody>
                 <tr>
                     <td>Date</td>
-                    <td><input id="gameDateInput" ng-model="game.game_date" type="date" />
+                    <td><input id="gameDateInput" ng-model="game.game_date" type="date"/>
                     </td>
                 </tr>
-                <tbody>
+                <tr>
+                    <td>Duration</td>
+                    <td><input ng-model="game.duration_minutes" type="number" placeholder="Minutes..."/>
+                    </td>
+                </tr>
                 <tr>
                     <td>Game</td>
                     <td><select ng-model="game.game_type"
@@ -22,20 +28,20 @@
                 </tr>
                 <tr>
                     <td>Map style</td>
-                    <td><select ng-model="game.map_style"
-                                ng-options="mapstyle for mapstyle in map_types | orderBy:false"></select>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Location</td>
-                    <td><select ng-model="game.location"
-                                ng-options="location for location in locations | orderBy:false"></select>
+                    <td><select ng-model="game.map_type"
+                                ng-options="map_type for map_type in map_types | orderBy:false"></select>
                     </td>
                 </tr>
                 <tr>
                     <td>Size</td>
                     <td><select ng-model="game.size"
-                                ng-options="size for size in map_sizes | orderBy:false"></select>
+                                ng-options="size for size in sizes | orderBy:false"></select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Difficulty</td>
+                    <td><select ng-model="game.difficulty"
+                                ng-options="difficulty for difficulty in difficulties | orderBy:false"></select>
                     </td>
                 </tr>
                 <tr>
@@ -47,13 +53,19 @@
                 <tr>
                     <td>Game Speed</td>
                     <td><select ng-model="game.game_speed"
-                                ng-options="gamespeed for gamespeed in gameSpeeds | orderBy:false"></select>
+                                ng-options="gamespeed for gamespeed in game_speeds | orderBy:false"></select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Reveal map</td>
+                    <td><select ng-model="game.reveal_map"
+                                ng-options="reveal_map for reveal_map in reveal_map | orderBy:false"></select>
                     </td>
                 </tr>
                 <tr>
                     <td>Victory</td>
                     <td><select ng-model="game.victory"
-                                ng-options="victory for victory in victoryList | orderBy:false"></select>
+                                ng-options="victory for victory in victory_list | orderBy:false"></select>
                     </td>
                 </tr>
                 <tr>
@@ -68,7 +80,13 @@
                                 ng-options="population for population in populations | orderBy:false"></select>
                     </td>
                 </tr>
-
+                <tr>
+                    <td><label><input style="width:auto;" type="checkbox" ng-model="game.all_techs"/> All techs</label></td>
+                    <td><label><input style="width:auto;" type="checkbox" ng-model="game.team_together"/> Teams together</label></td>
+                </tr>
+                <tr>
+                    <td><label><input style="width:auto;" type="checkbox" ng-model="game.trebuchet_allowed"/> Trebuchet</label></td>
+                </tr>
                 </tbody>
             </table>
         </div>
@@ -86,45 +104,49 @@
                 </thead>
                 <tbody>
                 <tr ng-repeat="playerResult in game.playerResults">
-                    <td><select class="wide" ng-model="playerResult.player_id" ng-change="removeSelectedPlayersFromList()">
+                    <td><select class="wide" ng-model="playerResult.player_id"
+                                ng-change="removeSelectedPlayersFromList()">
                         <option ng-repeat="player in allPlayers | orderBy:['first','nick']"
                                 ng-selected="player.id === playerResult.player_id"
                                 value="{{player.id}}"
-                                ng-hide="player.isinuse === true">{{player.nick}}</option>
-                                </select></td>
+                                ng-hide="player.isinuse === true">{{player.nick}}
+                        </option>
+                    </select></td>
                     <td><select ng-model="playerResult.civilization"
                                 ng-options="civ for civ in civilizations"></select>
                     </td>
-                    <td><select ng-model="playerResult.team" ng-options="team for team in teams" ng-change="setWinnersByTeamChange(playerResult)"></select></td>
+                    <td><select ng-model="playerResult.team" ng-options="team for team in teams"
+                                ng-change="setWinnersByTeamChange(playerResult)"></select></td>
                     <td><input type="number" name="score" ng-model="playerResult.score" placeholder="Score..." min="0"
                                valid-number/></td>
                     <td class="small"><input class="checkbox" type="checkbox" name="is_winner"
-                                             ng-model="playerResult.is_winner" ng-click="setWinnersByWinToggle(playerResult)"/></td>
+                                             ng-model="playerResult.is_winner"
+                                             ng-click="setWinnersByWinToggle(playerResult)"/></td>
                 </tr>
                 </tbody>
             </table>
 
             <br/>
-
+            <table class="buttoncontainer">
+                <tr>
+                    <td>
+                        <input class="button submit" type="submit" value="Save"/>
+                    </td>
+                    <td>
+                        <input class="button clear" type="reset" value="Clear"/>
+                    </td>
+                    <td class="message">
+                        <span class="success">{{success}}</span>
+                        <span class="error">{{error}}</span>
+                    </td>
+                </tr>
+            </table>
 
         </div>
 
         <div class="bottom_content">
-        <table class="buttoncontainer">
-            <tr>
-                <td>
-                    <input class="button submit" type="submit" value="Save"/>
-                </td>
-                <td>
-                    <input class="button clear" type="reset" value="Clear"/>
-                </td>
-                <td class="message">
-                    <span class="success">{{success}}</span>
-                    <span class="error">{{error}}</span>
-                </td>
-            </tr>
-        </table>
-        <br/>
+
+            <br/>
         </div>
     </form>
 </div>

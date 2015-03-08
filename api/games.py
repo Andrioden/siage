@@ -28,24 +28,24 @@ class GamesHandler(webapp2.RequestHandler):
         # CREATE GAME OBJECT
         game_key = Game(
             # Settings from lobby Game Settings
-#             size = request_data[''],
-#             difficulty = request_data[''],
-#             resources = request_data[''],
-#             population = request_data[''],
-#             game_speed = request_data[''],
-#             reveal_map = request_data[''],
-#             starting_age = request_data[''],
-#             treaty_length = request_data[''],
-#             victory = request_data[''],
-#             team_together = request_data[''],
-#             all_techs = request_data[''],
-#             # Settings from Objective screen ingame
-#             game_type = request_data[''],
-#             map_type = request_data[''],
-#             # Special settings
-#             date = request_data[''],
-#             duration_seconds = request_data[''],
-#             trebuchet_allowed = request_data['']
+             game_type = request_data['game_type'],
+             size = request_data['size'],
+             difficulty = request_data['difficulty'],
+             resources = request_data['resources'],
+             population = request_data['population'],
+             game_speed = request_data['game_speed'],
+             reveal_map = str(request_data['reveal_map']),
+             starting_age = request_data['starting_age'],
+             #treaty_length = request_data['treaty_length'],
+             victory = request_data['victory'],
+             team_together = str(request_data['team_together']),
+             all_techs = str(request_data['all_techs']),
+             # Settings from Objective screen ingame
+             map_type = request_data['map_type'],
+             # Special settings
+             date = request_data['game_date'],
+             duration_seconds = request_data['duration_minutes']*60,
+             trebuchet_allowed = str(request_data['trebuchet_allowed'])
         ).put()
         
         
@@ -88,12 +88,18 @@ def next_rating_for_player(last_stats_rating, is_winner):
 
 class GameHandler(webapp2.RequestHandler):
     def get(self, game_id):
+        """ --------- GET SINGLE GAME --------- """
         logging.info("Returning data for game_id: %s", game_id)
 
-        self.response.headers['Content-Type'] = 'application/json'
-        obj = {'game_id': game_id, 'game_type': game_id} #kun for testdata
+        # BUILD DATA
+        game = Game.get_by_id(int(game_id))
 
-        self.response.out.write(json.dumps(obj))
+        # RETURN RESPONSE
+        if game:
+            self.response.headers['Content-Type'] = 'application/json'
+            self.response.out.write(json.dumps(game.get_data()))
+        else:
+            self.response.out.write(json.dumps({'error': "GAME_NOT_FOUND"}))
 
     def put(self, gameId):
         self.response.headers['Content-Type'] = 'application/text'
