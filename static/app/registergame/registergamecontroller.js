@@ -38,6 +38,7 @@ siAgeApp.controller('RegisterGameController',
         $scope.submitGame = function () {
             cleanPlayerResults();
             $scope.submitting = true;
+            $scope.game.duration_seconds = $scope.game.duration_minutes * 60;
             Game.save($scope.game).$promise.then(
                 //success
                 function (value) {
@@ -160,12 +161,27 @@ siAgeApp.controller('RegisterGameController',
 
         function initGame() {
             $scope.game = new Game();
+            $scope.game.game_date = new Date();
+            $scope.game.duration_seconds = 0;
+            $scope.game.game_type = "";
+            $scope.game.map_type = "";
+            $scope.game.size = "";
+            $scope.game.difficulty = "";
+            $scope.game.resources = "";
+            $scope.game.game_speed = "";
+            $scope.game.reveal_map = ""
+            $scope.game.victory = "";
+            $scope.game.starting_age = "";
+            $scope.game.population = 0;
+            $scope.game.all_techs = false;
+            $scope.game.team_together = false;
+            $scope.game.trebuchet_allowed = false;
             $scope.game.playerResults = [];
             for (i = 0; i < 8; i++) {
                 $scope.game.playerResults.push({
                     'player_id': "",
                     'civilization': "",
-                    'team': 0,
+                    'team': null,
                     'score': "",
                     'is_winner': false
                 });
