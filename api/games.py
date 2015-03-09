@@ -6,8 +6,7 @@ import logging
 from models import Game, Player, PlayerResult
 from datetime import datetime
 from google.appengine.ext import ndb
-
-PLAYER_RATING_START_VALUE = 1000
+from rating import RatingCalculator
 
 class GamesHandler(webapp2.RequestHandler):
     def get(self):
@@ -23,7 +22,7 @@ class GamesHandler(webapp2.RequestHandler):
     def post(self):
         """ --------- CREATE GAME --------- """
         request_data = json.loads(self.request.body)
-        logging.info(request_data)
+        #logging.info(request_data)
         
         # CREATE GAME OBJECT
         game_key = Game(
@@ -41,26 +40,22 @@ class GamesHandler(webapp2.RequestHandler):
             starting_age = request_data['starting_age'],
             treaty_length = request_data['treaty_length'],
             victory = request_data['victory'],
-            team_together = request_data['team_together'] == "true",
-            all_techs = request_data['all_techs'] == "true",
+            team_together = request_data['team_together'],
+            #all_techs = request_data['all_techs'],
             # Settings from Objective screen ingame
             location = request_data['location'],
             # Special settings
-            trebuchet_allowed = request_data['trebuchet_allowed'] == "true"
+            #trebuchet_allowed = request_data['trebuchet_allowed']
         ).put()
         
-        
         # CREATE PLAYER RESULTS
+        rc = RatingCalculator()
+        rc.add_player_results_from_dict(request_data['playerResults'])
+        new_ratings = rc.calc_and_get_new_rating_dict()
+        
         for player_result in request_data['playerResults']:
             player_key = ndb.Key(Player, int(player_result['player_id']))
             
-            last_player_result = PlayerResult._last_result(player_key)
-            if last_player_result: # Might be first game
-                rating = next_rating_for_player(last_player_result.stats_rating, player_result['is_winner'])
-            else:
-                rating = next_rating_for_player(PLAYER_RATING_START_VALUE, player_result['is_winner'])
-                
-            # Create PlayerResult
             new_player_result_key = PlayerResult(
                 player = player_key,
                 game = game_key,
@@ -68,22 +63,17 @@ class GamesHandler(webapp2.RequestHandler):
                 score = player_result['score'],
                 team = player_result['team'],
                 civilization = player_result['civilization'],
-                stats_rating = rating
+                stats_rating = new_ratings[player_key.id()]
             ).put()
             
             # Update previous/last player result stats setting the new player result stats as the next_stats
+            last_player_result = PlayerResult._last_result(player_key)
             if last_player_result:
                 last_player_result.next_player_result = new_player_result_key
                 last_player_result.put()
         
         self.response.headers['Content-Type'] = 'application/json'
         self.response.out.write(json.dumps({'response': "Game saved"}))
-
-def next_rating_for_player(last_stats_rating, is_winner):
-    if is_winner == True:
-        return last_stats_rating + 20
-    else:
-        return last_stats_rating - 20
 
 class GameHandler(webapp2.RequestHandler):
     def get(self, game_id):
