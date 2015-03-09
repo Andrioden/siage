@@ -22,12 +22,15 @@ class GamesHandler(webapp2.RequestHandler):
     def post(self):
         """ --------- CREATE GAME --------- """
         request_data = json.loads(self.request.body)
-        #logging.info(request_data)
-        
+        logging.info(request_data)
+
+        # VALIDATING
+        self._validate_no_empty_player_results(request_data['playerResults'])
+
         # CREATE GAME OBJECT
         game_key = Game(
             # After finish values
-            date = request_data['game_date']),
+            date = datetime.fromtimestamp(request_data['date_epoch']),
             duration_seconds = request_data['duration_seconds'],
             # Settings from lobby Game Settings
             game_type = request_data['game_type'],
@@ -41,11 +44,11 @@ class GamesHandler(webapp2.RequestHandler):
             treaty_length = request_data['treaty_length'],
             victory = request_data['victory'],
             team_together = request_data['team_together'],
-            #all_techs = request_data['all_techs'],
+            all_techs = request_data['all_techs'],
             # Settings from Objective screen ingame
             location = request_data['location'],
             # Special settings
-            #trebuchet_allowed = request_data['trebuchet_allowed']
+            trebuchet_allowed = request_data['trebuchet_allowed']
         ).put()
         
         # CREATE PLAYER RESULTS
@@ -74,6 +77,16 @@ class GamesHandler(webapp2.RequestHandler):
         
         self.response.headers['Content-Type'] = 'application/json'
         self.response.out.write(json.dumps({'response': "Game saved"}))
+        
+    def _validate_no_empty_player_results(self, player_results):
+        print "TF"
+        for player_result in player_results:
+            print player_result
+            print player_result['player_id'] == None
+            #print player_result['player_id'].isdigit()
+            if player_result['player_id'] == None or not player_result['player_id'].isdigit():
+                print "IN HERE FUCKING FAILING"
+                raise Exception("Validation Error: Player Results contain items without a valid player id.")
 
 class GameHandler(webapp2.RequestHandler):
     def get(self, game_id):

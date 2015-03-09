@@ -40,6 +40,7 @@ siAgeApp.controller('RegisterGameController',
             cleanPlayerResults();
             $scope.submitting = true;
             $scope.game.duration_seconds = $scope.game.duration_minutes * 60;
+            $scope.game.date_epoch = Math.round($scope.game.date.getTime() / 1000);
             Game.save($scope.game).$promise.then(
                 //success
                 function (value) {

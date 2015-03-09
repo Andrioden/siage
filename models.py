@@ -1,4 +1,5 @@
 from google.appengine.ext import ndb
+import datetime
 
 class Player(ndb.Model):
     nick = ndb.StringProperty(required=True)
@@ -35,9 +36,10 @@ class Game(ndb.Model):
     def get_data(self):
         return {
             'id': self.key.id(),
-            'date': self.date,
+            'date': self.date.strftime("%Y-%m-%d"),
+            'date_epoch': (self.date - datetime.date(1970,1,1)).total_seconds(),
             'duration_seconds': self.duration_seconds,
-            'title': self.game_type + ' ' + self.map_type,
+            'title': "%s %s" % (self.game_type, self.location),
             'game_type': self.game_type,
             'size': self.size,
             'difficulty': self.difficulty,
