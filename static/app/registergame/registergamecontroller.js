@@ -7,14 +7,15 @@ siAgeApp.controller('RegisterGameController',
             function (value) {
                 $scope.error = "";
                 $scope.game_types = value.game_types;
-                $scope.map_types = value.map_types;
+                $scope.locations = value.locations;
                 $scope.sizes = value.sizes;
                 $scope.resources_list = value.resources;
                 $scope.game_speeds = value.game_speeds;
-                $scope.victory_list = value.victory;
+                $scope.victory_list = value.victories;
                 $scope.teams = value.teams;
                 $scope.civilizations = value.civilizations;
                 $scope.starting_ages = value.starting_ages;
+                $scope.treaty_lengths = value.treaty_lengths;
                 $scope.populations = value.populations;
                 $scope.difficulties = value.difficulties;
                 $scope.reveal_map = value.reveal_map;
@@ -86,7 +87,7 @@ siAgeApp.controller('RegisterGameController',
 
         $scope.setWinnersByWinToggle = function (playerResult) {
             if (playerResult.player_id != "") {
-                if (playerResult.is_winner && playerResult.team != 0) {
+                if (playerResult.is_winner && playerResult.team != null) {
                     for (j = 0; j < $scope.game.playerResults.length; j++) {
                         if (playerResult.player_id != $scope.game.playerResults[j].player_id) {
                             if (playerResult.team == $scope.game.playerResults[j].team) {
@@ -97,7 +98,7 @@ siAgeApp.controller('RegisterGameController',
                         }
                     }
                 }
-                else if (playerResult.is_winner && playerResult.team == 0) {
+                else if (playerResult.is_winner && playerResult.team == null) {
                     for (j = 0; j < $scope.game.playerResults.length; j++) {
                         if (playerResult.player_id != $scope.game.playerResults[j].player_id) {
                             $scope.game.playerResults[j].is_winner = false;
@@ -105,7 +106,7 @@ siAgeApp.controller('RegisterGameController',
                     }
                 }
 
-                else if (playerResult.is_winner == false && playerResult.team != 0) {
+                else if (playerResult.is_winner == false && playerResult.team != null) {
                     for (j = 0; j < $scope.game.playerResults.length; j++) {
                         if (playerResult.player_id != $scope.game.playerResults[j].player_id) {
                             if (playerResult.team == $scope.game.playerResults[j].team) {
@@ -125,7 +126,7 @@ siAgeApp.controller('RegisterGameController',
 
         $scope.setWinnersByTeamChange = function (playerResult) {
             if (playerResult.player_id != "") {
-                if (playerResult.is_winner == false && playerResult.team != 0) {
+                if (playerResult.is_winner == false && playerResult.team != null) {
                     for (j = 0; j < $scope.game.playerResults.length; j++) {
                         if (playerResult.player_id != $scope.game.playerResults[j].player_id) {
                             if (playerResult.team == $scope.game.playerResults[j].team) {
@@ -133,7 +134,7 @@ siAgeApp.controller('RegisterGameController',
                             }
                         }
                     }
-                }else if (playerResult.is_winner && playerResult.team != 0) {
+                }else if (playerResult.is_winner && playerResult.team != null) {
                     for (j = 0; j < $scope.game.playerResults.length; j++) {
                         if (playerResult.player_id != $scope.game.playerResults[j].player_id) {
                             if (playerResult.team == $scope.game.playerResults[j].team) {
@@ -144,7 +145,7 @@ siAgeApp.controller('RegisterGameController',
                         }
                     }
                 }
-                else if (playerResult.is_winner && playerResult.team == 0) {
+                else if (playerResult.is_winner && playerResult.team == null) {
                     for (j = 0; j < $scope.game.playerResults.length; j++) {
                         if (playerResult.player_id != $scope.game.playerResults[j].player_id) {
                             $scope.game.playerResults[j].is_winner = false;
@@ -161,28 +162,29 @@ siAgeApp.controller('RegisterGameController',
 
         function initGame() {
             $scope.game = new Game();
-            $scope.game.game_date = new Date();
-            $scope.game.duration_seconds = 0;
-            $scope.game.game_type = "";
-            $scope.game.map_type = "";
-            $scope.game.size = "";
-            $scope.game.difficulty = "";
-            $scope.game.resources = "";
-            $scope.game.game_speed = "";
-            $scope.game.reveal_map = ""
-            $scope.game.victory = "";
-            $scope.game.starting_age = "";
-            $scope.game.population = 0;
+            $scope.game.date = new Date();
+            $scope.game.duration_seconds = null;
+            $scope.game.game_type = null;
+            $scope.game.location = null;
+            $scope.game.size = null;
+            $scope.game.difficulty = null;
+            $scope.game.resources = null;
+            $scope.game.game_speed = null;
+            $scope.game.reveal_map = null
+            $scope.game.victory = null;
+            $scope.game.starting_age = null;
+            $scope.game.treaty_length = "";
+            $scope.game.population = null;
             $scope.game.all_techs = false;
             $scope.game.team_together = false;
             $scope.game.trebuchet_allowed = false;
             $scope.game.playerResults = [];
             for (i = 0; i < 8; i++) {
                 $scope.game.playerResults.push({
-                    'player_id': "",
-                    'civilization': "",
+                    'player_id': null,
+                    'civilization': null,
                     'team': null,
-                    'score': "",
+                    'score': null,
                     'is_winner': false
                 });
             }
@@ -193,7 +195,7 @@ siAgeApp.controller('RegisterGameController',
                 $scope.game.playerResults.push({
                     'player_id': "",
                     'civilization': "",
-                    'team': 0,
+                    'team': null,
                     'score': "",
                     'is_winner': false
                 });

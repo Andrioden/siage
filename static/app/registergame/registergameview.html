@@ -12,7 +12,7 @@
                 <tbody>
                 <tr>
                     <td>Date</td>
-                    <td><input id="gameDateInput" ng-model="game.game_date" type="date"/>
+                    <td><input id="gameDateInput" ng-model="game.date" type="date"/>
                     </td>
                 </tr>
                 <tr>
@@ -28,8 +28,8 @@
                 </tr>
                 <tr>
                     <td>Map style</td>
-                    <td><select ng-model="game.map_type"
-                                ng-options="map_type for map_type in map_types | orderBy:false"></select>
+                    <td><select ng-model="game.location"
+                                ng-options="location for location in locations | orderBy:false"></select>
                     </td>
                 </tr>
                 <tr>
@@ -51,6 +51,12 @@
                     </td>
                 </tr>
                 <tr>
+                    <td>Population</td>
+                    <td><select ng-model="game.population"
+                                ng-options="population for population in populations | orderBy:false"></select>
+                    </td>
+                </tr>
+                <tr>
                     <td>Game Speed</td>
                     <td><select ng-model="game.game_speed"
                                 ng-options="gamespeed for gamespeed in game_speeds | orderBy:false"></select>
@@ -63,21 +69,21 @@
                     </td>
                 </tr>
                 <tr>
-                    <td>Victory</td>
-                    <td><select ng-model="game.victory"
-                                ng-options="victory for victory in victory_list | orderBy:false"></select>
-                    </td>
-                </tr>
-                <tr>
                     <td>Starting age</td>
                     <td><select ng-model="game.starting_age"
                                 ng-options="starting_age for starting_age in starting_ages | orderBy:false"></select>
                     </td>
                 </tr>
                 <tr>
-                    <td>Population</td>
-                    <td><select ng-model="game.population"
-                                ng-options="population for population in populations | orderBy:false"></select>
+                    <td>Treaty length</td>
+                    <td><select ng-model="game.treaty_length"
+                                ng-options="treaty_length for treaty_length in treaty_lengths | orderBy:false"></select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Victory</td>
+                    <td><select ng-model="game.victory"
+                                ng-options="victory for victory in victory_list | orderBy:false"></select>
                     </td>
                 </tr>
                 <tr>

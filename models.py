@@ -13,7 +13,7 @@ class Player(ndb.Model):
 
 class Game(ndb.Model):
     # After finish values
-    date = ndb.StringProperty(required=False)
+    date = ndb.DateProperty(required=False)
     duration_seconds = ndb.IntegerProperty(required=False)
     # Settings from lobby Game Settings
     game_type = ndb.StringProperty(required=False, choices=['Random Map', 'Turbo Random Map', 'Regicide', 'Death Match', 'Scenario', 'King of the Hill', 'Wonder Race', 'Defend the Wonder', 'Capture the Relic'])
@@ -24,12 +24,12 @@ class Game(ndb.Model):
     game_speed = ndb.StringProperty(required=False, choices=['Slow', 'Normal', 'Fast'])
     reveal_map = ndb.StringProperty(required=False, choices=['Normal', 'Explored', 'All Visible'])
     starting_age = ndb.StringProperty(required=False, choices=['Standard','Dark Age', 'Feudual Age', 'Castle Age', 'Imperial Age', 'Post-Imperial Age'])
-    treaty_length = ndb.StringProperty(required=False, choices=['None', '5', '10', '15', '20', '25', '30', '35', '40', '45', '50', '55', '60', '90'])
+    treaty_length = ndb.IntegerProperty(required=False, choices=[5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 90])
     victory = ndb.StringProperty(required=False, choices=['Standad', 'Conquest', 'Time Limit', 'Score', 'Last Man Standing'])
     team_together = ndb.BooleanProperty(required=False)
     all_techs = ndb.BooleanProperty(required=False)
     # Settings from Objective screen ingame
-    map_type = ndb.StringProperty(required=False, choices=['typex', 'typey'])
+    location = ndb.StringProperty(required=False, choices=['Arabia', 'Black Forest'])
     # Special settings
     trebuchet_allowed = ndb.BooleanProperty(required=False)
     def get_data(self):
@@ -50,7 +50,7 @@ class Game(ndb.Model):
             'victory': self.victory,
             'team_together': self.team_together,
             'all_techs': self.all_techs,
-            'map_type': self.map_type,
+            'location': self.location,
             'trebuchet_allowed': self.trebuchet_allowed,
             'player_results': [res.get_data() for res in PlayerResult.query(PlayerResult.game==self.key)]
         }
@@ -65,9 +65,9 @@ class Game(ndb.Model):
             'game_speeds': list(cls.game_speed._choices),
             'reveal_map': list(cls.reveal_map._choices),
             'starting_ages': list(cls.starting_age._choices),
-            'treaty_length': list(cls.treaty_length._choices),
-            'victory': list(cls.victory._choices),
-            'map_types': list(cls.map_type._choices)
+            'treaty_lengths': list(cls.treaty_length._choices),
+            'victories': list(cls.victory._choices),
+            'locations': list(cls.location._choices)
         }
 
 class PlayerResult(ndb.Model):
@@ -75,7 +75,7 @@ class PlayerResult(ndb.Model):
     game = ndb.KeyProperty(kind=Game, required=True)
     is_winner = ndb.BooleanProperty(default=False)
     score = ndb.IntegerProperty(required=True)
-    team = ndb.IntegerProperty(required=True, choices=[0,1,2,3,4,5,6,7,8])
+    team = ndb.IntegerProperty(required=True, choices=[1,2,3,4])
     civilization = ndb.StringProperty(required=True, choices=['Aztec', 'Franks'])
     stats_rating = ndb.IntegerProperty(required=True)
     next_player_result = ndb.KeyProperty(kind='PlayerResult', default=None) # 'PlayerResult' is a string to allow circular reference.

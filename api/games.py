@@ -28,8 +28,8 @@ class GamesHandler(webapp2.RequestHandler):
         # CREATE GAME OBJECT
         game_key = Game(
             # After finish values
-            #date = request_data['game_date']), 
-            duration_seconds = request_data['duration_minutes']*60,
+            date = request_data['game_date']),
+            duration_seconds = request_data['duration_seconds'],
             # Settings from lobby Game Settings
             game_type = request_data['game_type'],
             size = request_data['size'],
@@ -39,12 +39,12 @@ class GamesHandler(webapp2.RequestHandler):
             game_speed = request_data['game_speed'],
             reveal_map = str(request_data['reveal_map']),
             starting_age = request_data['starting_age'],
-            #treaty_length = request_data['treaty_length'],
+            treaty_length = request_data['treaty_length'],
             victory = request_data['victory'],
             team_together = request_data['team_together'] == "true",
             all_techs = request_data['all_techs'] == "true",
             # Settings from Objective screen ingame
-            map_type = request_data['map_type'],
+            location = request_data['location'],
             # Special settings
             trebuchet_allowed = request_data['trebuchet_allowed'] == "true"
         ).put()
