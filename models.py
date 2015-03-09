@@ -4,20 +4,15 @@ class Player(ndb.Model):
     nick = ndb.StringProperty(required=True)
     
     def get_data(self):
-        player_result = PlayerResult._last_result(self.key)
-        if player_result:
-            rating = player_result.stats_rating
-        else:
-            rating = 0
-        
+        last_player_result = PlayerResult._last_result(self.key)
         return {
             'id': self.key.id(), 
             'nick': self.nick, 
-            'rating': '?????' #TODO
+            'rating': (0 if last_player_result == None else last_player_result.stats_rating)
         }
 
 class Game(ndb.Model):
-    # Finish settings
+    # After finish values
     date = ndb.StringProperty(required=False)
     duration_seconds = ndb.IntegerProperty(required=False)
     # Settings from lobby Game Settings
@@ -31,12 +26,12 @@ class Game(ndb.Model):
     starting_age = ndb.StringProperty(required=False, choices=['Standard','Dark Age', 'Feudual Age', 'Castle Age', 'Imperial Age', 'Post-Imperial Age'])
     treaty_length = ndb.StringProperty(required=False, choices=['None', '5', '10', '15', '20', '25', '30', '35', '40', '45', '50', '55', '60', '90'])
     victory = ndb.StringProperty(required=False, choices=['Standad', 'Conquest', 'Time Limit', 'Score', 'Last Man Standing'])
-    team_together = ndb.StringProperty(required=False)
-    all_techs = ndb.StringProperty(required=False)
+    team_together = ndb.BooleanProperty(required=False)
+    all_techs = ndb.BooleanProperty(required=False)
     # Settings from Objective screen ingame
     map_type = ndb.StringProperty(required=False, choices=['typex', 'typey'])
     # Special settings
-    trebuchet_allowed = ndb.StringProperty(required=False)
+    trebuchet_allowed = ndb.BooleanProperty(required=False)
     def get_data(self):
         return {
             'id': self.key.id(),
@@ -56,7 +51,8 @@ class Game(ndb.Model):
             'team_together': self.team_together,
             'all_techs': self.all_techs,
             'map_type': self.map_type,
-            'trebuchet_allowed': self.trebuchet_allowed
+            'trebuchet_allowed': self.trebuchet_allowed,
+            'player_results': [res.get_data() for res in PlayerResult.query(PlayerResult.game==self.key)]
         }
     @classmethod
     def _settings_data(cls):
@@ -91,21 +87,23 @@ class PlayerResult(ndb.Model):
         }
     @classmethod
     def _last_result(cls, player_key):
+        """ This can be considered a static method, which is called a class method. It is just a
+        helper method to get the last PlayerResult instance for a given player key. It does not work
+        on the instance.
+        """
         last_player_result_query = cls.query(cls.player == player_key, cls.next_player_result == None)
         if last_player_result_query.count() > 1:
             raise Exception("Attempted to get last player result for player %s, found %s PlayerResult without next_stats set. Should only be 1." % (player_key.get().nick, last_player_result_query.count()))
         else:
             return last_player_result_query.get()
-
-    @classmethod
     def get_data(self):
+        player_entity = self.player.get()
         return{
-            'player': self.player,
-            'game': self.game,
+            'player': {'id': player_entity.key.id(), 'nick': player_entity.nick},
+            'game': self.game.id(),
             'is_winner': self.is_winner,
             'score': self.score,
             'team': self.team,
             'civilization': self.civilization,
             'stats_rating': self.stats_rating,
-            'next_player_result': self.next_player_result
         }

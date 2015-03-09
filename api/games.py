@@ -27,31 +27,32 @@ class GamesHandler(webapp2.RequestHandler):
         
         # CREATE GAME OBJECT
         game_key = Game(
+            # After finish values
+            #date = request_data['game_date']), 
+            duration_seconds = request_data['duration_minutes']*60,
             # Settings from lobby Game Settings
-             game_type = request_data['game_type'],
-             size = request_data['size'],
-             difficulty = request_data['difficulty'],
-             resources = request_data['resources'],
-             population = request_data['population'],
-             game_speed = request_data['game_speed'],
-             reveal_map = str(request_data['reveal_map']),
-             starting_age = request_data['starting_age'],
-             #treaty_length = request_data['treaty_length'],
-             victory = request_data['victory'],
-             team_together = str(request_data['team_together']),
-             all_techs = str(request_data['all_techs']),
-             # Settings from Objective screen ingame
-             map_type = request_data['map_type'],
-             # Special settings
-             date = request_data['game_date'],
-             duration_seconds = request_data['duration_minutes']*60,
-             trebuchet_allowed = str(request_data['trebuchet_allowed'])
+            game_type = request_data['game_type'],
+            size = request_data['size'],
+            difficulty = request_data['difficulty'],
+            resources = request_data['resources'],
+            population = request_data['population'],
+            game_speed = request_data['game_speed'],
+            reveal_map = str(request_data['reveal_map']),
+            starting_age = request_data['starting_age'],
+            #treaty_length = request_data['treaty_length'],
+            victory = request_data['victory'],
+            team_together = request_data['team_together'] == "true",
+            all_techs = request_data['all_techs'] == "true",
+            # Settings from Objective screen ingame
+            map_type = request_data['map_type'],
+            # Special settings
+            trebuchet_allowed = request_data['trebuchet_allowed'] == "true"
         ).put()
         
         
         # CREATE PLAYER RESULTS
         for player_result in request_data['playerResults']:
-            player_key = ndb.Key(Player, player_result['player_id'])
+            player_key = ndb.Key(Player, int(player_result['player_id']))
             
             last_player_result = PlayerResult._last_result(player_key)
             if last_player_result: # Might be first game
@@ -74,8 +75,6 @@ class GamesHandler(webapp2.RequestHandler):
             if last_player_result:
                 last_player_result.next_player_result = new_player_result_key
                 last_player_result.put()
-        
-#         self.abort(500) # Just so data doesnt have to be retyped in at gui
         
         self.response.headers['Content-Type'] = 'application/json'
         self.response.out.write(json.dumps({'response': "Game saved"}))
