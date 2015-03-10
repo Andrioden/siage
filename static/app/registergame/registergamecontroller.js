@@ -27,7 +27,7 @@ siAgeApp.controller('RegisterGameController',
 
         Player.query().$promise.then(
             function (value) {
-                emptyPlayerHelper = [{'player_id': "", 'first': true}];
+                emptyPlayerHelper = [{'player_id': null, 'first': true}];
                 $scope.allPlayers = emptyPlayerHelper.concat(value);
             },
             function (value) {
@@ -44,8 +44,8 @@ siAgeApp.controller('RegisterGameController',
             Game.save($scope.game).$promise.then(
                 //success
                 function (value) {
-                    //initGame();
-                    //resetAllPlayers();
+                    initGame();
+                    resetAllPlayers();
                     $scope.error = "";
                     $scope.success = value.response;
                     $scope.submitting = false;
@@ -67,7 +67,7 @@ siAgeApp.controller('RegisterGameController',
 
             function cleanPlayerResults() {
                 for (i = 0; i < $scope.game.playerResults.length; i++) {
-                    if ($scope.game.playerResults[i].player_id == "") {
+                    if ($scope.game.playerResults[i].player_id == null) {
                         $scope.game.playerResults.splice(i, 1);
                         i--;
                     }
@@ -194,10 +194,10 @@ siAgeApp.controller('RegisterGameController',
         function reAddEmptyPlayers() {
             while ($scope.game.playerResults.length < 8) {
                 $scope.game.playerResults.push({
-                    'player_id': "",
-                    'civilization': "",
+                    'player_id': null,
+                    'civilization': null,
                     'team': null,
-                    'score': "",
+                    'score': null,
                     'is_winner': false
                 });
             }
