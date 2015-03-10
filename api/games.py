@@ -81,13 +81,8 @@ class GamesHandler(webapp2.RequestHandler):
         self.response.out.write(json.dumps({'response': "Game saved"}))
 
     def _validate_no_empty_player_results(self, player_results):
-        print "TF"
         for player_result in player_results:
-            print player_result
-            print player_result['player_id'] == None
-            #print player_result['player_id'].isdigit()
             if player_result['player_id'] == None or not player_result['player_id'].isdigit():
-                print "IN HERE FUCKING FAILING"
                 raise Exception("Validation Error: Player Results contain items without a valid player id.")
 
 class GameHandler(webapp2.RequestHandler):

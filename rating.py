@@ -38,7 +38,7 @@ class RatingCalculator:
         6. Give/take point if a rounding error was produced to top/bottom scorer.
         
         """
-        self._validate_winners_are_on_same_team()
+        self._validate_winner_list()
         
         # 1. Find total rating among all players
         # 2. Find teams total rating. Also adds single team players
@@ -139,7 +139,7 @@ class RatingCalculator:
                 size += 1
         return size
     
-    def _validate_winners_are_on_same_team(self):
+    def _validate_winner_list(self):
         winner_teams_or_players = []
         for res in self.player_results:
             if res.is_winner:
@@ -147,8 +147,10 @@ class RatingCalculator:
                     winner_teams_or_players.append(res.team)
                 else:
                     winner_teams_or_players.append(res.player_id)
-        if len(set(winner_teams_or_players)) > 1:
-            raise Exception("There is winners on multiple teams.")
+        if len(set(winner_teams_or_players)) == 0:
+            raise Exception("Validation Error: No winner.")
+        elif len(set(winner_teams_or_players)) > 1:
+            raise Exception("Validation Error: There is winners on multiple teams.")
     
 class RatingPlayerResult:
     def __init__(self, player_id, is_winner, score, team, prev_rating):
