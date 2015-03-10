@@ -30,7 +30,7 @@ class Game(ndb.Model):
     team_together = ndb.BooleanProperty(required=False)
     all_techs = ndb.BooleanProperty(required=False)
     # Settings from Objective screen ingame
-    location = ndb.StringProperty(required=False, choices=['Arabia', 'Black Forest'])
+    location = ndb.StringProperty(required=False, choices=['Arabia', 'Archipelago', 'Arena', 'Baltic', 'Black Forest', 'Coastal', 'Continental', 'Crater Laker', 'Fortress', 'Ghost Lake', 'Gold Rush', 'Highland', 'Islands', 'Mediterranean', 'Migration', 'Mongolia', 'Nomad', 'Oasis', 'Rivers', 'Salt Marsh', 'Scandinavia', 'Team Islands', 'Yucatan', 'Acropolis', 'Budapest', 'Cenotes', 'City of Lakes', 'Golden Pit', 'Hideout', 'Hill Fort', 'Lombardia', 'Steppe', 'Valley', 'MegaRandom', 'Hamburger'])
     # Special settings
     trebuchet_allowed = ndb.BooleanProperty(required=False)
     def get_data(self):
@@ -78,7 +78,7 @@ class PlayerResult(ndb.Model):
     is_winner = ndb.BooleanProperty(default=False)
     score = ndb.IntegerProperty(required=True)
     team = ndb.IntegerProperty(required=True, choices=[1,2,3,4])
-    civilization = ndb.StringProperty(required=True, choices=['Aztec', 'Franks'])
+    civilization = ndb.StringProperty(required=True, choices=['Aztec', 'Britons', 'Byzantines', 'Celts', 'Chinese', 'Franks', 'Goths', 'Huns', 'Incas', 'Indians', 'Italians', 'Japanese', 'Koreans', 'Magyars', 'Mayans', 'Mongols', 'Persians', 'Saracens', 'Slavs', 'Spanish', 'Teutons', 'Turks', 'Vikings'])
     stats_rating = ndb.IntegerProperty(required=True)
     next_player_result = ndb.KeyProperty(kind='PlayerResult', default=None) # 'PlayerResult' is a string to allow circular reference.
     @classmethod
