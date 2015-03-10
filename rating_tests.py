@@ -5,7 +5,6 @@ class TestSequenceFunctions(unittest.TestCase):
 
     def setUp(self):
         pass
-        #self.seq = range(10)
 
     def test_rating_basic(self):
         rc = RatingCalculator()
@@ -19,9 +18,6 @@ class TestSequenceFunctions(unittest.TestCase):
         rc.player_results.append(RatingPlayerResult(108, True, 2222, 1, 2055))
         
         new_ratings = rc.calc_and_get_new_rating_dict()
-        #print new_ratings
-        #self.assertEqual(new_ratings[101], 1020)
         
-
 if __name__ == '__main__':
     unittest.main()

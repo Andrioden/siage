@@ -58,7 +58,9 @@ class GamesHandler(webapp2.RequestHandler):
 
         for player_result in request_data['playerResults']:
             player_key = ndb.Key(Player, int(player_result['player_id']))
-
+            
+            last_player_result = PlayerResult._last_result(player_key) # Get previous player result before we insert a new one
+            
             new_player_result_key = PlayerResult(
                 player = player_key,
                 game = game_key,
@@ -70,7 +72,7 @@ class GamesHandler(webapp2.RequestHandler):
             ).put()
 
             # Update previous/last player result stats setting the new player result stats as the next_stats
-            last_player_result = PlayerResult._last_result(player_key)
+            
             if last_player_result:
                 last_player_result.next_player_result = new_player_result_key
                 last_player_result.put()
