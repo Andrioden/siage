@@ -13,7 +13,7 @@ class GamesHandler(webapp2.RequestHandler):
         """ --------- GET GAMELIST --------- """
         # BUILD DATA
         game_data = [game.get_data() for game in Game.query()]
-        
+
         # RETURN RESPONSE
         self.response.headers['Content-Type'] = 'application/json'
         self.response.out.write(json.dumps(game_data))
@@ -50,15 +50,15 @@ class GamesHandler(webapp2.RequestHandler):
             # Special settings
             trebuchet_allowed = request_data['trebuchet_allowed']
         ).put()
-        
+
         # CREATE PLAYER RESULTS
         rc = RatingCalculator()
         rc.add_player_results_from_dict(request_data['playerResults'])
         new_ratings = rc.calc_and_get_new_rating_dict()
-        
+
         for player_result in request_data['playerResults']:
             player_key = ndb.Key(Player, int(player_result['player_id']))
-            
+
             new_player_result_key = PlayerResult(
                 player = player_key,
                 game = game_key,
@@ -68,16 +68,16 @@ class GamesHandler(webapp2.RequestHandler):
                 civilization = player_result['civilization'],
                 stats_rating = new_ratings[player_key.id()]
             ).put()
-            
+
             # Update previous/last player result stats setting the new player result stats as the next_stats
             last_player_result = PlayerResult._last_result(player_key)
             if last_player_result:
                 last_player_result.next_player_result = new_player_result_key
                 last_player_result.put()
-        
+
         self.response.headers['Content-Type'] = 'application/json'
         self.response.out.write(json.dumps({'response': "Game saved"}))
-        
+
     def _validate_no_empty_player_results(self, player_results):
         print "TF"
         for player_result in player_results:
@@ -107,21 +107,7 @@ class GameHandler(webapp2.RequestHandler):
         self.response.headers['Content-Type'] = 'application/text'
         self.response.out.write("PUT (Update) received with data: " + self.request.body)
 
-
 app = webapp2.WSGIApplication([
     (r'/api/games/', GamesHandler),
     (r'/api/games/(\d+)', GameHandler),
 ], debug=True)
-
-
-
-"""
-\d	Any digit, short for [0-9]
-\D	A non-digit, short for [^0-9]
-\s	A whitespace character, short for [ \t\n\x0b\r\f]
-\S	A non-whitespace character, short for [^\s]
-\w	A word character, short for [a-zA-Z_0-9]
-\W	A non-word character [^\w]
-\S+	Several non-whitespace characters
-\b	Matches a word boundary where a word character is [a-zA-Z0-9_].
-"""
