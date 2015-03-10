@@ -1,6 +1,5 @@
-import random
 import unittest
-from rating import *
+from rating import RatingCalculator, RatingPlayerResult
 
 class TestSequenceFunctions(unittest.TestCase):
 
