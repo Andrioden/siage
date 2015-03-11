@@ -148,6 +148,14 @@ body, html {
     float: right;
     padding: 0px;
     margin: 0px;
+    width: 400px;
+}
+
+#main_view .right_content_no_border {
+    float: right;
+    padding: 0px;
+    margin: 0px;
+    width: 400px;
 }
 
 #main_view .bottom_content {
@@ -314,4 +322,48 @@ input[type=number]::-webkit-outer-spin-button {
 
 #main_view .info_table td{
     width: 220px;
+}
+
+#main_view .info_table thead td{
+    width: 220px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+
+#main_view .right_content table{
+    width: 100%;
+    border: 1px solid #E8E8E8;
+    border-collapse: collapse;
+    border-spacing: 0;
+    table-layout: fixed;
+}
+
+#main_view .right_content table thead{
+    background:  #fcfcfd;   /* orange #f0ad4e;*/
+    width: 100%;
+    border-bottom: 1px solid  #dadbdc;
+    margin: 0px;
+    padding: 0px;
+}
+
+#main_view .right_content table tbody{
+    background: #fcfcfd;
+}
+
+
+#main_view .right_content table thead tr{
+    width: 100%;
+    padding: 0px;
+    margin: 0px;
+}
+
+#main_view .right_content table td{
+    padding-left: 15px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.winner_team{
+    background:  #F0F0F0  ;
 }
