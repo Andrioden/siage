@@ -2,7 +2,7 @@
     <div id="loadingMessage" ng-show="submitting"><span class="helper">Saving game</span><img
             src="static/assets/img/ajax-loader.gif"></div>
     <form name="registerGameForm" ng-submit="submitGame()" ng-show="submitting != true">
-        <div class="right_content">
+        <div class="right_content_no_border">
             <table class="gamesettings">
                 <thead>
                 <tr>
@@ -17,7 +17,7 @@
                 </tr>
                 <tr>
                     <td>Duration</td>
-                    <td><input ng-model="game.duration_minutes" type="number" placeholder="Minutes..." />
+                    <td><input ng-model="game.duration_minutes" type="number" placeholder="Minutes..."/>
                     </td>
                 </tr>
                 <tr>
@@ -87,11 +87,14 @@
                     </td>
                 </tr>
                 <tr>
-                    <td><label><input style="width:auto;" type="checkbox" ng-model="game.all_techs"/> All techs</label></td>
-                    <td><label><input style="width:auto;" type="checkbox" ng-model="game.team_together"/> Teams together</label></td>
+                    <td><label><input style="width:auto;" type="checkbox" ng-model="game.all_techs"/> All techs</label>
+                    </td>
+                    <td><label><input style="width:auto;" type="checkbox" ng-model="game.team_together"/> Teams together</label>
+                    </td>
                 </tr>
                 <tr>
-                    <td><label><input style="width:auto;" type="checkbox" ng-model="game.trebuchet_allowed"/> Trebuchet</label></td>
+                    <td><label><input style="width:auto;" type="checkbox" ng-model="game.trebuchet_allowed"/> Trebuchet</label>
+                    </td>
                 </tr>
                 </tbody>
             </table>
@@ -110,24 +113,36 @@
                 </thead>
                 <tbody>
                 <tr ng-repeat="playerResult in game.playerResults">
-                    <td><select class="wide" ng-model="playerResult.player_id"
+                    <td>
+                        <select class="wide" ng-model="playerResult.player_id"
                                 ng-change="removeSelectedPlayersFromList()">
-                        <option ng-repeat="player in allPlayers | orderBy:['first','nick']"
-                                ng-selected="player.id === playerResult.player_id"
-                                value="{{player.id}}"
-                                ng-hide="player.isinuse === true">{{player.nick}}
-                        </option>
-                    </select></td>
-                    <td><select ng-model="playerResult.civilization"
-                                ng-options="civ for civ in civilizations"></select>
+                            <option ng-repeat="player in allPlayers | orderBy:['first','nick']"
+                                    ng-selected="player.id === playerResult.player_id"
+                                    value="{{player.id}}"
+                                    ng-hide="player.isinuse === true">{{player.nick}}
+                            </option>
+                        </select>
                     </td>
-                    <td><select ng-model="playerResult.team" ng-options="team for team in teams"
-                                ng-change="setWinnersByTeamChange(playerResult)"></select></td>
+                    <td>
+                        <select ng-model="playerResult.civilization"
+                                ng-options="civ for civ in civilizations">
+                            <option value=""></option>
+                        </select>
+                    </td>
+                    <td>
+                        <select ng-model="playerResult.team"
+                                ng-options="team for team in teams"
+                                ng-change="setWinnersByTeamChange(playerResult)">
+                            <option value=""></option>
+                        </select>
+                    </td>
                     <td><input type="number" name="score" ng-model="playerResult.score" placeholder="Score..." min="0"
                                valid-number/></td>
-                    <td class="small"><input class="checkbox" type="checkbox" name="is_winner"
-                                             ng-model="playerResult.is_winner"
-                                             ng-click="setWinnersByWinToggle(playerResult)"/></td>
+                    <td class="small">
+                        <input class="checkbox" type="checkbox" name="is_winner"
+                               ng-model="playerResult.is_winner"
+                               ng-click="setWinnersByWinToggle(playerResult)"/>
+                    </td>
                 </tr>
                 </tbody>
             </table>
