@@ -71,15 +71,15 @@
             </tr>
             <tr>
                 <td>All techs</td>
-                <td>{{game.all_techs}}</td>
+                <td>{{game.all_techs | yesNo}}</td>
             </tr>
             <tr>
                 <td>Teams together</td>
-                <td>{{game.team_together}}</td>
+                <td>{{game.team_together | yesNo}}</td>
             </tr>
             <tr>
                 <td>Trebuchet</td>
-                <td>{{game.trebuchet_allowed}}</td>
+                <td>{{game.trebuchet_allowed | yesNo}}</td>
             </tr>
             </tbody>
         </table>

@@ -34,3 +34,10 @@ siAgeApp.config(['$resourceProvider', function ($resourceProvider) {
     // Don't strip trailing slashes from calculated URLs
     $resourceProvider.defaults.stripTrailingSlashes = false;
 }]);
+
+
+siAgeApp.filter('yesNo', function() {
+    return function(input) {
+        return input ? 'Yes' : 'No';
+    }
+});
