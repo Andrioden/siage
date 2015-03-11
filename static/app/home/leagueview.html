@@ -7,8 +7,8 @@
             </tr>
             </thead>
             <tbody>
-            <tr ng-repeat="game in games">
-                <td><a href="/games/{{game.id}}" title="View game">{{game.title}}</a></td>
+            <tr ng-repeat="game in games | orderBy: 'date' : true">
+                <td><a href="/games/{{game.id}}" title="View game">{{game.date | date : 'dd.MM.yyyy'}} | {{game.title}}</a></td>
             </tr>
             </tbody>
         </table>
@@ -19,16 +19,12 @@
                 <tr>
                     <td>Player</td>
                     <td>Rating</td>
-                    <td>Win rate</td>
-                    <td>Best civ</td>
                 </tr>
             </thead>
             <tbody>
                 <tr ng-repeat="player in players | orderBy:['-rating','nick']">
                     <td><a href="/players/{{player.nick}}" title="View profile">{{player.nick}}</a></td>
                     <td>{{player.rating}}</td>
-                    <td>{{player.winrate}}</td>
-                    <td>{{player.bestcivilization}}</td>
                 </tr>
             </tbody>
         </table>
