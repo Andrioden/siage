@@ -37,7 +37,7 @@ class Game(ndb.Model):
         return {
             'id': self.key.id(),
             'date': self.date.strftime("%Y-%m-%d"),
-            # TODO Andre: få dette til å funke med datetime
+            # TODO Andre: faa dette til aa funke med datetime
             #'date_epoch': (self.date - datetime.date(1970,1,1)).total_seconds(),
             'duration_seconds': self.duration_seconds,
             'title': "%s %s" % (self.game_type, self.location),
