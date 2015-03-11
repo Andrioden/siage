@@ -1,14 +1,28 @@
 <div id="main_content">
+    <h1>{{game.title}}</h1>
     <div class="right_content">
-            <h4>Players</h4>
+        <table>
+            <thead>
+            <tr>
+                <td style="width: 36px"></td>
+                <td>Player</td>
+                <td>Score</td>
+                <td>Team</td>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="player_result in game.player_results |orderBy:['team']" ng-class="{winner_team: player_result.is_winner}">
+                <td><img  ng-show="player_result.is_winner" src="/static/assets/img/crown_w_rock.png"></td><td><a href="/players/{{player_result.player.nick}}" title="View profile">{{player_result.player.nick}}</a></td><td>{{player_result.score}}</td><td>{{player_result.team}}</td>
+            </tr>
+            </tbody>
+        </table>
     </div>
     <div class="left_content">
-        <h1>Game</h1>
         <table class="info_table">
             <tbody>
             <tr>
                 <td>Date</td>
-                <td>{{game.date}}</td>
+                <td>{{game.date | date : 'dd.MM.yyyy'}}</td>
             </tr>
             <tr>
                 <td>Duration</td>
@@ -68,7 +82,6 @@
             </tr>
             </tbody>
         </table>
-        {{game.player_results}}
         <span class="error">{{error}}</span>
     </div>
 </div>
