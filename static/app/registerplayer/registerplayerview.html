@@ -3,10 +3,9 @@
         <table>
             <thead>
             <tr>
-                <td ng-show="players.length > 0">Players</td>
+                <td>Players</td>
             </tr>
             </thead>
-
             <tbody>
             <tr ng-repeat="player in players | orderBy:['nick']">
                 <td><a href="/players/{{player.nick}}" title="View profile">{{player.nick}}</a></td>
