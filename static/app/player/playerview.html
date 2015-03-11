@@ -1,20 +1,32 @@
 ﻿<div id="main_content">
     <h1>{{player.nick}}</h1>
+
     <div class="right_content">
     </div>
     <div class="left_content">
-        <p>Raw data: {{player}}</p>
-
-        <span class="error">{{error}}</span>
+        <table class="info_table">
+            <tbody>
+            <tr>
+                <td>Rating</td>
+                <td>{{player.rating}}</td>
+            </tr>
+            <tr>
+                <td>More to come...</td>
+            </tr>
+            </tbody>
+        </table>
     </div>
+
+    <span class="error">{{error}}</span>
+</div>
 </div>
 
 <style>
     #nav_bar li a#player {
         background-color: white;
         color: #666;
-        -webkit-box-shadow: 6px 4px 38px -8px rgba(0,0,0,0.47);
-        -moz-box-shadow: 6px 4px 38px -8px rgba(0,0,0,0.47);
-        box-shadow: 6px 4px 38px -8px rgba(0,0,0,0.47);
+        -webkit-box-shadow: 6px 4px 38px -8px rgba(0, 0, 0, 0.47);
+        -moz-box-shadow: 6px 4px 38px -8px rgba(0, 0, 0, 0.47);
+        box-shadow: 6px 4px 38px -8px rgba(0, 0, 0, 0.47);
     }
 </style>
