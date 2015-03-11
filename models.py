@@ -14,7 +14,7 @@ class Player(ndb.Model):
 
 class Game(ndb.Model):
     # After finish values
-    date = ndb.DateProperty(required=False)
+    date = ndb.DateTimeProperty(required=False)
     duration_seconds = ndb.IntegerProperty(required=False)
     # Settings from lobby Game Settings
     game_type = ndb.StringProperty(required=False, choices=['Random Map', 'Turbo Random Map', 'Regicide', 'Death Match', 'Scenario', 'King of the Hill', 'Wonder Race', 'Defend the Wonder', 'Capture the Relic'])
@@ -37,7 +37,8 @@ class Game(ndb.Model):
         return {
             'id': self.key.id(),
             'date': self.date.strftime("%Y-%m-%d"),
-            'date_epoch': (self.date - datetime.date(1970,1,1)).total_seconds(),
+            # TODO Andre: få dette til å funke med datetime
+            #'date_epoch': (self.date - datetime.date(1970,1,1)).total_seconds(),
             'duration_seconds': self.duration_seconds,
             'title': "%s %s" % (self.game_type, self.location),
             'game_type': self.game_type,
