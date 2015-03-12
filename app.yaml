@@ -20,6 +20,9 @@ handlers:
 
 - url: /api/gamesettings/.*
   script: api.gamesettings.app
+  
+- url: /admin/.*
+  script: admin.app
 
 - url: /.*
   script: main.app

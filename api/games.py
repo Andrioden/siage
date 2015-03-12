@@ -88,7 +88,6 @@ class GamesHandler(webapp2.RequestHandler):
 class GameHandler(webapp2.RequestHandler):
     def get(self, game_id):
         """ --------- GET SINGLE GAME --------- """
-        logging.info("Returning data for game_id: %s", game_id)
 
         # BUILD DATA
         game = Game.get_by_id(int(game_id))

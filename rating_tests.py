@@ -1,5 +1,5 @@
 import unittest
-from rating import RatingCalculator, RatingPlayerResult
+from rating import RatingCalculator, RatingPlayerResult, recalculate_ratings
 
 class TestSequenceFunctions(unittest.TestCase):
 
@@ -19,12 +19,16 @@ class TestSequenceFunctions(unittest.TestCase):
 #         
 #         new_ratings = rc.calc_and_get_new_rating_dict()
         
-    def test_rating_basic2(self):
-        rc = RatingCalculator()
-        rc.player_results.append(RatingPlayerResult(101, False, 5000, None, 2312))
-        rc.player_results.append(RatingPlayerResult(102, True, 5000, None, 1212))
+#     def test_rating_basic2(self):
+#         rc = RatingCalculator()
+#         rc.player_results.append(RatingPlayerResult(101, True, 10000, 1, 1000))
+#         rc.player_results.append(RatingPlayerResult(102, True, 2000, 1, 1000))
+#         rc.player_results.append(RatingPlayerResult(103, False, 10000, 2, 1000))
+#         rc.player_results.append(RatingPlayerResult(104, False, 2000, 2, 1000))
+#         
+#         new_ratings = rc.calc_and_get_new_rating_dict()
+#         print new_ratings
         
-        new_ratings = rc.calc_and_get_new_rating_dict()
         
 if __name__ == '__main__':
     unittest.main()

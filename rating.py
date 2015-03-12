@@ -1,11 +1,12 @@
-from models import PlayerResult, Player
+from models import PlayerResult, Player, Game
 from google.appengine.ext import ndb
 import math
 from operator import attrgetter
+import logging
 
 PLAYER_RATING_START_VALUE = 1000
 K_FACTOR = 100
-SCORE_ADJUST_FACTOR = 0.1
+SCORE_ADJUST_FACTOR = 0.15
 
 class RatingCalculator:
     def __init__(self):
@@ -78,7 +79,10 @@ class RatingCalculator:
             if res.team and player_team_size > 1:
                 base_rating_part = team_rating_change * (1.0 - SCORE_ADJUST_FACTOR) / player_team_size
                 score_percent = res.score * 1.0 / self._get_team_score(res.team)
-                score_rating_part = team_rating_change * SCORE_ADJUST_FACTOR * score_percent
+                if res.is_winner:
+                    score_rating_part = team_rating_change * SCORE_ADJUST_FACTOR * score_percent
+                else:
+                    score_rating_part = team_rating_change * SCORE_ADJUST_FACTOR * (1.0 - score_percent)
                 player_rating_change =  int(round(base_rating_part + score_rating_part))
 #                 print base_rating_part
 #                 print score_percent
@@ -89,7 +93,7 @@ class RatingCalculator:
             
             res.rating_change = player_rating_change
             res.new_rating = res.prev_rating + player_rating_change
-            #print "Team: %s | Player: %s | winchance: %s | team rating change: %s | player score %s | score adjusted rating: %s | rating: %s to %s " % (res.team, res.player_id, win_chance, team_rating_change, res.score, player_rating_change, res.prev_rating, res.new_rating)
+            logging.info("Team: %s | Player: %s | winchance: %s | team rating change: %s | player score %s | score adjusted rating: %s | rating: %s to %s " % (res.team, res.player_id, win_chance, team_rating_change, res.score, player_rating_change, res.prev_rating, res.new_rating))
         
         # 6. Validate that an equal amount of rating have been lost as gained. 
         #    If a difference is found. Give point from top score or remove from bottom.
@@ -105,7 +109,7 @@ class RatingCalculator:
         
         total_rating_change = sum(res.rating_change for res in self.player_results)
         if total_rating_change != 0:
-            print [str(res) for res in self.player_results]
+            logging.info([str(res) for res in self.player_results])
             raise Exception("Rating algorithm failed. Difference between rating gained and lost after correction: %s" % total_rating_change)
             
     def _add_rating_to_top_scored_player(self, value):
@@ -164,3 +168,26 @@ class RatingPlayerResult:
         
     def __str__(self):
         return "Player ID %s | Score: %s | new rating; %s | rating change: %s" % (self.player_id, self.score, self.new_rating, self.rating_change)
+    
+def recalculate_ratings():
+    logging.info("----- RECALCULATING RATINGS ------")
+    for game in Game.query().order(Game.date).fetch():
+        logging.info("Recalculating for game %s" % game.key.id())
+        game_player_results = PlayerResult.query(PlayerResult.game == game.key).fetch()
+        # Recalc rating
+        rc = RatingCalculator()
+        for res in game_player_results:
+            previous_player_result = _get_previous_player_result(res.key)
+            if previous_player_result:
+                previous_rating = previous_player_result.stats_rating
+            else:
+                previous_rating = PLAYER_RATING_START_VALUE
+            rc.player_results.append(RatingPlayerResult(res.player.id(), res.is_winner, res.score, res.team, previous_rating))
+        recalced_rating = rc.calc_and_get_new_rating_dict()
+        # Update player result rating
+        for res in game_player_results:
+            res.stats_rating = recalced_rating[res.player.id()]
+            res.put()
+        
+def _get_previous_player_result(player_result_key):
+    return PlayerResult.query(PlayerResult.next_player_result==player_result_key).get()
