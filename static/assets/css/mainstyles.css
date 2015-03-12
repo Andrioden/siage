@@ -275,13 +275,13 @@ input:focus, textarea:focus {
     margin-left: 2px;
     font-size: 14px;
     color: #FFFFFF;
-    background-color: teal;
-    border-color: #2b6e44;
+    background-color: #4d5d38;
+    border-color: #42522e;
 }
 
 .button.submit:hover {
-    background-color: #005a5a;
-    border-color: #005a5a;
+    background-color: #495935;
+    border-color: #354522;
 }
 
 .button.clear {
@@ -290,8 +290,8 @@ input:focus, textarea:focus {
     margin-left: 2px;
     font-size: 14px;
     color: #FFFFFF;
-    background-color: #d32a0e;
-    border-color: #ea2f10;
+    background-color: #ae2900;
+    border-color: #9f2900;
 }
 
 .button.clear:hover {
