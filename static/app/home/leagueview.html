@@ -7,7 +7,7 @@
             </tr>
             </thead>
             <tbody>
-            <tr ng-repeat="game in games | orderBy: 'date' : true">
+            <tr ng-repeat="game in games | orderBy: 'date_epoch' : true">
                 <td><a href="/games/{{game.id}}" title="View game">{{game.date | date : 'dd.MM.yyyy'}} | {{game.title}}</a></td>
             </tr>
             </tbody>
@@ -34,8 +34,6 @@
 
 <style>
     #nav_bar li a#home {
-        /*background-color: rgba(62, 43, 47, 0.62); */
-        /*color: #666;*/
         background-color: rgba(140, 140, 140, 0.35);
         -webkit-box-shadow: 6px 4px 38px -8px rgba(0,0,0,0.47);
         -moz-box-shadow: 6px 4px 38px -8px rgba(0,0,0,0.47);
