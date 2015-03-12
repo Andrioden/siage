@@ -3,6 +3,10 @@ body, html {
     height: 100%;
     margin: 0px;
     padding: 0px;
+    background: url('/static/assets/img/aoe_main_bg.jpg') no-repeat;
+    background-color: black;
+    background-size: cover;
+    font-family: Century Gothic, sans-serif;
 }
 
 #main_wrapper {
@@ -14,10 +18,12 @@ body, html {
     height: 100%;
     padding-bottom: -150px;
     padding-top: -150px;
-    background-color: #336699;
+    /*background-color: #336699;*/
+    background-color: rgba(0,0,0,.85);
     -webkit-box-shadow: 6px 4px 38px -8px rgba(0, 0, 0, 0.47);
     -moz-box-shadow: 6px 4px 38px -8px rgba(0, 0, 0, 0.47);
     box-shadow: 6px 4px 38px -8px rgba(0, 0, 0, 0.47);
+    margin-top: 30px;
 }
 
 .Push {
@@ -26,25 +32,36 @@ body, html {
 
 #Header {
     position: relative;
-    height: 100px;
+    height: 150px;
     width: 1500px;
     margin-right: auto;
     margin-left: auto;
 }
 
+#aoe_logo{
+    padding-top: 30px;
+    padding-left: 50px;
+}
+
 #Header h1 {
-    padding: 30px 20px 20px 45px;
-    color: white;
+    padding: 40px 20px 20px 55px;
+    color: #df633b;
 }
 
 #main_view {
-    width: 1175px;
+    width: 1173px;
     min-height: 400px;
     float: left;
     padding: 20px 45px 20px 45px;
-    font-size: 20px;
-    background-color: white;
-    color: #666;
+    font-size: 16px;
+    background-color: rgba(0,0,0,.60);
+    color: #ffdcb6;
+    border-left: 1px solid rgba(140, 140, 140, 0.35);
+    border-top: 1px solid rgba(140, 140, 140, 0.35);
+}
+
+#main_view h1{
+    color: #a88865;
 }
 
 #nav_bar {
@@ -55,8 +72,7 @@ body, html {
 
 #nav_bar li {
     list-style: none;
-    font-size: 20px;
-    color: #666;
+    font-size: 16px;
     line-height: 30px;
     text-decoration: none;
 }
@@ -64,7 +80,6 @@ body, html {
 #nav_bar li a {
     display: inline-block;
     text-decoration: none;
-    color: white;
     padding: 5px 5px 10px 10px;
     width: 100%;
     /*-webkit-transition: background 0.08s linear;
@@ -78,6 +93,7 @@ body, html {
     text-decoration: none;
     /*color: #666;*/
     display: inline-block;
+    color: #ffdcb6;
     /*background-color: white;*/
     /*-webkit-box-shadow: 6px 4px 38px -8px rgba(0,0,0,0.47);
     -moz-box-shadow: 6px 4px 38px -8px rgba(0,0,0,0.47);
@@ -174,18 +190,18 @@ aside.right_content ul {
 #main_view .right_content li {
     list-style: none;
     font-size: 20px;
-    color: #666;
+    color: #ECE9E9;
     line-height: 30px;
     text-decoration: none;
 }
 
 a {
     text-decoration: none;
-    color: #666;
+    color: #ECE9E9;
 }
 
 a:hover {
-    color: royalblue;
+    color: teal;
 }
 
 td.wide {
@@ -259,13 +275,13 @@ input:focus, textarea:focus {
     margin-left: 2px;
     font-size: 14px;
     color: #FFFFFF;
-    background-color: #43ac6a;
-    border-color: #3c9a5f;
+    background-color: teal;
+    border-color: #2b6e44;
 }
 
 .button.submit:hover {
-    background-color: #358753;
-    border-color: #2b6e44;
+    background-color: #005a5a;
+    border-color: #005a5a;
 }
 
 .button.clear {
@@ -274,12 +290,12 @@ input:focus, textarea:focus {
     margin-left: 2px;
     font-size: 14px;
     color: #FFFFFF;
-    background-color: #f04124;
+    background-color: #d32a0e;
     border-color: #ea2f10;
 }
 
 .button.clear:hover {
-    background-color: #d32a0e;
+    background-color: #a0290e;
     border-color: #b1240c;
 }
 
@@ -289,7 +305,7 @@ input:focus, textarea:focus {
 }
 
 .success{
-    color: limegreen;
+    color: teal;
 }
 
 
@@ -334,22 +350,24 @@ input[type=number]::-webkit-outer-spin-button {
 
 #main_view .right_content table{
     width: 100%;
-    border: 1px solid #E8E8E8;
+    border: 1px solid #222;
     border-collapse: collapse;
     border-spacing: 0;
     table-layout: fixed;
 }
 
 #main_view .right_content table thead{
-    background:  #fcfcfd;   /* orange #f0ad4e;*/
+    /*background:  #fcfcfd;   *//* orange #f0ad4e;*/
+    background-color: rgba(140, 140, 140, 0.35);
     width: 100%;
-    border-bottom: 1px solid  #dadbdc;
+    border-bottom: 1px solid  #222;
     margin: 0px;
     padding: 0px;
 }
 
 #main_view .right_content table tbody{
-    background: #fcfcfd;
+    /*background: #fcfcfd;*/
+    background-color: rgba(140, 140, 140, 0.35);
 }
 
 
@@ -366,5 +384,21 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 .winner_team{
-    background:  #F0F0F0  ;
+   /* background-color: rgba(140, 140, 140, 0.35);*/
+    background-color: rgba(0,0,0,.40);
+}
+
+input{
+    background-color: rgba(140, 140, 140, 0.15);
+    color: #ffdcb6;
+}
+
+select{
+    background-color: rgba(140, 140, 140, 0.15);
+    color: #ffdcb6;
+}
+
+select option{
+    background-color: black;
+    color: #ffdcb6
 }
