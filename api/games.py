@@ -78,7 +78,7 @@ class GamesHandler(webapp2.RequestHandler):
                 last_player_result.put()
 
         self.response.headers['Content-Type'] = 'application/json'
-        self.response.out.write(json.dumps({'response': "Game saved"}))
+        self.response.out.write(json.dumps({'response': "Success!", 'game_id': game_key.id()}))
 
     def _validate_no_empty_player_results(self, player_results):
         for player_result in player_results:

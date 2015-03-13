@@ -157,7 +157,7 @@
                         <input class="button clear" type="reset" value="Clear"/>
                     </td>
                     <td class="message">
-                        <span class="success">{{success}}</span>
+                        <span class="success">{{success}} <a ng-show="submitted_game_id" href="/games/{{submitted_game_id}}">Go to saved game</a></span>
                         <span class="error">{{error}}</span>
                     </td>
                 </tr>

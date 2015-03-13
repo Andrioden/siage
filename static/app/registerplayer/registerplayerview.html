@@ -7,6 +7,9 @@
             </tr>
             </thead>
             <tbody>
+            <tr ng-show="loading_players">
+                <td><img src="static/assets/img/ajax-loader.gif"></td>
+            </tr>
             <tr ng-repeat="player in players | orderBy:['nick']">
                 <td><a href="/players/{{player.nick}}" title="View profile">{{player.nick}}</a></td>
             </tr>

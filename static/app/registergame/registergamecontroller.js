@@ -52,6 +52,7 @@ siAgeApp.controller('RegisterGameController',
                     resetAllPlayers();
                     $scope.error = "";
                     $scope.success = value.response;
+                    $scope.submitted_game_id = value.game_id;
                     $scope.submitting = false;
                     $timeout(function () {
                         $scope.success = "";
@@ -64,6 +65,7 @@ siAgeApp.controller('RegisterGameController',
                     if (error.data) result = error.data;
                     else result = error.statusText;
                     $scope.error = "Save game failed: " + result;
+                    $scope.submitted_game_id = "";
                     reAddEmptyPlayers();
                     $scope.submitting = false;
                 }

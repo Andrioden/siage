@@ -1,7 +1,8 @@
 <div id="main_content">
-    <h1>{{game.title}}</h1>
+    <h1 ng-show="!loading_game">{{game.title}}</h1>
+    <img ng-show="loading_game" src="static/assets/img/ajax-loader.gif">
     <div class="right_content">
-        <table>
+        <table ng-show="!loading_game">
             <thead>
             <tr>
                 <td style="width: 36px"></td>
@@ -19,7 +20,7 @@
         </table>
     </div>
     <div class="left_content">
-        <table class="info_table">
+        <table ng-show="!loading_game" class="info_table">
             <tbody>
             <tr>
                 <td>Date</td>
