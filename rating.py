@@ -6,7 +6,7 @@ import logging
 
 PLAYER_RATING_START_VALUE = 1000
 K_FACTOR = 100
-SCORE_ADJUST_FACTOR = 0.15
+SCORE_ADJUST_FACTOR = 0.20
 
 class RatingCalculator:
     def __init__(self):
@@ -82,23 +82,24 @@ class RatingCalculator:
                 if res.is_winner:
                     score_rating_part = team_rating_change * SCORE_ADJUST_FACTOR * score_percent
                 else:
-                    score_rating_part = team_rating_change * SCORE_ADJUST_FACTOR * (1.0 - score_percent)
+                    # I am not sure why this works mathematically, but it works on distributing a negative score in a favorish manner to the high scorers.
+                    score_rating_part = team_rating_change * SCORE_ADJUST_FACTOR * (1.0 - score_percent) / (player_team_size - 1)
                 player_rating_change =  int(round(base_rating_part + score_rating_part))
-#                 print base_rating_part
-#                 print score_percent
-#                 print score_rating_part
-#                 print player_rating_change
+#                 print "base_rating_part %s" % base_rating_part
+#                 print "score_percent %s" % score_percent
+#                 print "score_rating_part %s" % score_rating_part
+#                 print "player_rating_change %s" % player_rating_change
             else:
                 player_rating_change = int(round(team_rating_change))
             
             res.rating_change = player_rating_change
             res.new_rating = res.prev_rating + player_rating_change
             logging.info("Team: %s | Player: %s | winchance: %s | team rating change: %s | player score %s | score adjusted rating: %s | rating: %s to %s " % (res.team, res.player_id, win_chance, team_rating_change, res.score, player_rating_change, res.prev_rating, res.new_rating))
-        
+#             print "Team: %s | Player: %s | winchance: %s | team rating change: %s | player score %s | score adjusted rating: %s | rating: %s to %s " % (res.team, res.player_id, win_chance, team_rating_change, res.score, player_rating_change, res.prev_rating, res.new_rating)
         # 6. Validate that an equal amount of rating have been lost as gained. 
         #    If a difference is found. Give point from top score or remove from bottom.
         total_rating_change = sum(res.rating_change for res in self.player_results)
-        #print "Total rating change before adjustments: %s" % total_rating_change
+#         print "Total rating change before adjustments: %s" % total_rating_change
         if math.fabs(total_rating_change) > 2:
             raise Exception("Rating algorithm failed. To high difference between rating gained and lost.")
         
