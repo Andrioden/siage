@@ -1,4 +1,4 @@
-﻿var siAgeApp = angular.module('SiAgeApp', ['ngRoute', 'ngResource']);
+﻿var siAgeApp = angular.module('SiAgeApp', ['ngRoute', 'ngResource','angulartics', 'angulartics.google.analytics']);
 
 siAgeApp.config(['$routeProvider', '$locationProvider',
     function ($routeProvider, $locationProvider) {
