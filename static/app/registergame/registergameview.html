@@ -125,7 +125,7 @@
                     </td>
                     <td>
                         <select ng-model="playerResult.civilization"
-                                ng-options="civ for civ in civilizations">
+                                ng-options="civ for civ in civilizations | orderBy:'toString()'">
                             <option value=""></option>
                         </select>
                     </td>
