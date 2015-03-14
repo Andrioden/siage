@@ -1,5 +1,5 @@
 <div id="main_content">
-    <h1 ng-show="!loading_game">{{game.title}}</h1>
+    <h1 ng-show="!loading_game">{{game.title}} {{game.team_format}}</h1>
     <img ng-show="loading_game" src="static/assets/img/ajax-loader.gif">
     <div class="right_content">
         <table ng-show="!loading_game">

@@ -11,7 +11,7 @@
                     <td><img src="static/assets/img/ajax-loader.gif"></td>
                 </tr>
                 <tr ng-repeat="game in games | orderBy: 'date_epoch' : true">
-                    <td><a href="/games/{{game.id}}" title="View game">{{game.date | date : 'dd.MM.yyyy'}} | {{game.title}}</a></td>
+                    <td><a href="/games/{{game.id}}" title="View game">{{game.date | date : 'dd.MM.yyyy'}} | {{game.title}} {{game.team_format}}</a></td>
                 </tr>
             </tbody>
         </table>

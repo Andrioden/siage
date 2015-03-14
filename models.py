@@ -1,5 +1,6 @@
 from google.appengine.ext import ndb
 import datetime
+from collections import Counter
 
 class Player(ndb.Model):
     nick = ndb.StringProperty(required=True)
@@ -36,13 +37,14 @@ class Game(ndb.Model):
     # Special settings
     trebuchet_allowed = ndb.BooleanProperty(required=False)
     def get_data(self):
+        player_results_data = [res.get_data() for res in PlayerResult.query(PlayerResult.game==self.key)]
         return {
             'id': self.key.id(),
+            'title': "%s %s" % (self.game_type, self.location),
+            'team_format': self._player_results_to_game_format(player_results_data),
             'date': self.date.strftime("%Y-%m-%d"),
-            # TODO Andre: faa dette til aa funke med datetime
             'date_epoch': int((self.date - datetime.datetime(1970,1,1)).total_seconds()),
             'duration_seconds': self.duration_seconds,
-            'title': "%s %s" % (self.game_type, self.location),
             'game_type': self.game_type,
             'size': self.size,
             'difficulty': self.difficulty,
@@ -57,8 +59,24 @@ class Game(ndb.Model):
             'all_techs': self.all_techs,
             'location': self.location,
             'trebuchet_allowed': self.trebuchet_allowed,
-            'player_results': [res.get_data() for res in PlayerResult.query(PlayerResult.game==self.key)]
+            'player_results': player_results_data
         }
+    def _player_results_to_game_format(self, player_results):
+        teams = [player_data['team'] for player_data in player_results]
+        counted_teams = Counter(teams)
+        game_format = None
+        # First add people with teams, sorted by the most common
+        for key, value in counted_teams.most_common():
+            if key == None: # People without teams is dealth with afterwards so v1v1.. is at the end
+                pass
+            elif game_format == None: # First
+                game_format = "%s" % value
+            else:
+                game_format += "v%s" % value
+        # Then add the teamless as v1v1v1v1.. etc
+        for _ in range(counted_teams[None]):
+            game_format += "v1"
+        return game_format
     @classmethod
     def _settings_data(cls):
         return {
@@ -80,7 +98,7 @@ class PlayerResult(ndb.Model):
     game = ndb.KeyProperty(kind=Game, required=True)
     is_winner = ndb.BooleanProperty(default=False)
     score = ndb.IntegerProperty(required=True)
-    team = ndb.IntegerProperty(required=True, choices=[1,2,3,4])
+    team = ndb.IntegerProperty(choices=[1,2,3,4])
     civilization = ndb.StringProperty(required=True, choices=['Aztec', 'Britons', 'Byzantines', 'Celts', 'Chinese', 'Franks', 'Goths', 'Huns', 'Incas', 'Indians', 'Italians', 'Japanese', 'Koreans', 'Magyars', 'Mayans', 'Mongols', 'Persians', 'Saracens', 'Slavs', 'Spanish', 'Teutons', 'Turks', 'Vikings'])
     stats_rating = ndb.IntegerProperty(required=True)
     next_player_result = ndb.KeyProperty(kind='PlayerResult', default=None) # 'PlayerResult' is a string to allow circular reference.
