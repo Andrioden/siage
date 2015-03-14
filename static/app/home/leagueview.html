@@ -22,6 +22,8 @@
                 <tr>
                     <td>Player</td>
                     <td>Rating</td>
+                    <td>Played</td>
+                    <td>Win%</td>
                 </tr>
             </thead>
             <tbody>
@@ -31,6 +33,8 @@
                 <tr ng-repeat="player in players | orderBy:['-rating','nick']">
                     <td><a href="/players/{{player.nick}}" title="View profile">{{player.nick}}</a></td>
                     <td>{{player.rating}}</td>
+                    <td>{{player.played}}</td>
+                    <td>{{player.wins * 100 / player.played}}%</td>
                 </tr>
             </tbody>
         </table>

@@ -9,7 +9,9 @@ class Player(ndb.Model):
         return {
             'id': self.key.id(), 
             'nick': self.nick, 
-            'rating': (0 if last_player_result == None else last_player_result.stats_rating)
+            'rating': (0 if last_player_result == None else last_player_result.stats_rating),
+            'played': PlayerResult.query(PlayerResult.player==self.key).count(),
+            'wins': PlayerResult.query(PlayerResult.player==self.key, PlayerResult.is_winner==True).count(),
         }
 
 class Game(ndb.Model):
