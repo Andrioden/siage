@@ -402,3 +402,6 @@ select option{
     background-color: black;
     color: #ffdcb6
 }
+
+.green { color: green; }
+.red {color: red;}

@@ -72,7 +72,6 @@ class GamesHandler(webapp2.RequestHandler):
             ).put()
 
             # Update previous/last player result stats setting the new player result stats as the next_stats
-            
             if last_player_result:
                 last_player_result.next_player_result = new_player_result_key
                 last_player_result.put()

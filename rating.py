@@ -3,10 +3,7 @@ from google.appengine.ext import ndb
 import math
 from operator import attrgetter
 import logging
-
-PLAYER_RATING_START_VALUE = 1000
-K_FACTOR = 100
-SCORE_ADJUST_FACTOR = 0.20
+from config import *
 
 class RatingCalculator:
     def __init__(self):
@@ -178,7 +175,7 @@ def recalculate_ratings():
         # Recalc rating
         rc = RatingCalculator()
         for res in game_player_results:
-            previous_player_result = _get_previous_player_result(res.key)
+            previous_player_result = res.get_previous_result()
             if previous_player_result:
                 previous_rating = previous_player_result.stats_rating
             else:
@@ -189,6 +186,3 @@ def recalculate_ratings():
         for res in game_player_results:
             res.stats_rating = recalced_rating[res.player.id()]
             res.put()
-        
-def _get_previous_player_result(player_result_key):
-    return PlayerResult.query(PlayerResult.next_player_result==player_result_key).get()

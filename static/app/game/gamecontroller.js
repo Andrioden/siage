@@ -12,6 +12,7 @@ siAgeApp.controller('GameController',
             function (error) {
                 $scope.loading_game = false;
                 $scope.gameInfoError = "Unable to load game info!";
-            })
-        });
-
+            }
+        );
+    }
+);

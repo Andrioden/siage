@@ -1,6 +1,7 @@
 from google.appengine.ext import ndb
 import datetime
 from collections import Counter
+from config import PLAYER_RATING_START_VALUE
 
 class Player(ndb.Model):
     nick = ndb.StringProperty(required=True)
@@ -129,4 +130,13 @@ class PlayerResult(ndb.Model):
             'team': self.team,
             'civilization': self.civilization,
             'stats_rating': self.stats_rating,
+            'rating_earned': self.rating_earned()
         }
+    def rating_earned(self):
+        previous_result = self.get_previous_result()
+        if previous_result:
+            return self.stats_rating - previous_result.stats_rating
+        else:
+            return self.stats_rating - PLAYER_RATING_START_VALUE
+    def get_previous_result(self):
+        return PlayerResult.query(PlayerResult.next_player_result==self.key).get()
