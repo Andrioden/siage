@@ -22,7 +22,7 @@ class Game(ndb.Model):
     duration_seconds = ndb.IntegerProperty(required=False)
     # Settings from lobby Game Settings
     game_type = ndb.StringProperty(required=False, choices=['Random Map', 'Turbo Random Map', 'Regicide', 'Death Match', 'Scenario', 'King of the Hill', 'Wonder Race', 'Defend the Wonder', 'Capture the Relic'])
-    size = ndb.StringProperty(required=False, choices=['Tiny (2 player)', 'Small (3 player)', 'Medium (3 player)', 'Normal (6 player)', 'Large (8 player)', 'Giant', 'LudiKRIS'])
+    size = ndb.StringProperty(required=False, choices=['Tiny (2 player)', 'Small (3 player)', 'Medium (4 player)', 'Normal (6 player)', 'Large (8 player)', 'Giant', 'LudiKRIS'])
     difficulty = ndb.StringProperty(required=False, choices=['Easiest', 'Standard', 'Moderate', 'Hard', 'Hardest'])
     resources = ndb.StringProperty(required=False, choices=['Standard', 'Low', 'Medium', 'High'])
     population = ndb.IntegerProperty(required=False, choices=[25, 50, 75, 100, 125, 150, 175, 200, 300, 400, 500])
