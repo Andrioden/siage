@@ -23,6 +23,7 @@ handlers:
   
 - url: /admin/.*
   script: admin.app
+  login: admin
 
 - url: /.*
   script: main.app

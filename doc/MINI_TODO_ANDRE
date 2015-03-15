@@ -1,7 +1,4 @@
 - Se på muligheten for å slå på transactions for create game:
 	https://cloud.google.com/appengine/docs/python/datastore/transactions#Python_What_can_be_done_in_a_transaction
 - games - error_400 not working. gotta return http response code instead of raising exception.
-
-#Models.py Game
-# TODO Andre: få dette til å funke med datetime
-#'date_epoch': (self.date - datetime.date(1970,1,1)).total_seconds(),
+- Set is_host data for playerresult to false by activating interactive console online.
