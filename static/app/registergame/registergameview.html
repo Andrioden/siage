@@ -109,6 +109,7 @@
                     <td>Team</td>
                     <td>Score</td>
                     <td>Won</td>
+                    <td>Host</td>
                 </tr>
                 </thead>
                 <tbody>
@@ -142,6 +143,11 @@
                         <input class="checkbox" type="checkbox" name="is_winner"
                                ng-model="playerResult.is_winner"
                                ng-click="setWinnersByWinToggle(playerResult)"/>
+                    </td>
+                    <td class="small">
+                        <input class="checkbox" type="checkbox" name="is_host"
+                               ng-model="playerResult.is_host"
+                               ng-click="removeHostFromOtherPlayerResults(playerResult)"/>
                     </td>
                 </tr>
                 </tbody>

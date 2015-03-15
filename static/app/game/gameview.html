@@ -15,7 +15,8 @@
             <tbody>
             <tr ng-repeat="player_result in game.player_results |orderBy:['-is_winner','team','-score','nick']" ng-class="{winner_team: player_result.is_winner}">
                 <td><img title="Winner" ng-show="player_result.is_winner" src="/static/assets/img/crown_w_rock.png"></td>
-                <td><a href="/players/{{player_result.player.nick}}" title="View player {{player_result.player.nick}}">{{player_result.player.nick}}</a></td>
+                <td ng-if="player_result.is_host == true"><a href="/players/{{player_result.player.nick}}" title="View player {{player_result.player.nick}}">{{player_result.player.nick}} (host)</a></td>
+                <td ng-if="player_result.is_host != true"><a href="/players/{{player_result.player.nick}}" title="View player {{player_result.player.nick}}">{{player_result.player.nick}}</a></td>
                 <td>{{player_result.score}}</td>
                 <td ng-if="player_result.rating_earned >= 0" title="Rating when game was played">{{player_result.stats_rating}} (<span class="green">+{{player_result.rating_earned}}</span>)</td>
                 <td ng-if="player_result.rating_earned < 0" title="Rating when game was played">{{player_result.stats_rating}} (<span class="red">{{player_result.rating_earned}}</span>)</td>

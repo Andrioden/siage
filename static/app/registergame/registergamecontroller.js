@@ -37,8 +37,12 @@ siAgeApp.controller('RegisterGameController',
 
         $scope.submitting = false;
         $scope.submitGame = function () {
-            if(!confirmWinner()){
+            if(!hasWinner()){
                 $scope.error = "Select a winner!";
+                return;
+            }
+            else if (!hasHost()) {
+                $scope.error = "Select a host!!";
                 return;
             }
             cleanPlayerResults();
@@ -90,6 +94,14 @@ siAgeApp.controller('RegisterGameController',
                     }
                 }
             }
+        };
+        
+        $scope.removeHostFromOtherPlayerResults = function (playerResult) {
+        	for (i = 0; i < $scope.game.playerResults.length; i++) {
+        		if ($scope.game.playerResults[i] != playerResult) {
+        			$scope.game.playerResults[i].is_host = false;
+        		}
+        	}
         };
 
         $scope.setWinnersByWinToggle = function (playerResult) {
@@ -177,7 +189,7 @@ siAgeApp.controller('RegisterGameController',
             $scope.game.difficulty = null;
             $scope.game.resources = null;
             $scope.game.game_speed = null;
-            $scope.game.reveal_map = null
+            $scope.game.reveal_map = null;
             $scope.game.victory = null;
             $scope.game.starting_age = null;
             $scope.game.treaty_length = null;
@@ -215,12 +227,18 @@ siAgeApp.controller('RegisterGameController',
             }
         };
 
-        function confirmWinner(){
-            var winner_found = false;
+        function hasWinner(){
             for (i = 0; i < $scope.game.playerResults.length; i++) {
-                if($scope.game.playerResults[i].is_winner){ winner_found = true; }
+                if($scope.game.playerResults[i].is_winner) return true;
             }
-            return winner_found;
+            return false;
+        }
+        
+        function hasHost(){
+            for (i = 0; i < $scope.game.playerResults.length; i++) {
+                if($scope.game.playerResults[i].is_host) return true;
+            }
+            return false;
         }
     })
 ;

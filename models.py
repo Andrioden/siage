@@ -98,6 +98,7 @@ class PlayerResult(ndb.Model):
     player = ndb.KeyProperty(kind=Player, required=True)
     game = ndb.KeyProperty(kind=Game, required=True)
     is_winner = ndb.BooleanProperty(default=False)
+    is_host = ndb.BooleanProperty(default=False)
     score = ndb.IntegerProperty(required=True)
     team = ndb.IntegerProperty(choices=[1,2,3,4])
     civilization = ndb.StringProperty(required=True, choices=['Aztec', 'Britons', 'Byzantines', 'Celts', 'Chinese', 'Franks', 'Goths', 'Huns', 'Incas', 'Indians', 'Italians', 'Japanese', 'Koreans', 'Magyars', 'Mayans', 'Mongols', 'Persians', 'Saracens', 'Slavs', 'Spanish', 'Teutons', 'Turks', 'Vikings'])
@@ -126,6 +127,7 @@ class PlayerResult(ndb.Model):
             'player': {'id': player_entity.key.id(), 'nick': player_entity.nick},
             'game': self.game.id(),
             'is_winner': self.is_winner,
+            'is_host': self.is_host,
             'score': self.score,
             'team': self.team,
             'civilization': self.civilization,

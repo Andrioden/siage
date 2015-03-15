@@ -65,6 +65,7 @@ class GamesHandler(webapp2.RequestHandler):
                 player = player_key,
                 game = game_key,
                 is_winner = player_result['is_winner'],
+                is_host = player_result['is_host'],
                 score = player_result['score'],
                 team = player_result['team'],
                 civilization = player_result['civilization'],

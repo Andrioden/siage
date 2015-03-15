@@ -6,6 +6,9 @@ siAgeApp.controller('LeagueController',
         $scope.loading_players = true;
         Player.query(
             function (data) {
+            	for (var i=0; i < data.length; i++) {
+					data[i].win_percent = Math.round(data[i].wins * 100/ data[i].played);
+				};
                 $scope.players = data;
                 $scope.loading_players = false;
             }
