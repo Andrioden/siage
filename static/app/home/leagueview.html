@@ -34,7 +34,7 @@
                     <td><a href="/players/{{player.nick}}" title="View profile">{{player.nick}}</a></td>
                     <td>{{player.rating}}</td>
                     <td>{{player.played}}</td>
-                    <td>{{player.win_percent}}%</td>
+                    <td ng-show="player.win_percent">{{player.win_percent}}%</td>
                 </tr>
             </tbody>
         </table>
