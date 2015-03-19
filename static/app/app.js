@@ -23,6 +23,10 @@ siAgeApp.config(['$routeProvider', '$locationProvider',
                 templateUrl: 'static/app/game/gameview.html',
                 controller: 'GameController'
             })
+            .when('/gamesetup', {
+                templateUrl: 'static/app/gamesetup/gamesetupview.html',
+                controller: 'GameSetupController'
+            })
             .otherwise({
                 redirectTo: '/home'
             });

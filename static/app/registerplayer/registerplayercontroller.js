@@ -18,21 +18,21 @@ siAgeApp.controller('RegisterPlayerController',
         $scope.submitPlayer = function () {
             Player.save($scope.newplayer).$promise.then(
                 //success
-                function (value) {
+                function(value) {
                     $scope.players.push($scope.newplayer);
                     $scope.newplayer = new Player();
                     $scope.error = "";
                     $scope.success = value.response;
-                    $timeout(function(){
+                    $timeout(function() {
                         $scope.success = "";
                     }, 5000);
                 },
                 //error
-                function (error) {
+                function(error) {
                     console.log(error);
                     $scope.error = error.data;
                 }
-            )
+            );
         }
 
         $scope.hideError = function(){
