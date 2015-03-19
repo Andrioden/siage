@@ -5,7 +5,7 @@ import json
 import logging
 from google.appengine.ext import ndb
 from models import Player
-import math, random
+import math, random, copy
 
 class SetupGameHandler(webapp2.RequestHandler):
     def post(self):
@@ -14,13 +14,32 @@ class SetupGameHandler(webapp2.RequestHandler):
 #         player_ids = self.request.POST.get('players')
 #         logging.info(player_ids)
         players = [ndb.Key(Player, int(player_id)).get() for player_id in player_ids]
+        [player.rating() for player in players] # Cache all ratings before they get cloned later
         logging.info(players)
+        
+        algorithm = "random"
+        
+        if algorithm == "random":
+            setup_data = _random_setup(players)
+        else:
+            setup_data = _random_setup_best_attempt(players, 10)
 
         # RETURN RESPONSE
         self.response.headers['Content-Type'] = 'application/json'
-        self.response.out.write(json.dumps(_random_setup(players)))
+        self.response.out.write(json.dumps(setup_data))
 
-def _random_setup(players):
+def _random_setup_best_attempt(players, attempts):
+    best_setup = None
+    for _ in range(attempts):
+        potential_setup = _random_setup(players)
+        if best_setup == None:
+            best_setup = potential_setup
+        elif potential_setup['total_rating_dif'] < best_setup['total_rating_dif']:
+            best_setup = potential_setup
+    return best_setup
+
+def _random_setup(players_in):
+    players = copy.deepcopy(players_in)
     # 1. Create the games_players
     game_count = int(math.ceil(len(players) * 1.0 / 8))
     games_players = [[] for _ in range(game_count)] # Create a twidimensional array with games_players[game][player] format.
