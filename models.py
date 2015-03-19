@@ -5,13 +5,20 @@ from config import PLAYER_RATING_START_VALUE
 
 class Player(ndb.Model):
     nick = ndb.StringProperty(required=True)
-    
+    def rating(self):
+        """ To avoid hitting the db unneccessary the rating value is stored in memory.
+        """
+        if hasattr(self, "_current_rating_cached"):
+            return self._current_rating_cached
+        else:
+            last_player_result = PlayerResult._last_result(self.key)
+            self._current_rating_cached = 1000 if last_player_result == None else last_player_result.stats_rating
+            return self._current_rating_cached
     def get_data(self):
-        last_player_result = PlayerResult._last_result(self.key)
         return {
             'id': self.key.id(), 
             'nick': self.nick, 
-            'rating': (0 if last_player_result == None else last_player_result.stats_rating),
+            'rating': self.rating(),
             'played': PlayerResult.query(PlayerResult.player==self.key).count(),
             'wins': PlayerResult.query(PlayerResult.player==self.key, PlayerResult.is_winner==True).count(),
         }
