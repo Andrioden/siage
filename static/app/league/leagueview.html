@@ -30,11 +30,12 @@
                 <tr ng-show="loading_players">
                     <td><img src="static/assets/img/ajax-loader.gif"></td>
                 </tr>
-                <tr ng-repeat="player in players | orderBy:['-rating','nick']">
+                <tr ng-repeat="player in players | orderBy:['-rating','nick'] | orderEmpty: 'played': 'toBottom'">
                     <td><a href="/players/{{player.nick}}" title="View profile">{{player.nick}}</a></td>
-                    <td>{{player.rating}}</td>
+                    <td ng-show="player.played > 0">{{player.rating}}</td>
+                    <td ng-show="player.played == 0">Unrated</td>
                     <td>{{player.played}}</td>
-                    <td ng-show="player.win_percent || player.win_percent == '0'">{{player.win_percent}}%</td>
+                    <td>{{player.win_percent}}%</td>
                 </tr>
             </tbody>
         </table>
@@ -43,7 +44,7 @@
 </div>
 
 <style>
-    #nav_bar li a#home {
+    #nav_bar li a#league {
         background-color: rgba(140, 140, 140, 0.35);
         -webkit-box-shadow: 6px 4px 38px -8px rgba(0,0,0,0.47);
         -moz-box-shadow: 6px 4px 38px -8px rgba(0,0,0,0.47);

@@ -9,6 +9,11 @@ body, html {
     font-family: Century Gothic, sans-serif;
 }
 
+h4 {
+    margin: 0px;
+    margin-bottom: 5px;
+}
+
 #main_wrapper {
     position: relative;
     width: 1500px;
@@ -405,3 +410,7 @@ select option{
 
 .green { color: green; }
 .red {color: red;}
+
+.box.margin_top {
+    margin-top: 50px;
+}

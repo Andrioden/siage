@@ -1,8 +1,8 @@
 ﻿var siAgeApp = angular.module('SiAgeApp');
 
-siAgeApp.controller('GameSetupController',
+siAgeApp.controller('SetupGamesController',
     function ($scope, Player, SetupGame, $routeParams) {
-
+        $scope.all_joining = false;
         $scope.loading_players = true;
         Player.query(
             function (data) {
@@ -25,6 +25,7 @@ siAgeApp.controller('GameSetupController',
                 };
             }
 
+            //TODO: Sende med parameter som inneholder spillere
             SetupGame.generate(
                 function (data) {
                     $scope.games = data.games;

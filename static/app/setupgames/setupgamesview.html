@@ -1,37 +1,43 @@
 ﻿<div id="main_content">
     <h1>Select all present players</h1>
     <div class="right_content">
-        <table ng-repeat="game in games">
-            <thead>
+        <div class="box margin_top" ng-repeat="game in games">
+            <h4>Game {{$index + 1}}</h4>
+            <table ng-repeat="team in game.teams">
                 <tr>
-                    <td>Games</td>
+                    <td style="width: 100px;">
+                        Team {{$index + 1}}
+                    </td>
+                    <td>
+                        <table>
+                            <tr ng-repeat="player in team">
+                                <td>
+                                    {{player.nick}}
+                                </td>
+                                <td>
+                                    {{player.rating}}
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
                 </tr>
-            </thead>
-            <tbody>
-                <tr ng-repeat="team in game.teams">
-                    <td>{{team}}</td>
-                </tr>
-            </tbody>
-        </table>
+            </table>
+        </div>
     </div>
     <div class="left_content">
         <form name="gameSetupForm" ng-submit="setupGame()">
             <table class="info_table">
-                <thead>
-                    <tr>
-                        <td>Player</td>
-                        <td>Joining</td>
-                    </tr>
-                </thead>
                 <tbody>
                     <tr ng-show="loading_players">
                         <td><img src="static/assets/img/ajax-loader.gif"></td>
                     </tr>
                     <tr ng-repeat="player in players | orderBy:['-rating','nick']">
-                        <td><a href="/players/{{player.nick}}" title="View profile">{{player.nick}}</a></td>
-                        <td class="small">
-                            <input class="checkbox" type="checkbox" name="joining"
-                                   ng-model="player.joining" />
+                        <td>
+                            <label>
+                                <input class="checkbox" type="checkbox" name="joining"
+                                       ng-model="player.joining" />
+                                {{player.nick}}
+                            </label>
                         </td>
                     </tr>
                 </tbody>
@@ -40,7 +46,7 @@
             <table class="buttoncontainer">
                 <tr>
                     <td>
-                        <input class="button submit" type="submit" value="Setup game" />
+                        <input class="button submit" type="submit" value="Setup games" />
                     </td>
                     <td class="message">
                         <span class="success">{{success}}</span>
@@ -53,7 +59,7 @@
 </div>
 
 <style>
-    #nav_bar li a#gamesetup {
+    #nav_bar li a#setupgames {
         background-color: rgba(140, 140, 140, 0.35);
         -webkit-box-shadow: 6px 4px 38px -8px rgba(0, 0, 0, 0.47);
         -moz-box-shadow: 6px 4px 38px -8px rgba(0, 0, 0, 0.47);
