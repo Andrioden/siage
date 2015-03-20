@@ -1,7 +1,10 @@
 ﻿<div id="main_content">
     <h1>Select all present players</h1>
     <div class="right_content">
-        <div class="box margin_top" ng-repeat="game in games">
+        <div ng-show="games.length == 0" class="box margin_top">
+            <strong style="color: red;">Under development. No games returned...</strong>
+        </div>
+        <div ng-show="games.length > 0" class="box margin_top" ng-repeat="game in games">
             <h4>Game {{$index + 1}}</h4>
             <table ng-repeat="team in game.teams">
                 <tr>
