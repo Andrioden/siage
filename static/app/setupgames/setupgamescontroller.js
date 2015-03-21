@@ -36,6 +36,6 @@ siAgeApp.controller('SetupGamesController',
             });
 
             
-        }
+        };
     }
 );

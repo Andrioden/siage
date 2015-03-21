@@ -9,19 +9,23 @@ import math, random, copy
 
 class SetupGameHandler(webapp2.RequestHandler):
     def post(self):
-        player_ids = [4863277368606720,5144752345317376,5707702298738688,4863277368606720,5144752345317376,5707702298738688,4863277368606720,5144752345317376,5707702298738688]
-#         logging.info(self.request.POST)
+        player_ids = [pl.key.id() for pl in Player.query().fetch()]
+        #         logging.info(self.request.POST)
 #         player_ids = self.request.POST.get('players')
 #         logging.info(player_ids)
-        players = [ndb.Key(Player, int(player_id)).get() for player_id in player_ids]
-        [player.rating() for player in players] # Cache all ratings before they get cloned later
+        #players = [ndb.Key(Player, int(player_id)).get() for player_id in player_ids]
+        #[player.rating() for player in players] # Cache all ratings before they get cloned later
+        players = []
+        for player_id in player_ids:
+            player = ndb.Key(Player, int(player_id)).get()
+            players.append({'id': player.key.id(), 'nick': player.nick, 'rating': player.rating()})
         logging.info(players)
         
-        algorithm = "random"
+        algorithm = "best_random"
         
         if algorithm == "random":
             setup_data = _random_setup(players)
-        else:
+        elif algorithm == "best_random":
             setup_data = _random_setup_best_attempt(players, 10)
 
         # RETURN RESPONSE
@@ -46,7 +50,7 @@ def _random_setup(players_in):
             
     # 2. Split the players into the different games_players randomly
     for i in range(len(players)):
-        game_index = i % game_count
+        game_index = 0 if (i % (game_count*2)) <= 1 else 1
         random_player = players.pop(random.randint(0, len(players)-1))
         games_players[game_index].append(random_player)
     logging.info(games_players)
@@ -65,7 +69,7 @@ def _random_team_split(players):
     teams_setup = {'rating_dif': None, 'teams': [[], []]}
     for i in range(len(players)):
         team_index = i % 2
-        teams_setup['teams'][team_index].append({'id': players[i].key.id(), 'nick': players[i].nick, 'rating': players[i].rating()})
+        teams_setup['teams'][team_index].append(players[i])
     teams_setup['rating_dif'] = _find_rating_dif(teams_setup['teams'])
     return teams_setup
 
