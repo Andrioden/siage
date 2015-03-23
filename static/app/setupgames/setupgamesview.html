@@ -1,24 +1,21 @@
 ﻿<div id="main_content">
     <h1>Select all present players</h1>
     <div class="right_content">
-        <div ng-show="games.length == 0" class="box margin_top">
-            <strong style="color: red;">Under development. No games returned...</strong>
+        <div ng-show="settingUpGame">
+            <img src="static/assets/img/ajax-loader.gif">
         </div>
         <div ng-show="games.length > 0" class="box margin_top" ng-repeat="game in games">
             <h4>Game {{$index + 1}}</h4>
             <table ng-repeat="team in game.teams">
                 <tr>
-                    <td style="width: 100px;">
-                        Team {{$index + 1}}
+                    <td style="width: 100px;">Team {{$index + 1}}
                     </td>
                     <td>
                         <table>
-                            <tr ng-repeat="player in team">
-                                <td>
-                                    {{player.nick}}
+                            <tr ng-repeat="player in team | orderBy:['-rating','nick']">
+                                <td>{{player.nick}}
                                 </td>
-                                <td>
-                                    {{player.rating}}
+                                <td>{{player.rating}}
                                 </td>
                             </tr>
                         </table>
@@ -32,19 +29,25 @@
             <table class="info_table">
                 <tbody>
                     <tr ng-show="loading_players">
-                        <td><img src="static/assets/img/ajax-loader.gif"></td>
+                        <td>
+                            <img src="static/assets/img/ajax-loader.gif"></td>
                     </tr>
                     <tr ng-repeat="player in players | orderBy:['-rating','nick']">
                         <td>
                             <label>
                                 <input class="checkbox" type="checkbox" name="joining"
-                                       ng-model="player.joining" />
+                                    ng-model="player.joining" />
                                 {{player.nick}}
                             </label>
                         </td>
                     </tr>
                 </tbody>
             </table>
+            <br />
+            <select ng-model="SetupGame.algorithm">
+                <option value="random">Random</option>
+                <option value="best_random">Best random</option>
+            </select>
             <br />
             <table class="buttoncontainer">
                 <tr>

@@ -2,7 +2,7 @@
 
 siAgeApp.controller('SetupGamesController',
     function ($scope, Player, SetupGame, $routeParams) {
-        $scope.all_joining = false;
+        $scope.SetupGame = { 'algorithm': '', 'players': [] };
         $scope.loading_players = true;
         Player.query(
             function (data) {
@@ -18,24 +18,26 @@ siAgeApp.controller('SetupGamesController',
             });
 
         $scope.setupGame = function () {
-            $scope.players_joining = [];
+            $scope.settingUpGame = true;
             for (var i = 0; i < $scope.players.length; i++) {
                 if ($scope.players[i].joining) {
-                    $scope.players_joining.push($scope.players[i]);
+                    $scope.SetupGame.players.push($scope.players[i].id);
                 };
             }
 
-            //TODO: Sende med parameter som inneholder spillere
-            SetupGame.generate(
+            SetupGame.submit($scope.SetupGame).$promise.then(
+                //success
                 function (data) {
                     $scope.games = data.games;
-                    //{"games": [{"rating_dif": 899, "teams": [[{"nick": "Shrubber", "id": 5144752345317376, "rating": 1000}, {"nick": "Fredrik", "id": 4863277368606720, "rating": 950}], [{"nick": "Lise", "id": 5707702298738688, "rating": 1051}]]}], "total_rating_dif": 899}
+                    $scope.SetupGame.players = [];
+                    $scope.settingUpGame = false;
+                },
+                //error
+                function (error) {
+                    $scope.settingUpGame = false;
+                    $scope.error = "Unable to setup game!";
                 }
-            , function (error) {
-                $scope.error = "Unable to setup game!";
-            });
-
-            
+            );
         };
     }
 );

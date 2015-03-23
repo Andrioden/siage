@@ -27,7 +27,7 @@ siAgeApp
 
     .factory('SetupGame', function ($resource) {
         return $resource('/api/setupgame/', {}, {
-            generate: { method: 'POST' }
+            submit: { method: 'POST' }
         });
     });
 
