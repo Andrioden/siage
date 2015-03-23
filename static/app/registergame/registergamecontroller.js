@@ -2,7 +2,6 @@
 
 siAgeApp.controller('RegisterGameController',
     function ($scope, GameSetting, Player, Game, $timeout) {
-        initGame();
         GameSetting.query().$promise.then(
             function (value) {
                 $scope.error = "";
@@ -19,6 +18,8 @@ siAgeApp.controller('RegisterGameController',
                 $scope.populations = value.populations;
                 $scope.difficulties = value.difficulties;
                 $scope.reveal_map = value.reveal_map;
+
+                $scope.initGame();
             },
             function (error) {
                 $scope.error = "Unable to load settings";
@@ -27,7 +28,7 @@ siAgeApp.controller('RegisterGameController',
 
         Player.query().$promise.then(
             function (value) {
-                emptyPlayerHelper = [{'player_id': "", 'first': true}];
+                emptyPlayerHelper = [{ 'player_id': "", 'first': true }];
                 $scope.allPlayers = emptyPlayerHelper.concat(value);
             },
             function (value) {
@@ -37,7 +38,7 @@ siAgeApp.controller('RegisterGameController',
 
         $scope.submitting = false;
         $scope.submitGame = function () {
-            if(!hasWinner()){
+            if (!hasWinner()) {
                 $scope.error = "Select a winner!";
                 return;
             }
@@ -52,7 +53,7 @@ siAgeApp.controller('RegisterGameController',
             Game.save($scope.game).$promise.then(
                 //success
                 function (value) {
-                    initGame();
+                    $scope.initGame();
                     resetAllPlayers();
                     $scope.error = "";
                     $scope.success = value.response;
@@ -95,13 +96,13 @@ siAgeApp.controller('RegisterGameController',
                 }
             }
         };
-        
+
         $scope.removeHostFromOtherPlayerResults = function (playerResult) {
-        	for (i = 0; i < $scope.game.playerResults.length; i++) {
-        		if ($scope.game.playerResults[i] != playerResult) {
-        			$scope.game.playerResults[i].is_host = false;
-        		}
-        	}
+            for (i = 0; i < $scope.game.playerResults.length; i++) {
+                if ($scope.game.playerResults[i] != playerResult) {
+                    $scope.game.playerResults[i].is_host = false;
+                }
+            }
         };
 
         $scope.setWinnersByWinToggle = function (playerResult) {
@@ -153,13 +154,13 @@ siAgeApp.controller('RegisterGameController',
                             }
                         }
                     }
-                }else if (playerResult.is_winner && playerResult.team != null) {
+                } else if (playerResult.is_winner && playerResult.team != null) {
                     for (j = 0; j < $scope.game.playerResults.length; j++) {
                         if (playerResult.player_id != $scope.game.playerResults[j].player_id) {
                             if (playerResult.team == $scope.game.playerResults[j].team) {
                                 $scope.game.playerResults[j].is_winner = playerResult.is_winner;
-                            }else{
-                                $scope.game.playerResults[j].is_winner =!playerResult.is_winner;
+                            } else {
+                                $scope.game.playerResults[j].is_winner = !playerResult.is_winner;
                             }
                         }
                     }
@@ -179,23 +180,23 @@ siAgeApp.controller('RegisterGameController',
             }
         };
 
-        function initGame() {
+        $scope.initGame = function () {
             $scope.game = new Game();
             $scope.game.date = new Date();
             $scope.game.duration_seconds = null;
-            $scope.game.game_type = null;
+            $scope.game.game_type = "Random Map";
             $scope.game.location = null;
-            $scope.game.size = null;
-            $scope.game.difficulty = null;
-            $scope.game.resources = null;
-            $scope.game.game_speed = null;
-            $scope.game.reveal_map = null;
-            $scope.game.victory = null;
-            $scope.game.starting_age = null;
+            $scope.game.size = "Normal (6 player)";
+            $scope.game.difficulty = "Standard";
+            $scope.game.resources = "Standard";
+            $scope.game.population = 200;
+            $scope.game.game_speed = "Normal";
+            $scope.game.reveal_map = "Normal";
+            $scope.game.starting_age = "Standard";
             $scope.game.treaty_length = null;
-            $scope.game.population = null;
+            $scope.game.victory = "Standad";
             $scope.game.all_techs = false;
-            $scope.game.team_together = false;
+            $scope.game.team_together = true;
             $scope.game.trebuchet_allowed = false;
             $scope.game.playerResults = [];
             for (i = 0; i < 8; i++) {
@@ -227,16 +228,16 @@ siAgeApp.controller('RegisterGameController',
             }
         };
 
-        function hasWinner(){
+        function hasWinner() {
             for (i = 0; i < $scope.game.playerResults.length; i++) {
-                if($scope.game.playerResults[i].is_winner) return true;
+                if ($scope.game.playerResults[i].is_winner) return true;
             }
             return false;
         }
-        
-        function hasHost(){
+
+        function hasHost() {
             for (i = 0; i < $scope.game.playerResults.length; i++) {
-                if($scope.game.playerResults[i].is_host) return true;
+                if ($scope.game.playerResults[i].is_host) return true;
             }
             return false;
         }
