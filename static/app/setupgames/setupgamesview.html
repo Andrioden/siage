@@ -1,58 +1,65 @@
 ﻿<div id="main_content">
-    <h1>Select all present players</h1>
+    <h1>Generate game setups</h1>
     <div class="right_content">
         <div ng-show="settingUpGame">
             <img src="static/assets/img/ajax-loader.gif">
         </div>
-        <div ng-show="games.length > 0" class="box margin_top" ng-repeat="game in games">
-            <h4>Game {{$index + 1}}</h4>
-            <table ng-repeat="team in game.teams">
-                <tr>
-                    <td style="width: 100px;">Team {{$index + 1}}
-                    </td>
-                    <td>
-                        <table>
-                            <tr ng-repeat="player in team | orderBy:['-rating','nick']">
-                                <td>{{player.nick}}
-                                </td>
-                                <td>{{player.rating}}
-                                </td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-            </table>
+        <div id="gamesWrapper" ng-show="!settingUpGame">
+            <div ng-show="games.length > 0" class="box margin_top" ng-repeat="game in games">
+                <h4>Game {{$index + 1}}</h4>
+                <table ng-repeat="team in game.teams">
+                    <tr>
+                        <td style="width: 100px;">
+                            Team {{$index + 1}}
+                        </td>
+                        <td>
+                            <table>
+                                <tr ng-repeat="player in team | orderBy:['-rating','nick']">
+                                    <td>
+                                        {{player.nick}}
+                                    </td>
+                                    <td>
+                                        {{player.rating}}
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </div>
         </div>
     </div>
     <div class="left_content">
         <form name="gameSetupForm" ng-submit="setupGame()">
+            <h4>Algorithm to use</h4>
+            <select ng-model="SetupGame.algorithm" class="wide" ng-options="alg as alg for alg in algorithms"></select>
+            <br/>
+            <br/>
+            <h4>Select all present players</h4>
             <table class="info_table">
                 <tbody>
-                    <tr ng-show="loading_players">
-                        <td>
-                            <img src="static/assets/img/ajax-loader.gif"></td>
-                    </tr>
-                    <tr ng-repeat="player in players | orderBy:['-rating','nick']">
-                        <td>
-                            <label>
-                                <input class="checkbox" type="checkbox" name="joining"
-                                    ng-model="player.joining" />
-                                {{player.nick}}
-                            </label>
-                        </td>
-                    </tr>
+                <tr ng-show="loading_players">
+                    <td>
+                        <img src="static/assets/img/ajax-loader.gif">
+                    </td>
+                </tr>
+                <tr ng-repeat="player in players | orderBy:['-rating','nick']">
+                    <td>
+                        <label>
+                            <input class="checkbox" type="checkbox" name="joining"
+                                   ng-model="player.joining"/>
+                            {{player.nick}}
+                        </label>
+                    </td>
+                </tr>
                 </tbody>
             </table>
-            <br />
-            <select ng-model="SetupGame.algorithm">
-                <option value="random">Random</option>
-                <option value="best_random">Best random</option>
-            </select>
-            <br />
+            <br/>
+            <br/>
             <table class="buttoncontainer">
                 <tr>
                     <td>
-                        <input class="button submit" type="submit" value="Setup games" />
+                        <input class="button submit" type="submit" value="Setup games"/>
                     </td>
                     <td class="message">
                         <span class="success">{{success}}</span>

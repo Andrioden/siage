@@ -16,11 +16,11 @@ class SetupGameHandler(webapp2.RequestHandler):
             players.append({'id': player.key.id(), 'nick': player.nick, 'rating': player.rating()})
         logging.info(players)
         
-        algorithm = "best_random" # Should be replaced with reading from http post
+        algorithm = "Best random" # Should be replaced with reading from http post
         
-        if algorithm == "random":
+        if algorithm == "Random":
             setup_data = _random_setup(players)
-        elif algorithm == "best_random":
+        elif algorithm == "Best random":
             setup_data = _random_setup_best_attempt(players, 50)
 
         # RETURN RESPONSE
