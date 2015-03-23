@@ -405,7 +405,7 @@ select{
 
 select option{
     background-color: black;
-    color: #ffdcb6
+    color: #ffdcb6;
 }
 
 .green { color: green; }
@@ -413,4 +413,9 @@ select option{
 
 .box.margin_top {
     margin-top: 50px;
+}
+
+.icon {
+    margin-left: 2px;
+    margin-right: 2px;
 }
