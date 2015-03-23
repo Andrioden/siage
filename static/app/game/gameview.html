@@ -4,92 +4,93 @@
     <div class="right_content">
         <table ng-show="!loading_game">
             <thead>
-            <tr>
-                <td style="width: 55px"></td>
-                <td>Player</td>
-                <td>Score</td>
-                <td>Rating after</td>
-                <td>Team</td>
-            </tr>
+                <tr>
+                    <td style="width: 55px"></td>
+                    <td>Player</td>
+                    <td>Score</td>
+                    <td>Rating after</td>
+                    <td>Team</td>
+                </tr>
             </thead>
             <tbody>
-            <tr ng-repeat="player_result in game.player_results |orderBy:['-is_winner','team','-score','nick']" ng-class="{winner_team: player_result.is_winner}">
-                <td>
-                    <img class="icon" title="Winner" ng-show="player_result.is_winner" src="/static/assets/img/crown_w_rock.png">
-                    <img class="icon" title="Host" ng-show="player_result.is_host" src="/static/assets/img/host.png">
-                </td>
-                <td ><a href="/players/{{player_result.player.nick}}" title="View player {{player_result.player.nick}}">{{player_result.player.nick}}</a></td>
-                <td>{{player_result.score}}</td>
-                <td ng-if="player_result.rating_earned >= 0" title="Rating when game was played">{{player_result.stats_rating}} (<span class="green">+{{player_result.rating_earned}}</span>)</td>
-                <td ng-if="player_result.rating_earned < 0" title="Rating when game was played">{{player_result.stats_rating}} (<span class="red">{{player_result.rating_earned}}</span>)</td>
-                <td>{{player_result.team}}</td>
-            </tr>
+                <tr ng-repeat="player_result in game.player_results |orderBy:['-is_winner','team','-score','nick']" ng-class="{winner_team: player_result.is_winner}">
+                    <td>
+                        <img class="icon" title="Winner" ng-show="player_result.is_winner" src="/static/assets/img/crown_w_rock.png">
+                        <img class="icon" title="Host" ng-show="player_result.is_host" src="/static/assets/img/host.png">
+                    </td>
+                    <td><a href="/players/{{player_result.player.nick}}" title="View player {{player_result.player.nick}}">{{player_result.player.nick}}</a></td>
+                    <td>{{player_result.score}}</td>
+                    <td title="Rating after the game was finished">
+                        {{player_result.stats_rating}} (<span ng-class="{'green': player_result.rating_earned >= 0, 'red': player_result.rating_earned < 0}"><span ng-if="player_result.rating_earned >= 0">+</span>{{player_result.rating_earned}}</span>)
+                    </td>
+                    <td>{{player_result.team}}</td>
+                </tr>
             </tbody>
         </table>
     </div>
     <div class="left_content">
         <table ng-show="!loading_game" class="info_table">
             <tbody>
-            <tr>
-                <td>Date</td>
-                <td>{{game.date | date : 'dd.MM.yyyy'}}</td>
-            </tr>
-            <tr>
-                <td>Duration</td>
-                <td>{{game.duration_minutes}} minutes</td>
-            </tr>
-            <tr>
-                <td>Game type</td>
-                <td>{{game.game_type}}</td>
-            </tr>
-            <tr>
-                <td>Map type</td>
-                <td>{{game.location}}</td>
-            </tr>
-            <tr>
-                <td>Size</td>
-                <td>{{game.size}}</td>
-            </tr>
-            <tr>
-                <td>Difficulty</td>
-                <td>{{game.difficulty}}</td>
-            </tr>
-            <tr>
-                <td>Resources</td>
-                <td>{{game.resources}}</td>
-            </tr>
-            <tr>
-                <td>Game speed</td>
-                <td>{{game.game_speed}}</td>
-            </tr>
-            <tr>
-                <td>Reveal map</td>
-                <td>{{game.reveal_map}}</td>
-            </tr>
-            <tr>
-                <td>Victory</td>
-                <td>{{game.victory}}</td>
-            </tr>
-            <tr>
-                <td>Starting age</td>
-                <td>{{game.starting_age}}</td>
-            </tr>
-            <tr>
-                <td>Population</td>
-                <td>{{game.population}}</td>
-            </tr>
-            <tr>
-                <td>All techs</td>
-                <td>{{game.all_techs | yesNo}}</td>
-            </tr>
-            <tr>
-                <td>Teams together</td>
-                <td>{{game.team_together | yesNo}}</td>
-            </tr>
-            <tr>
-                <td>Trebuchet</td>
-                <td>{{game.trebuchet_allowed | yesNo}}</td>
-            </tr>
+                <tr>
+                    <td>Date</td>
+                    <td>{{game.date | date : 'dd.MM.yyyy'}}</td>
+                </tr>
+                <tr>
+                    <td>Duration</td>
+                    <td>{{game.duration_minutes}} minutes</td>
+                </tr>
+                <tr>
+                    <td>Game type</td>
+                    <td>{{game.game_type}}</td>
+                </tr>
+                <tr>
+                    <td>Map type</td>
+                    <td>{{game.location}}</td>
+                </tr>
+                <tr>
+                    <td>Size</td>
+                    <td>{{game.size}}</td>
+                </tr>
+                <tr>
+                    <td>Difficulty</td>
+                    <td>{{game.difficulty}}</td>
+                </tr>
+                <tr>
+                    <td>Resources</td>
+                    <td>{{game.resources}}</td>
+                </tr>
+                <tr>
+                    <td>Game speed</td>
+                    <td>{{game.game_speed}}</td>
+                </tr>
+                <tr>
+                    <td>Reveal map</td>
+                    <td>{{game.reveal_map}}</td>
+                </tr>
+                <tr>
+                    <td>Victory</td>
+                    <td>{{game.victory}}</td>
+                </tr>
+                <tr>
+                    <td>Starting age</td>
+                    <td>{{game.starting_age}}</td>
+                </tr>
+                <tr>
+                    <td>Population</td>
+                    <td>{{game.population}}</td>
+                </tr>
+                <tr>
+                    <td>All techs</td>
+                    <td>{{game.all_techs | yesNo}}</td>
+                </tr>
+                <tr>
+                    <td>Teams together</td>
+                    <td>{{game.team_together | yesNo}}</td>
+                </tr>
+                <tr>
+                    <td>Trebuchet</td>
+                    <td>{{game.trebuchet_allowed | yesNo}}</td>
+                </tr>
             </tbody>
         </table>
         <span class="error">{{error}}</span>
