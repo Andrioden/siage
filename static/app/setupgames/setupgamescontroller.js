@@ -32,6 +32,7 @@ siAgeApp.controller('SetupGamesController',
                 //success
                 function (data) {
                     $scope.games = data.games;
+                    $scope.total_rating_dif = data.total_rating_dif;
                     $scope.SetupGame.players = [];
                     $scope.settingUpGame = false;
                 },

@@ -6,7 +6,7 @@
         </div>
         <div id="gamesWrapper" ng-show="!settingUpGame">
             <div ng-show="games.length > 0" class="box margin_top" ng-repeat="game in games">
-                <h4>Game {{$index + 1}}</h4>
+                <h4>Game {{$index + 1}} <span style="float: right; font-weight: normal;">Rating dif: {{game.rating_dif}}</span></h4>
                 <table ng-repeat="team in game.teams">
                     <tr>
                         <td style="width: 100px;">
@@ -26,6 +26,9 @@
                         </td>
                     </tr>
                 </table>
+            </div>
+            <div class="box margin_top" ng-show="total_rating_dif != null">
+                Total ranting difference across all games: {{total_rating_dif}}
             </div>
         </div>
     </div>
