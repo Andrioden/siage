@@ -16,7 +16,7 @@
             <tr ng-repeat="player_result in game.player_results |orderBy:['-is_winner','team','-score','nick']" ng-class="{winner_team: player_result.is_winner}">
                 <td>
                     <img class="icon" title="Winner" ng-show="player_result.is_winner" src="/static/assets/img/crown_w_rock.png">
-                    <img class="icon" title="Host" ng-show="player_result.is_host" src="/static/assets/img/pc.png">
+                    <img class="icon" title="Host" ng-show="player_result.is_host" src="/static/assets/img/host.png">
                 </td>
                 <td ><a href="/players/{{player_result.player.nick}}" title="View player {{player_result.player.nick}}">{{player_result.player.nick}}</a></td>
                 <td>{{player_result.score}}</td>
