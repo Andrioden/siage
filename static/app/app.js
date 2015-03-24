@@ -23,6 +23,10 @@ siAgeApp.config(['$routeProvider', '$locationProvider',
                 templateUrl: 'static/app/game/gameview.html',
                 controller: 'GameController'
             })
+            .when('/games', {
+                templateUrl: 'static/app/games/gamesview.html',
+                controller: 'GamesController'
+            })
             .when('/setupgames', {
                 templateUrl: 'static/app/setupgames/setupgamesview.html',
                 controller: 'SetupGamesController'
@@ -74,5 +78,16 @@ siAgeApp.filter('orderEmpty', function () {
                 break;
         }
         return result;
+    };
+});
+
+siAgeApp.directive('autoFocus', function ($timeout) {
+    return {
+        restrict: 'AC',
+        link: function (_scope, _element) {
+            $timeout(function () {
+                _element[0].focus();
+            }, 0);
+        }
     };
 });

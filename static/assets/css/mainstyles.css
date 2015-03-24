@@ -419,3 +419,9 @@ select option{
     margin-left: 2px;
     margin-right: 2px;
 }
+
+.search_field {
+    margin-bottom: 20px;
+    margin-right: 10px;
+    width: 600px;
+}
