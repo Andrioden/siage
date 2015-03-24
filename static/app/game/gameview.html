@@ -6,10 +6,11 @@
             <thead>
                 <tr>
                     <td style="width: 55px"></td>
-                    <td>Player</td>
-                    <td>Score</td>
-                    <td>Rating after</td>
+                    <td class="wide">Player</td>
+                    <td class="wide">Civilization</td>
                     <td>Team</td>
+                    <td>Score</td>
+                    <td class="wide">Rating after</td>
                 </tr>
             </thead>
             <tbody>
@@ -19,11 +20,12 @@
                         <img class="icon" title="Host" ng-show="player_result.is_host" src="/static/assets/img/host.png">
                     </td>
                     <td><a href="/players/{{player_result.player.nick}}" title="View player {{player_result.player.nick}}">{{player_result.player.nick}}</a></td>
+                    <td>{{player_result.civilization}}</td>
+                    <td>{{player_result.team}}</td>
                     <td>{{player_result.score}}</td>
                     <td title="Rating after the game was finished">
                         {{player_result.stats_rating}} (<span ng-class="{'green': player_result.rating_earned >= 0, 'red': player_result.rating_earned < 0}"><span ng-if="player_result.rating_earned >= 0">+</span>{{player_result.rating_earned}}</span>)
                     </td>
-                    <td>{{player_result.team}}</td>
                 </tr>
             </tbody>
         </table>

@@ -169,7 +169,7 @@ h4 {
     float: right;
     padding: 0px;
     margin: 0px;
-    width: 500px;
+    width: 550px;
 
 }
 
@@ -439,4 +439,8 @@ select option{
 
 .search_result {
     font-size: 14px;
+}
+
+#main_view .right_content table td.wide {
+    width: 95px;
 }
