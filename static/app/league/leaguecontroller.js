@@ -20,7 +20,7 @@ siAgeApp.controller('LeagueController',
             });
 
         $scope.loading_games = true;
-        Game.query(
+        Game.query({max: 10},
             function (data) {
                 $scope.games = data;
                 $scope.loading_games = false;

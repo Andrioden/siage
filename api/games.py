@@ -11,9 +11,16 @@ from rating import RatingCalculator
 class GamesHandler(webapp2.RequestHandler):
     def get(self):
         """ --------- GET GAMELIST --------- """
-        # BUILD DATA
-        game_data = [game.get_data() for game in Game.query()]
+        max_rows = self.request.get('max')
 
+        # BUILD DATA
+        if max_rows.isdigit():
+            if int(max_rows) > 0:
+                game_data = [game.get_data() for game in Game.query().fetch(limit = int(max_rows))]
+            else: game_data = [game.get_data() for game in Game.query()]
+        else:     
+            game_data = [game.get_data() for game in Game.query()]
+        
         # RETURN RESPONSE
         self.response.headers['Content-Type'] = 'application/json'
         self.response.out.write(json.dumps(game_data))
