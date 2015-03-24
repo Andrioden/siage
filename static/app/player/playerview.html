@@ -8,7 +8,8 @@
             <tbody>
             <tr>
                 <td>Rating</td>
-                <td>{{player.rating}}</td>
+                <td ng-show="player.played > 0">{{player.rating}}</td>
+                <td ng-show="player.played == 0">Unrated</td>
             </tr>
             <tr>
                 <td>More to come...</td>
