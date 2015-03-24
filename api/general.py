@@ -9,18 +9,20 @@ import math, random, copy
 
 class SetupGameHandler(webapp2.RequestHandler):
     def post(self):
-        player_ids = [pl.key.id() for pl in Player.query().fetch()] # Should be replaced with reading from http post
+        request_data = json.loads(self.request.body)
+
+        player_ids = request_data['players'] #[pl.key.id() for pl in Player.query().fetch()] # Should be replaced with reading from http post
         players = []
         for player_id in player_ids:
             player = ndb.Key(Player, int(player_id)).get()
             players.append({'id': player.key.id(), 'nick': player.nick, 'rating': player.rating()})
         logging.info(players)
         
-        algorithm = "Best random" # Should be replaced with reading from http post
+        algorithm = request_data['algorithm'] # "Best random" # Should be replaced with reading from http post
         
         if algorithm == "Random":
             setup_data = _random_setup(players)
-        elif algorithm == "Best random":
+        elif algorithm == "Autobalance":
             setup_data = _random_setup_best_attempt(players, 50)
 
         # RETURN RESPONSE

@@ -3,8 +3,8 @@
 siAgeApp.controller('SetupGamesController',
     function ($scope, Player, SetupGame, $routeParams) {
         $scope.SetupGame = { 'players': [] };
-        $scope.algorithms = ["Random", "Best random"];
-        $scope.SetupGame.algorithm = "Best random";
+        $scope.algorithms = ["Random", "Autobalance"];
+        $scope.SetupGame.algorithm = "Autobalance";
 
         $scope.loading_players = true;
         Player.query(
