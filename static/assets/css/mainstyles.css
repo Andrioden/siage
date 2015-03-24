@@ -284,9 +284,20 @@ input:focus, textarea:focus {
     border-color: #42522e;
 }
 
+.button.submit:disabled {
+    color: #999999;
+    background-color: #495935;
+}
+
 .button.submit:hover {
     background-color: #495935;
     border-color: #354522;
+}
+
+.button.submit:hover:disabled {
+    color: #999999;
+    background-color: #495935;
+    border-color: #42522e;
 }
 
 .button.clear {
