@@ -444,3 +444,7 @@ select option{
 #main_view .right_content table td.wide {
     width: 95px;
 }
+
+#main_view .right_content table td.widest {
+    width: 115px;
+}
