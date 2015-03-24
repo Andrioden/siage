@@ -22,13 +22,13 @@ siAgeApp.controller('GamesController',
             game.player_results.sort(compareTeams);
             game.player_results.forEach(function (playerResult) {
                 if (!first) {
-                    result += " -";
+                    result += ",";
                 }
                 result += " " + playerResult.player.nick;
                 if (playerResult.is_winner) {
-                    result += "(won)";
+                    result += "(W)";
                 } else {
-                    result += "(lost)";
+                    result += "(L)";
                 }
                 first = false;
             });
