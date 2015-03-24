@@ -4,13 +4,13 @@
     </div>
     <div class="left_content">
         <input ng-model="gameSearchQuery.searchString" class="search_field" type="text" placeholder="Filter..." auto-focus />
-        <br/>
+        <br />
         Count: {{filteredGames.length}}
         <table>
-            <tbody>
-            <tr ng-show="loading_games">
-                <td><img src="static/assets/img/ajax-loader.gif"></td>
-            </tr>
+            <tbody class="search_result">
+                <tr ng-show="loading_games">
+                    <td><img src="static/assets/img/ajax-loader.gif"></td>
+                </tr>
                 <tr ng-repeat="game in filteredGames = (games | filter: gameSearchQuery : matchEveryWord()  | orderBy: 'date_epoch' : true)">
                     <td><a href="/games/{{game.id}}" title="View game">{{game.searchString}}</a></td>
                 </tr>
