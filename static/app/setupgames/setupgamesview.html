@@ -27,18 +27,18 @@
                     </tr>
                 </table>
             </div>
-            <div class="box margin_top" ng-show="total_rating_dif != null">
+            <div class="box margin_top" ng-show="total_rating_dif != null && games.length > 0">
                 Total rating difference across all games: {{total_rating_dif}}
             </div>
         </div>
     </div>
     <div class="left_content">
         <form name="gameSetupForm" ng-submit="setupGame()">
-            <h4>Algorithm to use</h4>
+            <h4>Teams</h4>
             <select ng-model="SetupGame.algorithm" class="wide" ng-options="alg as alg for alg in algorithms"></select>
             <br/>
             <br/>
-            <h4>Select all present players</h4>
+            <h4>Players <a href="" style="font-weight: normal;" ng-click="ToggleSelectAllPlayers()">(All)</a></h4>
             <table class="info_table">
                 <tbody>
                 <tr ng-show="loading_players">

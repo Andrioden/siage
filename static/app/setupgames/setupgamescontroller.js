@@ -20,7 +20,34 @@ siAgeApp.controller('SetupGamesController',
                 $scope.error = "Unable to load league list!";
             });
 
+        $scope.ToggleSelectAllPlayers = function () {
+            var isSynced = true;
+            for (i = 0; i < $scope.players.length; i++) {
+                for (j = 0; j < $scope.players.length; j++) {
+                    if ($scope.players[i].joining != $scope.players[j].joining) {
+                        isSynced = false;
+                    }
+                }
+            }
+
+            if (!isSynced) {
+                for (i = 0; i < $scope.players.length; i++) {
+                    $scope.players[i].joining = true;
+                }
+            } else {
+                for (i = 0; i < $scope.players.length; i++) {
+                    $scope.players[i].joining = !$scope.players[i].joining;
+                }
+            }
+        };
+
         $scope.setupGame = function () {
+            if (!hasEnoughPlayers()) {
+                $scope.error = "Select at least 3 players!";
+                $scope.games = [];
+                return;
+            };
+
             $scope.settingUpGame = true;
             for (var i = 0; i < $scope.players.length; i++) {
                 if ($scope.players[i].joining) {
@@ -31,6 +58,7 @@ siAgeApp.controller('SetupGamesController',
             SetupGame.submit($scope.SetupGame).$promise.then(
                 //success
                 function (data) {
+                    $scope.error = "";
                     $scope.games = data.games;
                     $scope.total_rating_dif = data.total_rating_dif;
                     $scope.SetupGame.players = [];
@@ -43,5 +71,17 @@ siAgeApp.controller('SetupGamesController',
                 }
             );
         };
+
+        function hasEnoughPlayers() {
+            var count = 0;
+            for (i = 0; i < $scope.players.length; i++) {
+                if ($scope.players[i].joining) {
+                    count++;
+                };
+            }
+
+            if (count >= 3) return true;
+            return false;
+        }
     }
 );
