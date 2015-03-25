@@ -12,14 +12,22 @@ class GamesHandler(webapp2.RequestHandler):
     def get(self):
         """ --------- GET GAMELIST --------- """
         max_rows = self.request.get('max')
+        player_id_or_nick = self.request.get('player_id')
 
         # BUILD DATA
+        query = Game.query()
+
         if max_rows.isdigit():
             if int(max_rows) > 0:
-                game_data = [game.get_data() for game in Game.query().fetch(limit = int(max_rows))]
-            else: game_data = [game.get_data() for game in Game.query()]
-        else:     
-            game_data = [game.get_data() for game in Game.query()]
+                query = query.fetch(limit = int(max_rows))
+
+        if player_id_or_nick:
+            if player_id_or_nick.isdigit():
+                query = query # TODO: Add player.id = player_id_or_nick
+            else:
+                query = query # TODO: Add player.nick = player_id_or_nick            
+        
+        game_data = [game.get_data() for game in query]
         
         # RETURN RESPONSE
         self.response.headers['Content-Type'] = 'application/json'
