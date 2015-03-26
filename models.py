@@ -34,19 +34,15 @@ class Player(ndb.Model):
         stats was calculated
         
         """
-        data = self.get_data_base() # Base data
+        data = self.get_data_base()
         
-        if self.stats_average_score == None:
-            self.calc_stats()
-            self.put()
-
-        stats = {
+        self.calc_and_put_stats_if_needed()
+        stats_data = {
             'average_score': self.stats_average_score,
             'best_civ': {
                 'name': self.stats_best_civ,
                 'wins': self.stats_best_civ_wins
             },
-            #'average_score'
         #     Most played civ
         #     Worst civ
         #     Best team mate winchance
@@ -57,8 +53,12 @@ class Player(ndb.Model):
         #     Best score - show game
         #     Worst score - show game
         }
-        data.update(stats)
+        data.update(stats_data)
         return data
+    def calc_and_put_stats_if_needed(self):
+        if self.stats_average_score == None:
+            self.calc_stats()
+            self.put()
     def calc_stats(self):
         player_results = PlayerResult.query(PlayerResult.player == self.key).fetch()
         # Average score
@@ -74,7 +74,7 @@ class Player(ndb.Model):
             best_civ = max(civ_won_dict.iteritems(), key=operator.itemgetter(1))[0]
             self.stats_best_civ = best_civ
             self.stats_best_civ_wins = civ_won_dict[best_civ]
-        # MOAR STATS
+        # MOAR STATS using player_results
     def clear_stats(self):
         self.stats_average_score = None
         self.stats_best_civ = None
