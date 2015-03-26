@@ -11,14 +11,14 @@ class SetupGameHandler(webapp2.RequestHandler):
     def post(self):
         request_data = json.loads(self.request.body)
 
-        player_ids = request_data['players'] #[pl.key.id() for pl in Player.query().fetch()] # Should be replaced with reading from http post
+        player_ids = request_data['players']
         players = []
         for player_id in player_ids:
             player = ndb.Key(Player, int(player_id)).get()
             players.append({'id': player.key.id(), 'nick': player.nick, 'rating': player.rating()})
         logging.info(players)
         
-        algorithm = request_data['algorithm'] # "Best random" # Should be replaced with reading from http post
+        algorithm = request_data['algorithm']
         
         if algorithm == "Random":
             setup_data = _random_setup(players)

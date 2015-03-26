@@ -12,7 +12,7 @@ class GamesHandler(webapp2.RequestHandler):
     def get(self):
         """ --------- GET GAMELIST --------- """
         max_rows = self.request.get('max')
-        player_id_or_nick = self.request.get('player_id')
+        #player_id_or_nick = self.request.get('player_id')
 
         # BUILD DATA
         query = Game.query()
@@ -21,11 +21,12 @@ class GamesHandler(webapp2.RequestHandler):
             if int(max_rows) > 0:
                 query = query.fetch(limit = int(max_rows))
 
-        if player_id_or_nick:
-            if player_id_or_nick.isdigit():
-                query = query # TODO: Add player.id = player_id_or_nick
-            else:
-                query = query # TODO: Add player.nick = player_id_or_nick            
+        # NOT POSSIBLE
+#         if player_id_or_nick:
+#             if player_id_or_nick.isdigit():
+#                 query = query # TODO: Add player.id = player_id_or_nick
+#             else:
+#                 query = query # TODO: Add player.nick = player_id_or_nick            
         
         game_data = [game.get_data() for game in query]
         
@@ -91,6 +92,9 @@ class GamesHandler(webapp2.RequestHandler):
             if last_player_result:
                 last_player_result.next_player_result = new_player_result_key
                 last_player_result.put()
+        
+        # Delete for all players incase stats for other players will relate to players in this game
+        self._clear_all_player_stats() 
 
         self.response.headers['Content-Type'] = 'application/json'
         self.response.out.write(json.dumps({'response': "Success!", 'game_id': game_key.id()}))
@@ -99,6 +103,9 @@ class GamesHandler(webapp2.RequestHandler):
         for player_result in player_results:
             if player_result['player_id'] == None or not player_result['player_id'].isdigit():
                 raise Exception("Validation Error: Player Results contain items without a valid player id.")
+    def _clear_all_player_stats(self):
+        for player in Player.query():
+            player.clear_stats()
 
 class GameHandler(webapp2.RequestHandler):
     def get(self, game_id):
@@ -117,6 +124,8 @@ class GameHandler(webapp2.RequestHandler):
     def put(self, gameId):
         self.response.headers['Content-Type'] = 'application/text'
         self.response.out.write("PUT (Update) received with data: " + self.request.body)
+
+
 
 app = webapp2.WSGIApplication([
     (r'/api/games/', GamesHandler),

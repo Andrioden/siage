@@ -2,9 +2,16 @@ from google.appengine.ext import ndb
 import datetime
 from collections import Counter
 from config import PLAYER_RATING_START_VALUE
+import logging
+import operator
+
+CIVILIZATIONS = ['Aztec', 'Britons', 'Byzantines', 'Celts', 'Chinese', 'Franks', 'Goths', 'Huns', 'Incas', 'Indians', 'Italians', 'Japanese', 'Koreans', 'Magyars', 'Mayans', 'Mongols', 'Persians', 'Saracens', 'Slavs', 'Spanish', 'Teutons', 'Turks', 'Vikings']
 
 class Player(ndb.Model):
     nick = ndb.StringProperty(required=True)
+    stats_average_score = ndb.IntegerProperty(default=None)
+    stats_best_civ = ndb.StringProperty(choices=CIVILIZATIONS, default=None)
+    stats_best_civ_wins = ndb.IntegerProperty(default=None)
     def rating(self):
         """ To avoid hitting the db unneccessary the rating value is stored in memory.
         """
@@ -14,7 +21,7 @@ class Player(ndb.Model):
             last_player_result = PlayerResult._last_result(self.key)
             self._current_rating_cached = 1000 if last_player_result == None else last_player_result.stats_rating
             return self._current_rating_cached
-    def get_data(self):
+    def get_data_base(self):
         return {
             'id': self.key.id(), 
             'nick': self.nick, 
@@ -22,6 +29,57 @@ class Player(ndb.Model):
             'played': PlayerResult.query(PlayerResult.player==self.key).count(),
             'wins': PlayerResult.query(PlayerResult.player==self.key, PlayerResult.is_winner==True).count(),
         }
+    def get_data_full(self):
+        """ Gets (and calcs if neccessary) all statistics, also updates it to db if any 
+        stats was calculated
+        
+        """
+        data = self.get_data_base() # Base data
+        
+        if self.stats_average_score == None:
+            self.calc_stats()
+            self.put()
+
+        stats = {
+            'average_score': self.stats_average_score,
+            'best_civ': {
+                'name': self.stats_best_civ,
+                'wins': self.stats_best_civ_wins
+            },
+            #'average_score'
+        #     Most played civ
+        #     Worst civ
+        #     Best team mate winchance
+        #     Worst team mate winchance
+        #     Best team mate avg score
+        #     Worst team mate avg score
+        #     Average score
+        #     Best score - show game
+        #     Worst score - show game
+        }
+        data.update(stats)
+        return data
+    def calc_stats(self):
+        player_results = PlayerResult.query(PlayerResult.player == self.key).fetch()
+        # Average score
+        self.stats_average_score = sum([result.score for result in player_results]) / len(player_results)
+        # Best civ stats
+        civ_won_dict = {}
+        for result in player_results:
+            if result.is_winner:
+                if not civ_won_dict.has_key(result.civilization):
+                    civ_won_dict[result.civilization] = 0
+                civ_won_dict[result.civilization] += 1
+        if len(civ_won_dict) > 0:
+            best_civ = max(civ_won_dict.iteritems(), key=operator.itemgetter(1))[0]
+            self.stats_best_civ = best_civ
+            self.stats_best_civ_wins = civ_won_dict[best_civ]
+        # MOAR STATS
+    def clear_stats(self):
+        self.stats_average_score = None
+        self.stats_best_civ = None
+        self.put()
+
 
 class Game(ndb.Model):
     # After finish values
@@ -108,7 +166,7 @@ class PlayerResult(ndb.Model):
     is_host = ndb.BooleanProperty(default=False)
     score = ndb.IntegerProperty(required=True)
     team = ndb.IntegerProperty(choices=[1,2,3,4])
-    civilization = ndb.StringProperty(required=True, choices=['Aztec', 'Britons', 'Byzantines', 'Celts', 'Chinese', 'Franks', 'Goths', 'Huns', 'Incas', 'Indians', 'Italians', 'Japanese', 'Koreans', 'Magyars', 'Mayans', 'Mongols', 'Persians', 'Saracens', 'Slavs', 'Spanish', 'Teutons', 'Turks', 'Vikings'])
+    civilization = ndb.StringProperty(required=True, choices=CIVILIZATIONS)
     stats_rating = ndb.IntegerProperty(required=True)
     next_player_result = ndb.KeyProperty(kind='PlayerResult', default=None) # 'PlayerResult' is a string to allow circular reference.
     @classmethod

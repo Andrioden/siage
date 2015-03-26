@@ -11,5 +11,7 @@ siAgeApp.controller('PlayerController',
             function (error) {
                 $scope.loading_player = false;
                 $scope.error = "Unable to load player info!";
-            })
-    });
+            }
+    	);
+    }
+);
