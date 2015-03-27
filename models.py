@@ -12,6 +12,8 @@ class Player(ndb.Model):
     stats_average_score = ndb.IntegerProperty(default=None)
     stats_best_civ = ndb.StringProperty(choices=CIVILIZATIONS, default=None)
     stats_best_civ_wins = ndb.IntegerProperty(default=None)
+    stats_worst_civ = ndb.StringProperty(choices=CIVILIZATIONS, default=None)
+    stats_worst_civ_losses = ndb.IntegerProperty(default=None)
     def rating(self):
         """ To avoid hitting the db unneccessary the rating value is stored in memory.
         """
@@ -43,8 +45,11 @@ class Player(ndb.Model):
                 'name': self.stats_best_civ,
                 'wins': self.stats_best_civ_wins
             },
+            'worst_civ': {
+                'name': self.stats_worst_civ,
+                'losses': self.stats_worst_civ_losses
+            }
         #     Most played civ
-        #     Worst civ
         #     Best team mate winchance
         #     Worst team mate winchance
         #     Best team mate avg score
@@ -74,10 +79,22 @@ class Player(ndb.Model):
             best_civ = max(civ_won_dict.iteritems(), key=operator.itemgetter(1))[0]
             self.stats_best_civ = best_civ
             self.stats_best_civ_wins = civ_won_dict[best_civ]
+        # Worst civ stats
+        civ_lost_dict = {}
+        for result in player_results:
+            if result.is_winner == False:
+                if not civ_lost_dict.has_key(result.civilization):
+                    civ_lost_dict[result.civilization] = 0
+                civ_lost_dict[result.civilization] += 1
+        if len(civ_lost_dict) > 0:
+            worst_civ = max(civ_lost_dict.iteritems(), key=operator.itemgetter(1))[0]
+            self.stats_worst_civ = worst_civ
+            self.stats_worst_civ_losses = civ_lost_dict[worst_civ]
         # MOAR STATS using player_results
     def clear_stats(self):
         self.stats_average_score = None
         self.stats_best_civ = None
+        self.stats_worst_civ = None
         self.put()
 
 

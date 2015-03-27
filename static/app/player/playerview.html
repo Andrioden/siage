@@ -6,14 +6,23 @@
     <div class="left_content">
         <table ng-show="!loading_player" class="info_table">
             <tbody>
-            <tr>
-                <td>Rating</td>
-                <td ng-show="player.played > 0">{{player.rating}}</td>
-                <td ng-show="player.played == 0">Unrated</td>
-            </tr>
-            <tr>
-                <td>More to come...</td>
-            </tr>
+                <tr>
+                    <td>Rating</td>
+                    <td ng-show="player.played > 0">{{player.rating}}</td>
+                    <td ng-show="player.played == 0">Unrated</td>
+                </tr>
+                <tr>
+                    <td>Average score</td>
+                    <td>{{player.average_score}}</td>
+                </tr>
+                <tr>
+                    <td>Best civilization</td>
+                    <td ng-show="player.best_civ.name">{{player.best_civ.name}} ({{player.best_civ.wins}} wins)</td>
+                </tr>
+                <tr>
+                    <td>Worst civilization</td>
+                    <td ng-show="player.worst_civ.name">{{player.worst_civ.name}} ({{player.worst_civ.losses}} losses)</td>
+                </tr>
             </tbody>
         </table>
     </div>
