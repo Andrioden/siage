@@ -4,7 +4,7 @@
         <div ng-show="settingUpGame">
             <img src="static/assets/img/ajax-loader.gif">
         </div>
-        <div id="gamesWrapper" ng-show="!settingUpGame">
+        <div id="gamesWrapper" ng-show="!settingUpGame" ng-animate-children>
             <div ng-show="games.length > 0" class="box margin_top" ng-repeat="game in games">
                 <h4>Game {{$index + 1}} <span style="float: right; font-weight: normal;">Rating dif: {{game.rating_dif}}</span></h4>
                 <table ng-repeat="team in game.teams">
@@ -14,7 +14,7 @@
                         </td>
                         <td>
                             <table>
-                                <tr ng-repeat="player in team | orderBy:['-rating','nick']">
+                                <tr ng-repeat="player in team | orderBy:['-rating','nick']" class="setup_game_player_anim">
                                     <td>
                                         {{player.nick}}
                                     </td>
