@@ -49,11 +49,20 @@ siAgeApp.controller('SetupGamesController',
             };
 
             $scope.settingUpGame = true;
+
+            var trebVoteList = [];
             for (var i = 0; i < $scope.players.length; i++) {
                 if ($scope.players[i].joining) {
                     $scope.SetupGame.players.push($scope.players[i].id);
+                    if ($scope.players[i].trebuchet_vote) {
+                        trebVoteList.push(true);
+                    } else {
+                        trebVoteList.push(false);
+                    }
                 };
             }
+
+            rollTrebuchet(trebVoteList);
 
             SetupGame.submit($scope.SetupGame).$promise.then(
                 //success
@@ -82,6 +91,17 @@ siAgeApp.controller('SetupGamesController',
 
             if (count >= 3) return true;
             return false;
+        }
+
+        function randomIntFromInterval(min, max) {
+            return Math.floor(Math.random() * (max - min + 1) + min);
+        }
+
+        function rollTrebuchet(trebVoteList) {
+            var randomInt = randomIntFromInterval(0, trebVoteList.length-1);
+            $scope.trebuchet_allowed = trebVoteList[randomInt];
+            console.log("Rolling trebuchet. Not the same order as original list:");
+            console.log("Index " + randomInt + " from (" + trebVoteList + ") resulting in: " + trebVoteList[randomInt]);
         }
     }
 );

@@ -11,10 +11,12 @@
                     <tr>
                         <td style="width: 100px;">
                             Team {{$index + 1}}
+                            <br/>
+                            Rating: {{team.rating}}
                         </td>
                         <td>
                             <table>
-                                <tr ng-repeat="player in team | orderBy:['-rating','nick']" class="setup_game_player_anim">
+                                <tr ng-repeat="player in team.players | orderBy:['-rating','nick']" class="setup_game_player_anim">
                                     <td>
                                         {{player.nick}}
                                     </td>
@@ -29,6 +31,8 @@
             </div>
             <div class="box margin_top" ng-show="total_rating_dif != null && games.length > 0">
                 Total rating difference across all games: {{total_rating_dif}}
+                <br />
+                Trebuchet: {{trebuchet_allowed | yesNo}}
             </div>
         </div>
     </div>
@@ -36,29 +40,36 @@
         <form name="gameSetupForm" ng-submit="setupGame()">
             <h4>Teams</h4>
             <select ng-model="SetupGame.algorithm" class="wide" ng-options="alg as alg for alg in algorithms"></select>
-            <br/>
-            <br/>
-            <h4>Players <a href="" style="font-weight: normal;" ng-click="ToggleSelectAllPlayers()">(All)</a></h4>
+            <br />
+            <br />
             <table class="info_table">
                 <tbody>
-                <tr ng-show="loading_players">
-                    <td>
-                        <img src="static/assets/img/ajax-loader.gif">
-                    </td>
-                </tr>
-                <tr ng-repeat="player in players | orderBy:['-rating','nick']">
-                    <td>
-                        <label>
-                            <input class="checkbox" type="checkbox" name="joining"
-                                   ng-model="player.joining"/>
-                            {{player.nick}}
-                        </label>
-                    </td>
-                </tr>
+                    <tr ng-show="loading_players">
+                        <td>
+                            <img src="static/assets/img/ajax-loader.gif">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><h4>Players <a href="" style="font-weight: normal;" ng-click="ToggleSelectAllPlayers()">(All)</a></h4></td>
+                        <td><h4>Trebuchet vote</h4></td>
+                    </tr>
+                    <tr ng-repeat="player in players | orderBy:['-rating','nick']">
+                        <td>
+                            <label>
+                                <input class="checkbox" type="checkbox" name="joining"
+                                       ng-model="player.joining" />
+                                {{player.nick}}
+                            </label>
+                        </td>
+                        <td>
+                            <input ng-disabled="!player.joining" class="checkbox" type="checkbox" name="trebuchet_vote"
+                                   ng-model="player.trebuchet_vote" />
+                        </td>
+                    </tr>
                 </tbody>
             </table>
-            <br/>
-            <br/>
+            <br />
+            <br />
             <table class="buttoncontainer">
                 <tr>
                     <td>
