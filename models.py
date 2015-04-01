@@ -195,7 +195,7 @@ class PlayerResult(ndb.Model):
     def get_last_result_for_player(cls, player_key):
         return PlayerResult.query(PlayerResult.player == player_key).order(-PlayerResult.game_date).get()
     def get_previous_result(self):
-        return PlayerResult.query(PlayerResult.player == self.player, PlayerResult.game_date < self.game_date).get()
+        return PlayerResult.query(PlayerResult.player == self.player, PlayerResult.game_date < self.game_date).order(-PlayerResult.game_date).get()
     def get_data(self):
         player_entity = self.player.get()
         return{
