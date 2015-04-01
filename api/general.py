@@ -63,10 +63,11 @@ def _random_setup(players_in):
     return {'total_rating_dif': total_rating_dif, 'games': games}
             
 def _random_team_split_for_game(players):
-    teams_setup = {'rating_dif': None, 'teams': [[], []]}
+    teams_setup = {'rating_dif': None, 'teams': [{'rating': 0, 'players': []}, {'rating': 0, 'players': []}]}
     for i in range(len(players)):
         team_index = i % 2
-        teams_setup['teams'][team_index].append(players[i])
+        teams_setup['teams'][team_index]['rating'] += players[i]['rating']
+        teams_setup['teams'][team_index]['players'].append(players[i])
     teams_setup['rating_dif'] = _find_rating_dif(teams_setup['teams'])
     return teams_setup
 
@@ -75,7 +76,7 @@ def _find_rating_dif(teams):
     min_total_rating = 99999
     for team in teams:
         total_rating = 0
-        for player in team:
+        for player in team['players']:
             total_rating += player['rating']
         if total_rating > max_total_rating:
             max_total_rating = total_rating
