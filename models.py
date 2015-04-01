@@ -20,7 +20,7 @@ class Player(ndb.Model):
         if hasattr(self, "_current_rating_cached"):
             return self._current_rating_cached
         else:
-            last_player_result = PlayerResult._last_result(self.key)
+            last_player_result = PlayerResult.get_last_result_for_player(self.key)
             self._current_rating_cached = 1000 if last_player_result == None else last_player_result.stats_rating
             return self._current_rating_cached
     def get_data_base(self):
@@ -179,13 +179,13 @@ class Game(ndb.Model):
 class PlayerResult(ndb.Model):
     player = ndb.KeyProperty(kind=Player, required=True)
     game = ndb.KeyProperty(kind=Game, required=True)
+    game_date = ndb.DateTimeProperty(required=False) # This is doublestorage of info ues, but its to simplify queries
     is_winner = ndb.BooleanProperty(default=False)
     is_host = ndb.BooleanProperty(default=False)
     score = ndb.IntegerProperty(required=True)
     team = ndb.IntegerProperty(choices=[1,2,3,4])
     civilization = ndb.StringProperty(required=True, choices=CIVILIZATIONS)
     stats_rating = ndb.IntegerProperty(required=True)
-    next_player_result = ndb.KeyProperty(kind='PlayerResult', default=None) # 'PlayerResult' is a string to allow circular reference.
     @classmethod
     def _settings_data(cls):
         return {
@@ -193,16 +193,10 @@ class PlayerResult(ndb.Model):
             'civilizations': list(cls.civilization._choices)
         }
     @classmethod
-    def _last_result(cls, player_key):
-        """ This can be considered a static method, which is called a class method. It is just a
-        helper method to get the last PlayerResult instance for a given player key. It does not work
-        on the instance.
-        """
-        last_player_result_query = cls.query(cls.player == player_key, cls.next_player_result == None)
-        if last_player_result_query.count() > 1:
-            raise Exception("Attempted to get last player result for player %s, found %s PlayerResult without next_stats set. Should only be 1." % (player_key.get().nick, last_player_result_query.count()))
-        else:
-            return last_player_result_query.get()
+    def get_last_result_for_player(cls, player_key):
+        return PlayerResult.query(PlayerResult.player == player_key).order(-PlayerResult.game_date).get()
+    def get_previous_result(self):
+        return PlayerResult.query(PlayerResult.player == self.player, PlayerResult.game_date < self.game_date).get()
     def get_data(self):
         player_entity = self.player.get()
         return{
@@ -222,5 +216,3 @@ class PlayerResult(ndb.Model):
             return self.stats_rating - previous_result.stats_rating
         else:
             return self.stats_rating - PLAYER_RATING_START_VALUE
-    def get_previous_result(self):
-        return PlayerResult.query(PlayerResult.next_player_result==self.key).get()

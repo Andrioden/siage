@@ -44,9 +44,11 @@ class GamesHandler(webapp2.RequestHandler):
         self._validate_no_empty_player_results(request_data['playerResults'])
 
         # CREATE GAME OBJECT
+        game_date = datetime.fromtimestamp(request_data['date_epoch'])
+        
         game_key = Game(
             # After finish values
-            date = datetime.fromtimestamp(request_data['date_epoch']),
+            date = game_date,
             duration_seconds = request_data['duration_seconds'],
             # Settings from lobby Game Settings
             game_type = request_data['game_type'],
@@ -75,11 +77,10 @@ class GamesHandler(webapp2.RequestHandler):
         for player_result in request_data['playerResults']:
             player_key = ndb.Key(Player, int(player_result['player_id']))
             
-            last_player_result = PlayerResult._last_result(player_key) # Get previous player result before we insert a new one
-            
-            new_player_result_key = PlayerResult(
+            PlayerResult(
                 player = player_key,
                 game = game_key,
+                game_date = game_date,
                 is_winner = player_result['is_winner'],
                 is_host = player_result['is_host'],
                 score = player_result['score'],
@@ -87,13 +88,7 @@ class GamesHandler(webapp2.RequestHandler):
                 civilization = player_result['civilization'],
                 stats_rating = new_ratings[player_key.id()]
             ).put()
-
-            # Update previous/last player result stats setting the new player result stats as the next_stats
-            if last_player_result:
-                last_player_result.next_player_result = new_player_result_key
-                last_player_result.put()
         
-        # Delete for all players incase stats for other players will relate to players in this game
         self._clear_all_player_stats() 
 
         self.response.headers['Content-Type'] = 'application/json'

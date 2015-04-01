@@ -56,13 +56,13 @@ def _random_setup(players_in):
     games = []
     total_rating_dif = 0
     for game_players in games_players:
-        game = _random_team_split(game_players)
+        game = _random_team_split_for_game(game_players)
         total_rating_dif += game['rating_dif']
         games.append(game)
     
     return {'total_rating_dif': total_rating_dif, 'games': games}
             
-def _random_team_split(players):
+def _random_team_split_for_game(players):
     teams_setup = {'rating_dif': None, 'teams': [[], []]}
     for i in range(len(players)):
         team_index = i % 2
