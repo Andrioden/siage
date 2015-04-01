@@ -147,19 +147,18 @@ class Game(ndb.Model):
     def _player_results_to_game_format(self, player_results):
         teams = [player_data['team'] for player_data in player_results]
         counted_teams = Counter(teams)
-        game_format = None
+        game_format = ""
         # First add people with teams, sorted by the most common
         for key, value in counted_teams.most_common():
             if key == None: # People without teams is dealth with afterwards so v1v1.. is at the end
                 pass
-            elif game_format == None: # First
-                game_format = "%s" % value
             else:
-                game_format += "v%s" % value
+                game_format += "%sv" % value
         # Then add the teamless as v1v1v1v1.. etc
         for _ in range(counted_teams[None]):
-            game_format += "v1"
-        return game_format
+            game_format += "1v"
+        # Return all but extra v
+        return game_format[:-1]
     @classmethod
     def _settings_data(cls):
         return {
