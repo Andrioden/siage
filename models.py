@@ -10,10 +10,12 @@ CIVILIZATIONS = ['Aztec', 'Britons', 'Byzantines', 'Celts', 'Chinese', 'Franks',
 class Player(ndb.Model):
     nick = ndb.StringProperty(required=True)
     stats_average_score = ndb.IntegerProperty(default=None)
-    stats_best_civ = ndb.StringProperty(choices=CIVILIZATIONS, default=None)
-    stats_best_civ_wins = ndb.IntegerProperty(default=None)
-    stats_worst_civ = ndb.StringProperty(choices=CIVILIZATIONS, default=None)
-    stats_worst_civ_losses = ndb.IntegerProperty(default=None)
+    stats_best_score = ndb.IntegerProperty(default=None)
+    stats_worst_score = ndb.IntegerProperty(default=None)
+    stats_civ_most_wins_name = ndb.StringProperty(choices=CIVILIZATIONS, default=None)
+    stats_civ_most_wins_count = ndb.IntegerProperty(default=None)
+    stats_civ_most_losses_name = ndb.StringProperty(choices=CIVILIZATIONS, default=None)
+    stats_civ_most_losses_count = ndb.IntegerProperty(default=None)
     def rating(self):
         """ To avoid hitting the db unneccessary the rating value is stored in memory.
         """
@@ -41,20 +43,21 @@ class Player(ndb.Model):
         self.calc_and_put_stats_if_needed()
         stats_data = {
             'average_score': self.stats_average_score,
-            'best_civ': {
-                'name': self.stats_best_civ,
-                'wins': self.stats_best_civ_wins
+            'best_score': self.stats_best_score,
+            'worst_score': self.stats_worst_score,
+            'stats_civ_most_wins': {
+                'name': self.stats_civ_most_wins_name,
+                'count': self.stats_civ_most_wins_count
             },
-            'worst_civ': {
-                'name': self.stats_worst_civ,
-                'losses': self.stats_worst_civ_losses
+            'stats_civ_most_losses': {
+                'name': self.stats_civ_most_losses_name,
+                'count': self.stats_civ_most_losses_count
             }
         #     Most played civ
         #     Best team mate winchance
         #     Worst team mate winchance
         #     Best team mate avg score
         #     Worst team mate avg score
-        #     Average score
         #     Best score - show game
         #     Worst score - show game
         }
@@ -67,7 +70,11 @@ class Player(ndb.Model):
     def calc_stats(self):
         player_results = PlayerResult.query(PlayerResult.player == self.key).fetch()
         # Average score
-        self.stats_average_score = sum([result.score for result in player_results]) / len(player_results)
+        scores = [result.score for result in player_results]
+        logging.info("Best score %s" % max(scores))
+        self.stats_average_score = sum(scores) / len(player_results)
+        self.stats_best_score = max(scores)
+        self.stats_worst_score = min(scores)
         # Best civ stats
         civ_won_dict = {}
         for result in player_results:
@@ -77,8 +84,8 @@ class Player(ndb.Model):
                 civ_won_dict[result.civilization] += 1
         if len(civ_won_dict) > 0:
             best_civ = max(civ_won_dict.iteritems(), key=operator.itemgetter(1))[0]
-            self.stats_best_civ = best_civ
-            self.stats_best_civ_wins = civ_won_dict[best_civ]
+            self.stats_civ_most_wins_name = best_civ
+            self.stats_civ_most_wins_count = civ_won_dict[best_civ]
         # Worst civ stats
         civ_lost_dict = {}
         for result in player_results:
@@ -88,13 +95,17 @@ class Player(ndb.Model):
                 civ_lost_dict[result.civilization] += 1
         if len(civ_lost_dict) > 0:
             worst_civ = max(civ_lost_dict.iteritems(), key=operator.itemgetter(1))[0]
-            self.stats_worst_civ = worst_civ
-            self.stats_worst_civ_losses = civ_lost_dict[worst_civ]
+            self.stats_civ_most_losses_name = worst_civ
+            self.stats_civ_most_losses_count = civ_lost_dict[worst_civ]
         # MOAR STATS using player_results
     def clear_stats(self):
         self.stats_average_score = None
-        self.stats_best_civ = None
-        self.stats_worst_civ = None
+        self.stats_best_score = None
+        self.stats_worst_score = None
+        self.stats_civ_most_wins_name = None
+        self.stats_civ_most_losses_name = None
+        self.stats_civ_most_losses_name = None
+        self.stats_civ_most_losses_count = None
         self.put()
 
 

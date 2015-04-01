@@ -16,12 +16,20 @@
                     <td>{{player.average_score}}</td>
                 </tr>
                 <tr>
-                    <td>Best civilization</td>
-                    <td ng-show="player.best_civ.name">{{player.best_civ.name}} ({{player.best_civ.wins}} wins)</td>
+                    <td>Best score</td>
+                    <td>{{player.best_score}}</td>
                 </tr>
                 <tr>
-                    <td>Worst civilization</td>
-                    <td ng-show="player.worst_civ.name">{{player.worst_civ.name}} ({{player.worst_civ.losses}} losses)</td>
+                    <td>Worst score</td>
+                    <td>{{player.worst_score}}</td>
+                </tr>
+                <tr>
+                    <td>Most wins with</td>
+                    <td ng-show="player.stats_civ_most_wins.name">{{player.stats_civ_most_wins.name}} ({{player.stats_civ_most_wins.count}} wins)</td>
+                </tr>
+                <tr>
+                    <td>Most losses with</td>
+                    <td ng-show="player.stats_civ_most_losses.name">{{player.stats_civ_most_losses.name}} ({{player.stats_civ_most_losses.count}} losses)</td>
                 </tr>
             </tbody>
         </table>

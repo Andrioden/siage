@@ -167,14 +167,7 @@ class RatingPlayerResult:
     def __str__(self):
         return "Player ID %s | Score: %s | new rating; %s | rating change: %s" % (self.player_id, self.score, self.new_rating, self.rating_change)
     
-def recalculate_ratings():
-    logging.info("----- Temp: Set game_date on PlayerResult ------")
-    for res in PlayerResult.query():
-        if 'next_player_result' in res._properties:
-            del res._properties['next_player_result']
-        res.game_date = res.game.get().date
-        res.put()
-    
+def recalculate_ratings():  
     logging.info("----- RECALCULATING RATINGS ------")
     for game in Game.query().order(Game.date).fetch():
         logging.info("Recalculating for game %s" % game.key.id())
