@@ -12,24 +12,28 @@
                     <td ng-show="player.played == 0">Unrated</td>
                 </tr>
                 <tr>
+                    <td>Won/Total</td>
+                    <td>{{player.wins}}/{{player.played}} ({{player.win_chance}}%)</td>
+                </tr>
+                <tr>
                     <td>Average score</td>
-                    <td>{{player.average_score}}</td>
+                    <td>{{player.stats_average_score}}</td>
                 </tr>
                 <tr>
                     <td>Best score</td>
-                    <td>{{player.best_score}}</td>
+                    <td>{{player.stats_best_score.value}} in <a href="/games/{{player.stats_best_score.game_id}}" title="View game">this game</a></td>
                 </tr>
                 <tr>
                     <td>Worst score</td>
-                    <td>{{player.worst_score}}</td>
+                    <td>{{player.stats_worst_score.value}} in <a href="/games/{{player.stats_worst_score.game_id}}" title="View game">this game</a></td>
                 </tr>
                 <tr>
-                    <td>Most wins with</td>
-                    <td ng-show="player.stats_civ_most_wins.name">{{player.stats_civ_most_wins.name}} ({{player.stats_civ_most_wins.count}} wins)</td>
+                    <td>Teammate fit</td>
+                    <td>{{player.stats_teammate_fit}}</td>
                 </tr>
                 <tr>
-                    <td>Most losses with</td>
-                    <td ng-show="player.stats_civ_most_losses.name">{{player.stats_civ_most_losses.name}} ({{player.stats_civ_most_losses.count}} losses)</td>
+                    <td>Civilization fit</td>
+                    <td>{{player.stats_civ_fit}}</td>
                 </tr>
             </tbody>
         </table>

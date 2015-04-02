@@ -12,6 +12,12 @@ indexes:
 
 - kind: PlayerResult
   properties:
+  - name: game
+  - name: team
+  - name: player
+
+- kind: PlayerResult
+  properties:
   - name: player
   - name: game_date
 

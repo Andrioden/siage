@@ -11,11 +11,11 @@ class Player(ndb.Model):
     nick = ndb.StringProperty(required=True)
     stats_average_score = ndb.IntegerProperty(default=None)
     stats_best_score = ndb.IntegerProperty(default=None)
+    stats_best_score_game = ndb.KeyProperty(kind='Game', default=None)
     stats_worst_score = ndb.IntegerProperty(default=None)
-    stats_civ_most_wins_name = ndb.StringProperty(choices=CIVILIZATIONS, default=None)
-    stats_civ_most_wins_count = ndb.IntegerProperty(default=None)
-    stats_civ_most_losses_name = ndb.StringProperty(choices=CIVILIZATIONS, default=None)
-    stats_civ_most_losses_count = ndb.IntegerProperty(default=None)
+    stats_worst_score_game = ndb.KeyProperty(kind='Game', default=None)
+    stats_teammate_fit = ndb.PickleProperty(default=None)
+    stats_civ_fit = ndb.PickleProperty(default=None)
     def rating(self):
         """ To avoid hitting the db unneccessary the rating value is stored in memory.
         """
@@ -26,12 +26,16 @@ class Player(ndb.Model):
             self._current_rating_cached = 1000 if last_player_result == None else last_player_result.stats_rating
             return self._current_rating_cached
     def get_data_base(self):
+        played = PlayerResult.query(PlayerResult.player==self.key).count()
+        wins = PlayerResult.query(PlayerResult.player==self.key, PlayerResult.is_winner==True).count()
+        win_chance = int(wins * 100.0 / played)
         return {
             'id': self.key.id(), 
             'nick': self.nick, 
             'rating': self.rating(),
-            'played': PlayerResult.query(PlayerResult.player==self.key).count(),
-            'wins': PlayerResult.query(PlayerResult.player==self.key, PlayerResult.is_winner==True).count(),
+            'played': played,
+            'wins': wins,
+            'win_chance': win_chance
         }
     def get_data_full(self):
         """ Gets (and calcs if neccessary) all statistics, also updates it to db if any 
@@ -40,72 +44,104 @@ class Player(ndb.Model):
         """
         data = self.get_data_base()
         
-        self.calc_and_put_stats_if_needed()
+        self.calc_and_update_stats_if_needed()
+        
         stats_data = {
-            'average_score': self.stats_average_score,
-            'best_score': self.stats_best_score,
-            'worst_score': self.stats_worst_score,
-            'stats_civ_most_wins': {
-                'name': self.stats_civ_most_wins_name,
-                'count': self.stats_civ_most_wins_count
+            'stats_average_score': self.stats_average_score,
+            'stats_best_score': {
+                'value': self.stats_best_score,
+                'game_id': self.stats_best_score_game.id()
             },
-            'stats_civ_most_losses': {
-                'name': self.stats_civ_most_losses_name,
-                'count': self.stats_civ_most_losses_count
-            }
-        #     Most played civ
-        #     Best team mate winchance
-        #     Worst team mate winchance
-        #     Best team mate avg score
-        #     Worst team mate avg score
-        #     Best score - show game
-        #     Worst score - show game
+            'stats_worst_score': {
+                'value': self.stats_worst_score,
+                'game_id': self.stats_worst_score_game.id()
+            },
+            'stats_teammate_fit': self.stats_teammate_fit,
+            'stats_civ_fit': self.stats_civ_fit
         }
         data.update(stats_data)
         return data
-    def calc_and_put_stats_if_needed(self):
+    def calc_and_update_stats_if_needed(self):
         if self.stats_average_score == None:
-            self.calc_stats()
+            player_results = PlayerResult.query(PlayerResult.player == self.key).fetch()
+            self.calc_stats_score_related(player_results)
+            self.calc_stats_best_civ(player_results)
+            self.calc_stats_worst_civ(player_results)
+            self.calc_stats_teammate_fit(player_results)
+            self.calc_stats_civ_fit(player_results)
             self.put()
-    def calc_stats(self):
-        player_results = PlayerResult.query(PlayerResult.player == self.key).fetch()
-        # Average score
+    def calc_stats_score_related(self, player_results):
         scores = [result.score for result in player_results]
-        logging.info("Best score %s" % max(scores))
         self.stats_average_score = sum(scores) / len(player_results)
         self.stats_best_score = max(scores)
+        self.stats_best_score_game = PlayerResult.query(PlayerResult.score == self.stats_best_score).get().game
         self.stats_worst_score = min(scores)
-        # Best civ stats
+        self.stats_worst_score_game = PlayerResult.query(PlayerResult.score == self.stats_worst_score).get().game
+    def calc_stats_best_civ(self, player_results):
         civ_won_dict = {}
         for result in player_results:
             if result.is_winner:
                 if not civ_won_dict.has_key(result.civilization):
                     civ_won_dict[result.civilization] = 0
                 civ_won_dict[result.civilization] += 1
+        
         if len(civ_won_dict) > 0:
             best_civ = max(civ_won_dict.iteritems(), key=operator.itemgetter(1))[0]
             self.stats_civ_most_wins_name = best_civ
             self.stats_civ_most_wins_count = civ_won_dict[best_civ]
-        # Worst civ stats
+    def calc_stats_worst_civ(self, player_results):
         civ_lost_dict = {}
         for result in player_results:
             if result.is_winner == False:
                 if not civ_lost_dict.has_key(result.civilization):
                     civ_lost_dict[result.civilization] = 0
                 civ_lost_dict[result.civilization] += 1
+        
         if len(civ_lost_dict) > 0:
             worst_civ = max(civ_lost_dict.iteritems(), key=operator.itemgetter(1))[0]
             self.stats_civ_most_losses_name = worst_civ
             self.stats_civ_most_losses_count = civ_lost_dict[worst_civ]
-        # MOAR STATS using player_results
+    def calc_stats_teammate_fit(self, player_results):
+        # First map wins and played to teammate_fit
+        teammate_fit = {}
+        for res in player_results:
+            if res.team:
+                team_mates_results = PlayerResult.query(PlayerResult.game == res.game, PlayerResult.team == res.team, PlayerResult.player != res.player).fetch()
+                for team_mate_res in team_mates_results:
+                    team_mate_id = team_mate_res.player.id()
+                    if not teammate_fit.has_key(team_mate_id):
+                        teammate_fit[team_mate_id] = {'teammate': {'id': team_mate_id}, 'played': 0, 'wins': 0}
+                    teammate_fit[team_mate_id]['played'] += 1
+                    if res.is_winner:
+                        teammate_fit[team_mate_id]['wins'] += 1
+        # Convert to list, add player nick to info and calc win chance
+        teammate_fit_list = []
+        for teammate_id, teammate_dict in teammate_fit.iteritems():
+            teammate_id = int(teammate_id)
+            teammate_dict['win_chance'] = int(teammate_dict['wins'] * 100.0 / teammate_dict['played'])
+            logging.info("getting team mate nick for id %s" % teammate_id)
+            teammate_dict['teammate']['nick'] = Player.get_by_id(teammate_dict['teammate']['id']).nick
+            teammate_fit_list.append(teammate_dict)
+        self.stats_teammate_fit = teammate_fit_list
+    def calc_stats_civ_fit(self, player_results):
+        # First map wins and played to the civs
+        civ_fit = {}
+        for res in player_results:
+            if not civ_fit.has_key(res.civilization):
+                civ_fit[res.civilization] = {'civ': res.civilization, 'played': 0, 'wins': 0}
+            civ_fit[res.civilization]['played'] += 1
+            if res.is_winner:
+                civ_fit[res.civilization]['wins'] += 1
+        # Convert to list and calc win_chance
+        civ_fit_list = []
+        for civ_name, civ_dict in civ_fit.iteritems(): 
+            civ_dict['win_chance'] = int(civ_dict['wins'] * 100.0 / civ_dict['played'])
+            civ_fit_list.append(civ_dict)
+        self.stats_civ_fit = civ_fit_list
     def clear_stats(self):
-        self.stats_average_score = None
-        self.stats_best_score = None
-        self.stats_worst_score = None
-        self.stats_civ_most_wins_name = None
-        self.stats_civ_most_losses_name = None
-        self.stats_civ_most_losses_name = None
-        self.stats_civ_most_losses_count = None
+        for variable_name in self.__dict__['_values'].keys(): # __dict__['_values'] contains all class object variables
+            if 'stats_' in variable_name:
+                setattr(self, variable_name, None)
         self.put()
 
 

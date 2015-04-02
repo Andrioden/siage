@@ -29,6 +29,10 @@ class CleanDBHandler(webapp2.RequestHandler):
             self._delete_property(player, 'stats_best_civ_wins')
             self._delete_property(player, 'stats_worst_civ')
             self._delete_property(player, 'stats_worst_civ_losses')
+            self._delete_property(player, 'stats_civ_most_wins_name')
+            self._delete_property(player, 'stats_civ_most_wins_count')
+            self._delete_property(player, 'stats_civ_most_losses_name')
+            self._delete_property(player, 'stats_civ_most_losses_count')
             player.put()
         self.response.write("OK")
     def _delete_property(self, obj, property_name):
