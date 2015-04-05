@@ -17,6 +17,9 @@ handlers:
 
 - url: /api/games/.*
   script: api.games.app
+  
+- url: /api/civs/.*
+  script: api.civs.app
 
 - url: /api/gamesettings/.*
   script: api.gamesettings.app
