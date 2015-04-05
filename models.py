@@ -14,6 +14,11 @@ class Player(ndb.Model):
     stats_best_score_game = ndb.KeyProperty(kind='Game', default=None)
     stats_worst_score = ndb.IntegerProperty(default=None)
     stats_worst_score_game = ndb.KeyProperty(kind='Game', default=None)
+    stats_average_score_per_min = ndb.FloatProperty(default=None)
+    stats_best_score_per_min = ndb.FloatProperty(default=None)
+    stats_best_score_per_min_game = ndb.KeyProperty(kind='Game', default=None)
+    stats_worst_score_per_min = ndb.FloatProperty(default=None)
+    stats_worst_score_per_min_game = ndb.KeyProperty(kind='Game', default=None)
     stats_teammate_fit = ndb.PickleProperty(default=None)
     stats_civ_fit = ndb.PickleProperty(default=None)
     def rating(self):
@@ -48,6 +53,7 @@ class Player(ndb.Model):
         
         stats_data = {
             'stats_average_score': self.stats_average_score,
+            'stats_average_score_per_min': round(self.stats_average_score_per_min, 1),
             'stats_best_score': {
                 'value': self.stats_best_score,
                 'game_id': self.stats_best_score_game.id()
@@ -55,6 +61,14 @@ class Player(ndb.Model):
             'stats_worst_score': {
                 'value': self.stats_worst_score,
                 'game_id': self.stats_worst_score_game.id()
+            },
+            'stats_best_score_per_min': {
+                'value': round(self.stats_best_score_per_min, 1),
+                'game_id': self.stats_best_score_per_min_game.id()
+            },
+            'stats_worst_score_per_min': {
+                'value': round(self.stats_worst_score_per_min, 1),
+                'game_id': self.stats_worst_score_per_min_game.id()
             },
             'stats_teammate_fit': self.stats_teammate_fit,
             'stats_civ_fit': self.stats_civ_fit
@@ -71,12 +85,39 @@ class Player(ndb.Model):
             self.calc_stats_civ_fit(player_results)
             self.put()
     def calc_stats_score_related(self, player_results):
-        scores = [result.score for result in player_results]
-        self.stats_average_score = sum(scores) / len(player_results)
-        self.stats_best_score = max(scores)
-        self.stats_best_score_game = PlayerResult.query(PlayerResult.score == self.stats_best_score).get().game
-        self.stats_worst_score = min(scores)
-        self.stats_worst_score_game = PlayerResult.query(PlayerResult.score == self.stats_worst_score).get().game
+        self.stats_best_score = 0
+        self.stats_best_score_game = None
+        self.stats_worst_score = 999999
+        self.stats_worst_score_game = None
+        
+        self.stats_best_score_per_min = 0
+        self.stats_best_score_per_min_game = None
+        self.stats_worst_score_per_min = 999999
+        self.stats_worst_score_per_min_game = None
+        
+        total_score = 0
+        total_seconds = 0
+        for result in player_results:
+            related_game = result.game.get()
+            total_score += result.score
+            total_seconds += related_game.duration_seconds
+            score_per_min = result.score / (related_game.duration_seconds / 60.0)
+            if result.score > self.stats_best_score:
+                self.stats_best_score = result.score
+                self.stats_best_score_game = result.game
+            if result.score < self.stats_worst_score:
+                self.stats_worst_score = result.score
+                self.stats_worst_score_game = result.game
+            if score_per_min > self.stats_best_score_per_min:
+                self.stats_best_score_per_min = score_per_min
+                self.stats_best_score_per_min_game = result.game
+            if score_per_min < self.stats_worst_score_per_min:
+                self.stats_worst_score_per_min = score_per_min
+                self.stats_worst_score_per_min_game = result.game
+            
+        self.stats_average_score = total_score / len(player_results)
+        self.stats_average_score_per_min = total_score / (total_seconds / 60.0)
+        
     def calc_stats_best_civ(self, player_results):
         civ_won_dict = {}
         for result in player_results:
