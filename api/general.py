@@ -6,6 +6,8 @@ import logging
 from google.appengine.ext import ndb
 from models import Player
 import math, random, copy
+from google.appengine.api import users
+from utils import error_400
 
 class SetupGameHandler(webapp2.RequestHandler):
     def post(self):
@@ -93,6 +95,27 @@ def _find_rating_dif(teams):
             min_total_rating = total_rating
     return max_total_rating - min_total_rating
 
+class ClaimPlayerHandler(webapp2.RequestHandler):
+    def get(self, player_id):
+        player = Player.get_by_id(int(player_id))
+        user = users.get_current_user()
+        
+        if player.userid:
+            error_400(self.response, "PLAYER_CLAIMED", "The player %s has already been claimed by %s" % (player.nick, player.userid))
+        else:
+            if user:
+                previously_claimed_player = Player.query(Player.userid == user.user_id()).get()
+                if previously_claimed_player:
+                    error_400(self.response, "CAN_ONLY_CLAIM_ONE_PLAYER", "The logged inn user has already claimed player %s" % previously_claimed_player.nick)
+                else:
+                    player.userid = user.user_id()
+                    player.put()
+                    self.response.headers['Content-Type'] = 'application/json'
+                    self.response.out.write(json.dumps({'response': "OK"}))
+            else:
+                error_400(self.response, "NOT_LOGGED_INN", "The visiting user is not logged inn.")
+        
 app = webapp2.WSGIApplication([
     (r'/api/setupgame/', SetupGameHandler),
+    (r'/api/claimplayer/(\d+)', ClaimPlayerHandler),
 ], debug=True)

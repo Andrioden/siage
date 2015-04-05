@@ -7,6 +7,8 @@ from models import Game, Player, PlayerResult
 from datetime import datetime
 from google.appengine.ext import ndb
 from rating import RatingCalculator
+from api.utils import error_400, validate_logged_inn
+
 
 class GamesHandler(webapp2.RequestHandler):
     def get(self):
@@ -33,8 +35,10 @@ class GamesHandler(webapp2.RequestHandler):
         logging.info(request_data)
 
         # VALIDATING
-        self._validate_no_empty_player_results(request_data['playerResults'])
-
+        if not self._validate_no_empty_player_results(request_data['playerResults']):
+            return
+        if not validate_logged_inn(self.response):
+            return
         # CREATE GAME OBJECT
         game_date = datetime.fromtimestamp(request_data['date_epoch'])
         
@@ -85,11 +89,12 @@ class GamesHandler(webapp2.RequestHandler):
 
         self.response.headers['Content-Type'] = 'application/json'
         self.response.out.write(json.dumps({'response': "Success!", 'game_id': game_key.id()}))
-
     def _validate_no_empty_player_results(self, player_results):
         for player_result in player_results:
             if player_result['player_id'] == None or not player_result['player_id'].isdigit():
-                raise Exception("Validation Error: Player Results contain items without a valid player id.")
+                error_400(self.response, "VALIDATION_ERROR_EMPTY_PLAYER_RESULTS", "Player Results contain items without a valid player id.")
+                return False
+        return True
     def _clear_all_player_stats(self):
         for player in Player.query():
             player.clear_stats()

@@ -9,6 +9,7 @@ CIVILIZATIONS = ['Aztec', 'Britons', 'Byzantines', 'Celts', 'Chinese', 'Franks',
 
 class Player(ndb.Model):
     nick = ndb.StringProperty(required=True)
+    userid = ndb.StringProperty(default=None)
     stats_average_score = ndb.IntegerProperty(default=None)
     stats_best_score = ndb.IntegerProperty(default=None)
     stats_best_score_game = ndb.KeyProperty(kind='Game', default=None)
@@ -45,14 +46,14 @@ class Player(ndb.Model):
     def get_data_base(self):
         played = PlayerResult.query(PlayerResult.player==self.key).count()
         wins = PlayerResult.query(PlayerResult.player==self.key, PlayerResult.is_winner==True).count()
-        win_chance = int(wins * 100.0 / played)
         return {
             'id': self.key.id(), 
             'nick': self.nick, 
             'rating': self.rating(),
             'played': played,
             'wins': wins,
-            'win_chance': win_chance
+            'win_chance': None if played == 0 else int(wins * 100.0 / played),
+            'is_claimed': True if self.userid else False
         }
     def get_stats_data(self):
         self.calc_and_update_stats_if_needed()
@@ -88,6 +89,8 @@ class Player(ndb.Model):
     def calc_and_update_stats_if_needed(self):
         if self.stats_average_score == None:
             player_results = PlayerResult.query(PlayerResult.player == self.key).fetch()
+            if len(player_results) == 0:
+                raise Exception("You want stats for a player without games? NO")
             self.calc_stats_score_related(player_results)
             self.calc_stats_best_civ(player_results)
             self.calc_stats_worst_civ(player_results)
