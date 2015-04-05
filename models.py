@@ -30,6 +30,18 @@ class Player(ndb.Model):
             last_player_result = PlayerResult.get_last_result_for_player(self.key)
             self._current_rating_cached = 1000 if last_player_result == None else last_player_result.stats_rating
             return self._current_rating_cached
+    def get_data_full(self):
+        """ Gets (and calcs if neccessary) all statistics, also updates it to db if any 
+        stats was calculated
+        
+        """
+        data = self.get_data_base()
+        stats_data = self.get_stats_data()
+        games_data = self.get_games_data()
+
+        data.update(stats_data)
+        data.update(games_data)
+        return data
     def get_data_base(self):
         played = PlayerResult.query(PlayerResult.player==self.key).count()
         wins = PlayerResult.query(PlayerResult.player==self.key, PlayerResult.is_winner==True).count()
@@ -42,39 +54,37 @@ class Player(ndb.Model):
             'wins': wins,
             'win_chance': win_chance
         }
-    def get_data_full(self):
-        """ Gets (and calcs if neccessary) all statistics, also updates it to db if any 
-        stats was calculated
-        
-        """
-        data = self.get_data_base()
-        
+    def get_stats_data(self):
         self.calc_and_update_stats_if_needed()
-        
-        stats_data = {
-            'stats_average_score': self.stats_average_score,
-            'stats_average_score_per_min': round(self.stats_average_score_per_min, 1),
-            'stats_best_score': {
-                'value': self.stats_best_score,
-                'game_id': self.stats_best_score_game.id()
-            },
-            'stats_worst_score': {
-                'value': self.stats_worst_score,
-                'game_id': self.stats_worst_score_game.id()
-            },
-            'stats_best_score_per_min': {
-                'value': round(self.stats_best_score_per_min, 1),
-                'game_id': self.stats_best_score_per_min_game.id()
-            },
-            'stats_worst_score_per_min': {
-                'value': round(self.stats_worst_score_per_min, 1),
-                'game_id': self.stats_worst_score_per_min_game.id()
-            },
-            'stats_teammate_fit': self.stats_teammate_fit,
-            'stats_civ_fit': self.stats_civ_fit
+        return {
+            'stats': {
+                'average_score': self.stats_average_score,
+                'average_score_per_min': round(self.stats_average_score_per_min, 1),
+                'best_score': {
+                    'value': self.stats_best_score,
+                    'game_id': self.stats_best_score_game.id()
+                },
+                'worst_score': {
+                    'value': self.stats_worst_score,
+                    'game_id': self.stats_worst_score_game.id()
+                },
+                'best_score_per_min': {
+                    'value': round(self.stats_best_score_per_min, 1),
+                    'game_id': self.stats_best_score_per_min_game.id()
+                },
+                'worst_score_per_min': {
+                    'value': round(self.stats_worst_score_per_min, 1),
+                    'game_id': self.stats_worst_score_per_min_game.id()
+                },
+                'teammate_fit': self.stats_teammate_fit,
+                'civ_fit': self.stats_civ_fit     
+            }
         }
-        data.update(stats_data)
-        return data
+    def get_games_data(self):
+        game_keys = [res.game for res in PlayerResult.query(PlayerResult.player == self.key)]
+        return {
+            'games': [game.get_data() for game in ndb.get_multi(game_keys)]
+        }
     def calc_and_update_stats_if_needed(self):
         if self.stats_average_score == None:
             player_results = PlayerResult.query(PlayerResult.player == self.key).fetch()

@@ -17,35 +17,39 @@
                 </tr>
                 <tr>
                     <td>Average score</td>
-                    <td>{{player.stats_average_score}}</td>
+                    <td>{{player.stats.average_score}}</td>
                 </tr>
                 <tr>
                     <td>Best score</td>
-                    <td>{{player.stats_best_score.value}} in <a href="/games/{{player.stats_best_score.game_id}}" title="View game">this game</a></td>
+                    <td>{{player.stats.best_score.value}} in <a href="/games/{{player.stats.best_score.game_id}}" title="View game">this game</a></td>
                 </tr>
                 <tr>
                     <td>Worst score</td>
-                    <td>{{player.stats_worst_score.value}} in <a href="/games/{{player.stats_worst_score.game_id}}" title="View game">this game</a></td>
+                    <td>{{player.stats.worst_score.value}} in <a href="/games/{{player.stats.worst_score.game_id}}" title="View game">this game</a></td>
                 </tr>
                 <tr>
                     <td>Average score per min</td>
-                    <td>{{player.stats_average_score_per_min}}</td>
+                    <td>{{player.stats.average_score_per_min}}</td>
                 </tr>
                 <tr>
                     <td>Best score per min</td>
-                    <td>{{player.stats_best_score_per_min.value}} in <a href="/games/{{player.stats_best_score_per_min.game_id}}" title="View game">this game</a></td>
+                    <td>{{player.stats.best_score_per_min.value}} in <a href="/games/{{player.stats.best_score_per_min.game_id}}" title="View game">this game</a></td>
                 </tr>
                 <tr>
                     <td>Worst score per min</td>
-                    <td>{{player.stats_worst_score_per_min.value}} in <a href="/games/{{player.stats_worst_score_per_min.game_id}}" title="View game">this game</a></td>
+                    <td>{{player.stats.worst_score_per_min.value}} in <a href="/games/{{player.stats.worst_score_per_min.game_id}}" title="View game">this game</a></td>
                 </tr>
                 <tr>
                     <td>Teammate fit</td>
-                    <td>{{player.stats_teammate_fit}}</td>
+                    <td>{{player.stats.teammate_fit}}</td>
                 </tr>
                 <tr>
                     <td>Civilization fit</td>
-                    <td>{{player.stats_civ_fit}}</td>
+                    <td>{{player.stats.civ_fit}}</td>
+                </tr>
+                <tr>
+                    <td>Games data</td>
+                    <td>player.games</td>
                 </tr>
             </tbody>
         </table>
