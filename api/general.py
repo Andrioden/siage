@@ -20,7 +20,9 @@ class SetupGameHandler(webapp2.RequestHandler):
         
         algorithm = request_data['algorithm']
         
-        if algorithm == "Random":
+        if algorithm == "TotallyRandom":
+            setup_data = _random_setup(players, True)
+        elif algorithm == "Random":
             setup_data = _random_setup(players)
         elif algorithm == "Autobalance":
             setup_data = _random_setup_best_attempt(players, 50)
@@ -39,7 +41,7 @@ def _random_setup_best_attempt(players, attempts):
             best_setup = potential_setup
     return best_setup
 
-def _random_setup(players_in):
+def _random_setup(players_in, random_number_of_teams=False):
     players = copy.deepcopy(players_in)
     # 1. Create the games_players
     game_count = int(math.ceil(len(players) * 1.0 / 8))
@@ -56,16 +58,23 @@ def _random_setup(players_in):
     games = []
     total_rating_dif = 0
     for game_players in games_players:
-        game = _random_team_split_for_game(game_players)
+        if random_number_of_teams:
+            number_of_teams = random.randint(2, len(game_players))
+            game = _random_team_split_for_game(game_players, number_of_teams)
+        else:
+            game = _random_team_split_for_game(game_players)
         total_rating_dif += game['rating_dif']
         games.append(game)
     
     return {'total_rating_dif': total_rating_dif, 'games': games}
             
-def _random_team_split_for_game(players):
-    teams_setup = {'rating_dif': None, 'teams': [{'rating': 0, 'players': []}, {'rating': 0, 'players': []}]}
+def _random_team_split_for_game(players, number_of_teams=2):
+    teams_setup = {
+        'rating_dif': None, 
+        'teams': [{'rating': 0, 'players': []} for _ in range(number_of_teams)]
+    }
     for i in range(len(players)):
-        team_index = i % 2
+        team_index = i % number_of_teams
         teams_setup['teams'][team_index]['rating'] += players[i]['rating']
         teams_setup['teams'][team_index]['players'].append(players[i])
     teams_setup['rating_dif'] = _find_rating_dif(teams_setup['teams'])
