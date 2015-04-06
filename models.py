@@ -56,7 +56,8 @@ class Player(ndb.Model):
             'is_claimed': True if self.userid else False
         }
     def get_stats_data(self):
-        self.calc_and_update_stats_if_needed()
+        if self.calc_and_update_stats_if_needed() == False:
+            return {}
         return {
             'stats': {
                 'average_score': self.stats_average_score,
@@ -90,13 +91,15 @@ class Player(ndb.Model):
         if self.stats_average_score == None:
             player_results = PlayerResult.query(PlayerResult.player == self.key).fetch()
             if len(player_results) == 0:
-                raise Exception("You want stats for a player without games? NO")
+                return False
             self.calc_stats_score_related(player_results)
             self.calc_stats_best_civ(player_results)
             self.calc_stats_worst_civ(player_results)
             self.calc_stats_teammate_fit(player_results)
             self.calc_stats_civ_fit(player_results)
             self.put()
+            return True
+        return True
     def calc_stats_score_related(self, player_results):
         self.stats_best_score = 0
         self.stats_best_score_game = None
