@@ -14,6 +14,6 @@ siAgeApp.controller('PlayerController',
             }
     	);
 
-        $scope.user = User;
+        $scope.user = User.get();
     }
 );
