@@ -66,10 +66,16 @@ siAgeApp.controller('RegisterGameController',
                 },
                 //error
                 function (error) {
-                    var result = "";
-                    if (error.data) result = error.data;
-                    else result = error.statusText;
-                    $scope.error = "Save game failed: " + result;
+                    if (error.data.error_code == "VALIDATION_ERROR_NOT_LOGGED_INN") {
+                        $scope.error = "You need to login to use this function.";
+                    }
+                    else if (error.data.error_code == "VALIDATION_ERROR_NOT_AUTHENTICATED") {
+                        $scope.error = "You need to claim an existing player before you can register game results.";
+                    }
+                    else {
+                        $scope.error = error.data.error_message;
+                    };
+
                     $scope.submitted_game_id = "";
                     reAddEmptyPlayers();
                     $scope.submitting = false;

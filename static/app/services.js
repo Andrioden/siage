@@ -16,6 +16,12 @@ siAgeApp
         });
     })
 
+    .factory('User', function ($resource) {
+        return $resource('/api/users/me', {}, {
+            get: { method: 'GET', isArray: false }
+        });
+    })
+
     .factory('Game', function ($resource) {
         return $resource('/api/games/:game_id', { game_id: '@gameId' }, {
             get: { method: 'GET', isArray: false, cache: true },

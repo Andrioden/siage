@@ -1,4 +1,17 @@
-﻿var siAgeApp = angular.module('SiAgeApp', ['ngRoute', 'ngResource', 'ngAnimate','angulartics', 'angulartics.google.analytics']);
+﻿var siAgeApp = angular.module('SiAgeApp', ['ngRoute', 'ngResource', 'ngAnimate', 'angulartics', 'angulartics.google.analytics']);
+
+
+siAgeApp.controller('UserController',
+    function ($scope, User, $routeParams) {
+        User.get(
+            function (data) {
+                $scope.user = data;
+            },
+            function (error) {
+                $scope.user = null;
+            }
+        );
+    });
 
 siAgeApp.config(['$routeProvider', '$locationProvider',
     function ($routeProvider, $locationProvider) {
@@ -44,8 +57,8 @@ siAgeApp.config(['$resourceProvider', function ($resourceProvider) {
 }]);
 
 
-siAgeApp.filter('yesNo', function() {
-    return function(input) {
+siAgeApp.filter('yesNo', function () {
+    return function (input) {
         return input ? 'Yes' : 'No';
     }
 });
@@ -55,7 +68,7 @@ siAgeApp.filter('orderEmpty', function () {
     return function (array, key, type) {
         var present, empty, result;
 
-        if(!angular.isArray(array)) return;
+        if (!angular.isArray(array)) return;
 
         present = array.filter(function (item) {
             return item[key];
@@ -65,7 +78,7 @@ siAgeApp.filter('orderEmpty', function () {
             return !item[key];
         });
 
-        switch(type) {
+        switch (type) {
             case 'toBottom':
                 result = present.concat(empty);
                 break;

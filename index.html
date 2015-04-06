@@ -2,10 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" ng-app="SiAgeApp">
 <head>
     <script>
-        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+        (function (i, s, o, g, r, a, m) {
+            i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+                (i[r].q = i[r].q || []).push(arguments)
+            }, i[r].l = 1 * new Date(); a = s.createElement(o),
+                m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+        })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
 
         ga('create', 'UA-60713777-1', 'auto');
 
@@ -31,25 +33,32 @@
     <link rel="stylesheet" type="text/css" href="static/assets/css/mainstyles.css" />
     <link rel="stylesheet" type="text/css" href="static/assets/css/animations.css" />
 </head>
-<body >
-    
-
+<body ng-controller="UserController">
     <div id="main_wrapper">
         <header id="Header">
+            {% raw %}
+            <aside id="login_section">
+                <span ng-show="user.logged_in">{{user.user_name}} <a href="/api/users/logout" target="_self">(Logout)</a></span>
+                <span ng-show="!user.logged_in"><a href="/api/users/login" target="_self">Login</a></span>
+                <br />
+                <span class="info" ng-show="user.logged_in && !user.player">Claim an existing player to access more functionality</span>
+            </aside>
+            {% endraw %}
             <table>
                 <tr>
                     <td><a href="/home"><img id="aoe_logo" src="static/assets/img/aoe2_logo.png"></a></td>
-                    <td><h1>SI Age Gentlemen's Club</h1></td>
-                    <td>{{login_logout_a|safe}}</td>
+                    <td>
+                        <h1>SI Age Gentlemen's Club</h1>
+                    </td>
                 </tr>
             </table>
             <nav id="nav_bar">
-                    <ul class="">
-                        <li><a id="league" href="/league">League table</a></li>
-                        <li><a id="registergame" href="/registergame">Register game</a></li>
-                        <li><a id="registerplayer" href="/registerplayer">Register player</a></li>
-                        <li><a id="setupgames" href="/setupgames">Setup games</a></li>
-                    </ul>
+                <ul class="">
+                    <li><a id="league" href="/league">League table</a></li>
+                    <li><a id="registergame" href="/registergame" ng-show="user.logged_in && user.player">Register game</a></li>
+                    <li><a id="registerplayer" href="/registerplayer" ng-show="user.logged_in && user.player">Register player</a></li>
+                    <li><a id="setupgames" href="/setupgames">Setup games</a></li>
+                </ul>
             </nav>
         </header>
 

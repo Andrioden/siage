@@ -17,14 +17,9 @@ JINJA_ENVIRONMENT = jinja2.Environment(
 
 class MainHandler(webapp2.RequestHandler):
     def get(self):
-        user = users.get_current_user()
-        if user:
-            login_logout_a = ('<span>Welcome, %s!</span> (<a href="%s">sign out</a>)' % (user.nickname(), users.create_logout_url('/')))
-        else:
-            login_logout_a = ('<a href="%s">Sign in or register</a>.' % users.create_login_url('/'))
 
         template = JINJA_ENVIRONMENT.get_template('index.html')
-        data = {'login_logout_a': login_logout_a}
+        data = {} # TODO Andre: Fjern plz?
         self.response.write(template.render(data))
         
 app = webapp2.WSGIApplication([

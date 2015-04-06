@@ -15,6 +15,9 @@ handlers:
 - url: /api/players/.*
   script: api.players.app
 
+- url: /api/users/.*
+  script: api.users.app
+
 - url: /api/games/.*
   script: api.games.app
   

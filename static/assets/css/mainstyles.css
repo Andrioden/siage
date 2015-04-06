@@ -448,3 +448,15 @@ select option{
 #main_view .right_content table td.widest {
     width: 115px;
 }
+
+#login_section {
+    float: right;
+    margin-top: 10px;
+    margin-right: 15px;
+    color: #df633b;
+    text-align: right;
+}
+
+.info {
+    color: #ffdcb6;
+}

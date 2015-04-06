@@ -29,8 +29,15 @@ siAgeApp.controller('RegisterPlayerController',
                 },
                 //error
                 function(error) {
-                    console.log(error);
-                    $scope.error = error.data;
+                    if (error.data.error_code == "VALIDATION_ERROR_NOT_LOGGED_INN") {
+                        $scope.error = "You need to login to use this function.";
+                    }
+                    else if (error.data.error_code == "VALIDATION_ERROR_NOT_AUTHENTICATED") {
+                        $scope.error = "You need to claim an existing player before you can register other players.";
+                    }
+                    else {
+                        $scope.error = error.data.error_message;
+                    };
                 }
             );
         }
