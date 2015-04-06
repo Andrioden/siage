@@ -40,9 +40,9 @@ siAgeApp.controller('RegisterPlayerController',
                     };
                 }
             );
-        }
+        };
 
         $scope.hideError = function(){
             $scope.error = "";
-        }
+        };
     });

@@ -3,22 +3,19 @@ import json
 import logging
 from models import Player
 from google.appengine.api import users
-from utils import error_400
-
 
 class UserHandler(webapp2.RequestHandler):
     def get(self):
-        user = users.get_current_user()
-        existing_player = Player.query(Player.userid == user.user_id()).get()
-        if user:
-            user_data = { 'user_name': user.nickname(), 'logged_in': True,  'player': existing_player.nick};            
-        else:
-            return error_400(self.response, "VALIDATION_ERROR_NOT_LOGGED_INN", "The browsing user is not logged inn.")
-
-        # RETURN RESPONSE
         self.response.headers['Content-Type'] = 'application/json'
-        self.response.out.write(json.dumps(user_data))
-
+        user = users.get_current_user()
+        if user:
+            player = Player.query(Player.userid == user.user_id()).get()
+            player_nick = player.nick if player else None
+            user_data = { 'user_name': user.nickname(), 'logged_in': True,  'player': player_nick, 'is_admin': users.is_current_user_admin() };
+            self.response.out.write(json.dumps(user_data))
+        else:
+            self.response.out.write(json.dumps({}))
+        
 class LoginHandler(webapp2.RequestHandler):
     def get(self):
         return webapp2.redirect(users.create_login_url())
