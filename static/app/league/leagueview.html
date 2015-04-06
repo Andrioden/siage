@@ -36,7 +36,8 @@
                     <td ng-show="player.played > 0">{{player.rating}}</td>
                     <td ng-show="player.played == 0">Unrated</td>
                     <td>{{player.played}}</td>
-                    <td>{{player.win_chance}}%</td>
+                    <td ng-show="player.win_chance">{{player.win_chance}}%</td>
+                    <td ng-show="!player.win_chance">0%</td>
                 </tr>
             </tbody>
         </table>
