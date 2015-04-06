@@ -1,7 +1,7 @@
 ﻿var siAgeApp = angular.module('SiAgeApp');
 
 siAgeApp.controller('PlayerController',
-    function ($scope, Player, $routeParams) {
+    function ($scope, Player, User, $routeParams) {
         $scope.loading_player = true;
         Player.get({player_id: $routeParams.playerId},
             function (data) {
@@ -13,5 +13,7 @@ siAgeApp.controller('PlayerController',
                 $scope.error = "Unable to load player info!";
             }
     	);
+
+        $scope.user = User;
     }
 );
