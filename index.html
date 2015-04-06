@@ -42,7 +42,7 @@
                 <span ng-show="!user.logged_in"><a href="/api/users/login" target="_self">Login</a></span>
                 <br />
                 <span class="info" ng-show="user.logged_in && !user.player">Claim an existing player to access more functionality</span>
-                <span class="info" ng-show="user.logged_in && user.player">{{user.Player}}</span>
+                <span class="info" ng-show="user.logged_in && user.player"><a href="/players/{{user.player}}" title="View profile">{{user.player}}</a></span>
             </aside>
             {% endraw %}
             <table>
