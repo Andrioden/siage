@@ -1,4 +1,2 @@
 - Se på muligheten for å slå på transactions for create game:
 	https://cloud.google.com/appengine/docs/python/datastore/transactions#Python_What_can_be_done_in_a_transaction
-- games - error_400 not working. gotta return http response code instead of raising exception.
-- Set is_host data for playerresult to false by activating interactive console online.

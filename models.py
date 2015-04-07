@@ -1,5 +1,5 @@
 from google.appengine.ext import ndb
-import datetime
+from datetime import datetime, date, timedelta
 from collections import Counter
 from config import PLAYER_RATING_START_VALUE
 import logging
@@ -42,6 +42,7 @@ class Player(ndb.Model):
     def _get_base_data(self):
         played = PlayerResult.query(PlayerResult.player==self.key).count()
         wins = PlayerResult.query(PlayerResult.player==self.key, PlayerResult.is_winner==True).count()
+        
         return {
             'id': self.key.id(), 
             'nick': self.nick, 
@@ -49,8 +50,23 @@ class Player(ndb.Model):
             'played': played,
             'wins': wins,
             'win_chance': None if played == 0 else int(wins * 100.0 / played),
-            'is_claimed': True if self.userid else False
+            'is_claimed': True if self.userid else False,
+            'rating_trend': self._get_rating_trend() # Only used for league, might need to further limit when this loads
         }
+        
+    def _get_rating_trend(self):
+        two_weeks_ago = datetime.now() - timedelta(days=14)
+        rating_two_weeks_ago = PlayerResult.query(PlayerResult.player == self.key, PlayerResult.game_date < two_weeks_ago).order(-PlayerResult.game_date).get()
+        if rating_two_weeks_ago:
+            rating_now = PlayerResult.query(PlayerResult.player == self.key).order(-PlayerResult.game_date).get()
+            if rating_now.stats_rating > rating_two_weeks_ago.stats_rating:
+                return "+"
+            elif rating_now.stats_rating == rating_two_weeks_ago.stats_rating:
+                return "n"
+            else:
+                return "-"
+        else:
+            return "n"
         
     def _get_stats_data(self):
         if self._calc_and_update_stats_if_needed() == False:
@@ -245,7 +261,7 @@ class Game(ndb.Model):
                 'title': "%s %s" % (self.game_type, self.location),
                 'team_format': self.game_format(),
                 'date': self.date.strftime("%Y-%m-%d"),
-                'date_epoch': int((self.date - datetime.datetime(1970,1,1)).total_seconds()),
+                'date_epoch': int((self.date - datetime(1970,1,1)).total_seconds()),
                 'game_type': self.game_type,
             })
             
