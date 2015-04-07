@@ -30,9 +30,9 @@ class PlayersHandler(webapp2.RequestHandler):
         if existing_player_with_nick:
             error_400(self.response, "NICK_TAKEN", "Nick %s is taken" % nick)
         else:
-            Player(nick = nick).put()
+            new_player = Player(nick = nick).put().get()
             self.response.headers['Content-Type'] = 'application/json'
-            self.response.out.write(json.dumps({'response': "Player " + request_data['nick'] + " saved successfully"}))
+            self.response.out.write(json.dumps({'response': "Player %s saved successfully" % new_player.nick, 'player': new_player.get_data()}))
 
 class PlayerHandler(webapp2.RequestHandler):
     def get(self, player_id_or_nick):
