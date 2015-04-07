@@ -3,7 +3,7 @@
 siAgeApp.controller('GameController',
     function ($scope, Game, $routeParams) {
         $scope.loading_game = true;
-        Game.get({game_id: $routeParams.gameId},
+        Game.get({ game_id: $routeParams.gameId, data_detail: 'full' },
             function (data) {
                 $scope.loading_game = false;
                 $scope.game = data;

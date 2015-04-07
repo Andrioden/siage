@@ -4,7 +4,7 @@ siAgeApp.controller('GamesController',
     function ($scope, Game, $routeParams) {
         $scope.gameSearchQuery = { 'searchString': "" };
         $scope.loading_games = true;
-        Game.query(
+        Game.query({ data_detail: 'full' },
             function (data) {
                 $scope.games = data;
                 $scope.generateSearchStrings();

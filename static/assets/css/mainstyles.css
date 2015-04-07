@@ -364,7 +364,7 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 
-#main_view .right_content table{
+.list_table{
     width: 100%;
     border: 1px solid #222;
     border-collapse: collapse;
@@ -372,7 +372,7 @@ input[type=number]::-webkit-outer-spin-button {
     table-layout: fixed;
 }
 
-#main_view .right_content table thead{
+.list_table thead{
     /*background:  #fcfcfd;   *//* orange #f0ad4e;*/
     background-color: rgba(140, 140, 140, 0.35);
     width: 100%;
@@ -381,19 +381,19 @@ input[type=number]::-webkit-outer-spin-button {
     padding: 0px;
 }
 
-#main_view .right_content table tbody{
+.list_table tbody{
     /*background: #fcfcfd;*/
     background-color: rgba(140, 140, 140, 0.35);
 }
 
 
-#main_view .right_content table thead tr{
+.list_table thead tr{
     width: 100%;
     padding: 0px;
     margin: 0px;
 }
 
-#main_view .right_content table td{
+.list_table td{
     padding-left: 15px;
     padding-top: 5px;
     padding-bottom: 5px;
