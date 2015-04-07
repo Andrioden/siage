@@ -10,7 +10,7 @@ class PlayersHandler(webapp2.RequestHandler):
     def get(self):
         """ --------- GET PLAYERLIST --------- """
         # BUILD DATA
-        players_data = [player.get_data_base() for player in Player.query()]
+        players_data = [player.get_data("simple") for player in Player.query()]
 
         # RETURN RESPONSE
         self.response.headers['Content-Type'] = 'application/json'
@@ -48,7 +48,7 @@ class PlayerHandler(webapp2.RequestHandler):
         # RETURN RESPONSE
         if player:
             self.response.headers['Content-Type'] = 'application/json'
-            self.response.out.write(json.dumps(player.get_data_full()))
+            self.response.out.write(json.dumps(player.get_data("full")))
         else:
             self.response.out.write(json.dumps({'error': "PLAYER_NOT_FOUND"}))
 

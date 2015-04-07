@@ -14,15 +14,32 @@ class GamesHandler(webapp2.RequestHandler):
     def get(self):
         """ --------- GET GAMELIST --------- """
         max_rows = self.request.get('max')
-
-        # BUILD DATA
-        query = Game.query()
-
+        player_id = self.request.get('player_id')
+        data_detail = self.request.get('data_detail', "simple")
+        
+        # First build base data in a common structure common for all api input combinations
+        query = None
+        if player_id:
+            query = PlayerResult.query(PlayerResult.player == ndb.Key(Player, int(player_id))).order(-PlayerResult.game_date)
+            #game_keys = [res.game for res in PlayerResult.query(PlayerResult.player == ndb.Key(Player, int(player_id)))]
+        else:
+            query = Game.query().order(-Game.date)
+        
+        # Fetch with max_rows if present
         if max_rows.isdigit():
             if int(max_rows) > 0:
-                query = query.fetch(limit = int(max_rows))
-
-        game_data = [game.get_data() for game in query]
+                data = query.fetch(limit = int(max_rows))
+            else:
+                data = query.fetch()
+        else:
+            data = query.fetch()
+        
+        # get data according to if its for a specific player or not
+        if player_id:
+            game_keys = [player_result.game for player_result in data]
+            game_data = [game.get_data(data_detail) for game in ndb.get_multi(game_keys)]
+        else:
+            game_data = [game.get_data(data_detail) for game in data]
         
         # RETURN RESPONSE
         self.response.headers['Content-Type'] = 'application/json'
@@ -32,7 +49,6 @@ class GamesHandler(webapp2.RequestHandler):
     def post(self):
         """ --------- CREATE GAME --------- """
         request_data = json.loads(self.request.body)
-        logging.info(request_data)
 
         # VALIDATING
         if not self._validate_no_empty_player_results(request_data['playerResults']):

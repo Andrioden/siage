@@ -31,19 +31,15 @@ class Player(ndb.Model):
             last_player_result = PlayerResult.get_last_result_for_player(self.key)
             self._current_rating_cached = 1000 if last_player_result == None else last_player_result.stats_rating
             return self._current_rating_cached
-    def get_data_full(self):
-        """ Gets (and calcs if neccessary) all statistics, also updates it to db if any 
-        stats was calculated
-        
-        """
-        data = self.get_data_base()
-        stats_data = self.get_stats_data()
-        games_data = self.get_games_data()
-
-        data.update(stats_data)
-        data.update(games_data)
+    def get_data(self, data_detail="simple"):
+        data = {}
+        if data_detail in ["simple", "full"]:
+            data.update(self._get_base_data())
+        if data_detail == "full":
+            data.update(self._get_stats_data())
         return data
-    def get_data_base(self):
+
+    def _get_base_data(self):
         played = PlayerResult.query(PlayerResult.player==self.key).count()
         wins = PlayerResult.query(PlayerResult.player==self.key, PlayerResult.is_winner==True).count()
         return {
@@ -55,8 +51,9 @@ class Player(ndb.Model):
             'win_chance': None if played == 0 else int(wins * 100.0 / played),
             'is_claimed': True if self.userid else False
         }
-    def get_stats_data(self):
-        if self.calc_and_update_stats_if_needed() == False:
+        
+    def _get_stats_data(self):
+        if self._calc_and_update_stats_if_needed() == False:
             return {}
         return {
             'stats': {
@@ -82,25 +79,20 @@ class Player(ndb.Model):
                 'civ_fit': self.stats_civ_fit     
             }
         }
-    def get_games_data(self):
-        game_keys = [res.game for res in PlayerResult.query(PlayerResult.player == self.key)]
-        return {
-            'games': [game.get_data() for game in ndb.get_multi(game_keys)]
-        }
-    def calc_and_update_stats_if_needed(self):
+    def _calc_and_update_stats_if_needed(self):
         if self.stats_average_score == None:
             player_results = PlayerResult.query(PlayerResult.player == self.key).fetch()
             if len(player_results) == 0:
                 return False
-            self.calc_stats_score_related(player_results)
-            self.calc_stats_best_civ(player_results)
-            self.calc_stats_worst_civ(player_results)
-            self.calc_stats_teammate_fit(player_results)
-            self.calc_stats_civ_fit(player_results)
+            self._calc_stats_score_related(player_results)
+            self._calc_stats_best_civ(player_results)
+            self._calc_stats_worst_civ(player_results)
+            self._calc_stats_teammate_fit(player_results)
+            self._calc_stats_civ_fit(player_results)
             self.put()
             return True
         return True
-    def calc_stats_score_related(self, player_results):
+    def _calc_stats_score_related(self, player_results):
         self.stats_best_score = 0
         self.stats_best_score_game = None
         self.stats_worst_score = 999999
@@ -134,7 +126,7 @@ class Player(ndb.Model):
         self.stats_average_score = total_score / len(player_results)
         self.stats_average_score_per_min = total_score / (total_seconds / 60.0)
         
-    def calc_stats_best_civ(self, player_results):
+    def _calc_stats_best_civ(self, player_results):
         civ_won_dict = {}
         for result in player_results:
             if result.is_winner:
@@ -146,7 +138,7 @@ class Player(ndb.Model):
             best_civ = max(civ_won_dict.iteritems(), key=operator.itemgetter(1))[0]
             self.stats_civ_most_wins_name = best_civ
             self.stats_civ_most_wins_count = civ_won_dict[best_civ]
-    def calc_stats_worst_civ(self, player_results):
+    def _calc_stats_worst_civ(self, player_results):
         civ_lost_dict = {}
         for result in player_results:
             if result.is_winner == False:
@@ -158,7 +150,7 @@ class Player(ndb.Model):
             worst_civ = max(civ_lost_dict.iteritems(), key=operator.itemgetter(1))[0]
             self.stats_civ_most_losses_name = worst_civ
             self.stats_civ_most_losses_count = civ_lost_dict[worst_civ]
-    def calc_stats_teammate_fit(self, player_results):
+    def _calc_stats_teammate_fit(self, player_results):
         # First map wins and played to teammate_fit
         teammate_fit = {}
         for res in player_results:
@@ -176,11 +168,10 @@ class Player(ndb.Model):
         for teammate_id, teammate_dict in teammate_fit.iteritems():
             teammate_id = int(teammate_id)
             teammate_dict['win_chance'] = int(teammate_dict['wins'] * 100.0 / teammate_dict['played'])
-            logging.info("getting team mate nick for id %s" % teammate_id)
             teammate_dict['teammate']['nick'] = Player.get_by_id(teammate_dict['teammate']['id']).nick
             teammate_fit_list.append(teammate_dict)
         self.stats_teammate_fit = teammate_fit_list
-    def calc_stats_civ_fit(self, player_results):
+    def _calc_stats_civ_fit(self, player_results):
         # First map wins and played to the civs
         civ_fit = {}
         for res in player_results:
@@ -223,46 +214,60 @@ class Game(ndb.Model):
     location = ndb.StringProperty(required=False, choices=['Arabia', 'Archipelago', 'Arena', 'Baltic', 'Black Forest', 'Coastal', 'Continental', 'Crater Laker', 'Fortress', 'Ghost Lake', 'Gold Rush', 'Highland', 'Islands', 'Mediterranean', 'Migration', 'Mongolia', 'Nomad', 'Oasis', 'Rivers', 'Salt Marsh', 'Scandinavia', 'Team Islands', 'Yucatan', 'Acropolis', 'Budapest', 'Cenotes', 'City of Lakes', 'Golden Pit', 'Hideout', 'Hill Fort', 'Lombardia', 'Steppe', 'Valley', 'MegaRandom', 'Hamburger'])
     # Special settings
     trebuchet_allowed = ndb.BooleanProperty(required=False)
-    def get_data(self):
-        player_results_data = [res.get_data() for res in PlayerResult.query(PlayerResult.game==self.key)]
-        return {
-            'id': self.key.id(),
-            'title': "%s %s" % (self.game_type, self.location),
-            'team_format': self._player_results_to_game_format(player_results_data),
-            'date': self.date.strftime("%Y-%m-%d"),
-            'date_epoch': int((self.date - datetime.datetime(1970,1,1)).total_seconds()),
-            'duration_seconds': self.duration_seconds,
-            'game_type': self.game_type,
-            'size': self.size,
-            'difficulty': self.difficulty,
-            'resources': self.resources,
-            'population': self.population,
-            'game_speed': self.game_speed,
-            'reveal_map': self.reveal_map,
-            'starting_age': self.starting_age,
-            'treaty_length': self.treaty_length,
-            'victory': self.victory,
-            'team_together': self.team_together,
-            'all_techs': self.all_techs,
-            'location': self.location,
-            'trebuchet_allowed': self.trebuchet_allowed,
-            'player_results': player_results_data
-        }
-    def _player_results_to_game_format(self, player_results):
-        teams = [player_data['team'] for player_data in player_results]
-        counted_teams = Counter(teams)
-        game_format = ""
-        # First add people with teams, sorted by the most common
-        for key, value in counted_teams.most_common():
-            if key == None: # People without teams is dealth with afterwards so v1v1.. is at the end
-                pass
-            else:
-                game_format += "%sv" % value
-        # Then add the teamless as v1v1v1v1.. etc
-        for _ in range(counted_teams[None]):
-            game_format += "1v"
-        # Return all but extra v
-        return game_format[:-1]
+    # Values that are not neccesarry to store but stored to avoid having to recompute values every time the value is needed
+    derived_game_format = ndb.StringProperty(required=False)
+    def game_format(self):
+        if self.derived_game_format:
+            return self.derived_game_format
+        else:
+            player_results = [res.get_data() for res in PlayerResult.query(PlayerResult.game==self.key)]
+            teams = [player_data['team'] for player_data in player_results]
+            counted_teams = Counter(teams)
+            game_format = ""
+            # First add people with teams, sorted by the most common
+            for key, value in counted_teams.most_common():
+                if key == None: # People without teams is dealth with afterwards so v1v1.. is at the end
+                    pass
+                else:
+                    game_format += "%sv" % value
+            # Then add the teamless as v1v1v1v1.. etc
+            for _ in range(counted_teams[None]):
+                game_format += "1v"
+            # Return all but extra v
+            self.derived_game_format = game_format[:-1]
+            self.put()
+            return self.derived_game_format
+    def get_data(self, data_detail="simple"):  
+        data = {}
+        if data_detail in ["simple", "full"]:
+            data.update({
+                'id': self.key.id(),
+                'title': "%s %s" % (self.game_type, self.location),
+                'team_format': self.game_format(),
+                'date': self.date.strftime("%Y-%m-%d"),
+                'date_epoch': int((self.date - datetime.datetime(1970,1,1)).total_seconds()),
+                'game_type': self.game_type,
+            })
+            
+        if data_detail == "full":
+            data.update({
+                'duration_seconds': self.duration_seconds,
+                'size': self.size,
+                'difficulty': self.difficulty,
+                'resources': self.resources,
+                'population': self.population,
+                'game_speed': self.game_speed,
+                'reveal_map': self.reveal_map,
+                'starting_age': self.starting_age,
+                'treaty_length': self.treaty_length,
+                'victory': self.victory,
+                'team_together': self.team_together,
+                'all_techs': self.all_techs,
+                'location': self.location,
+                'trebuchet_allowed': self.trebuchet_allowed,
+                'player_results': [res.get_data() for res in PlayerResult.query(PlayerResult.game==self.key)]     
+            })
+        return data
     @classmethod
     def _settings_data(cls):
         return {
