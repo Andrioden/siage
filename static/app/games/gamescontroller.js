@@ -1,7 +1,7 @@
 ﻿var siAgeApp = angular.module('SiAgeApp');
 
 siAgeApp.controller('GamesController',
-    function ($scope, Game, $routeParams) {
+    function ($rootScope, $scope, Game, $routeParams) {
         $scope.gameSearchQuery = { 'searchString': "" };
         $scope.loading_games = true;
         Game.query({ data_detail: 'full' },
@@ -12,7 +12,7 @@ siAgeApp.controller('GamesController',
             }
             , function (error) {
                 $scope.loading_games = false;
-                $scope.error = "Unable to load game list!";
+                $scope.error = $rootScope.getFriendlyErrorText(error);
             });
 
         $scope.getPlayersFromGame = function (game)

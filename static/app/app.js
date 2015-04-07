@@ -108,3 +108,13 @@ siAgeApp.directive('autoFocus', function ($timeout) {
         }
     };
 });
+
+
+angular.module('SiAgeApp').run(function ($rootScope) {
+    $rootScope.getFriendlyErrorText = function (error) {
+        if (error.data.error_message) {
+            return error.data.error_message;
+        }
+        else return error;
+    }
+});

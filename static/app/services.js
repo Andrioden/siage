@@ -35,5 +35,5 @@ siAgeApp
         return $resource('/api/setupgame/', {}, {
             submit: { method: 'POST' }
         });
-    });
 
+    });

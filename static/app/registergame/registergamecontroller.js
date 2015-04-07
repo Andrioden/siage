@@ -1,7 +1,7 @@
 ﻿var siAgeApp = angular.module('SiAgeApp');
 
 siAgeApp.controller('RegisterGameController',
-    function ($scope, GameSetting, Player, Game, $timeout) {
+    function ($rootScope, $scope, GameSetting, Player, Game, $timeout) {
         GameSetting.query().$promise.then(
             function (value) {
                 $scope.error = "";
@@ -22,7 +22,7 @@ siAgeApp.controller('RegisterGameController',
                 $scope.initGame();
             },
             function (error) {
-                $scope.error = "Unable to load settings";
+                $scope.error = $rootScope.getFriendlyErrorText(error);
             }
         );
 
@@ -32,7 +32,7 @@ siAgeApp.controller('RegisterGameController',
                 $scope.allPlayers = emptyPlayerHelper.concat(value);
             },
             function (value) {
-                $scope.error = "Unable to load players";
+                $scope.error = $rootScope.getFriendlyErrorText(error);
             }
         );
 
@@ -66,15 +66,7 @@ siAgeApp.controller('RegisterGameController',
                 },
                 //error
                 function (error) {
-                    if (error.data.error_code == "VALIDATION_ERROR_NOT_LOGGED_INN") {
-                        $scope.error = "You need to login to use this function.";
-                    }
-                    else if (error.data.error_code == "VALIDATION_ERROR_NOT_AUTHENTICATED") {
-                        $scope.error = "You need to claim an existing player before you can register game results.";
-                    }
-                    else {
-                        $scope.error = error.data.error_message;
-                    };
+                    $scope.error = $rootScope.getFriendlyErrorText(error);
 
                     $scope.submitted_game_id = "";
                     reAddEmptyPlayers();

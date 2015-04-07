@@ -1,7 +1,7 @@
 ﻿var siAgeApp = angular.module('SiAgeApp');
 
 siAgeApp.controller('LeagueController',
-    function ($scope, Player, Game, $location) {
+    function ($rootScope, $scope, Player, Game, $location) {
 
         $scope.loading_players = true;
         Player.query(
@@ -11,7 +11,7 @@ siAgeApp.controller('LeagueController',
             }
             ,function(error){
                 $scope.loading_players = false;
-                $scope.error = "Unable to load league list!";
+                $scope.error = $rootScope.getFriendlyErrorText(error);
             });
 
         $scope.loading_games = true;
@@ -22,7 +22,7 @@ siAgeApp.controller('LeagueController',
             }
             ,function(error){
                 $scope.loading_games = false;
-                $scope.error = "Unable to load game list!";
+                $scope.error = $rootScope.getFriendlyErrorText(error);
             });
 
         $scope.navigate = function (route) {

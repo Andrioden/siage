@@ -1,7 +1,7 @@
 ﻿var siAgeApp = angular.module('SiAgeApp');
 
 siAgeApp.controller('SetupGamesController',
-    function ($scope, Player, SetupGame, $routeParams) {
+    function ($rootScope, $scope, Player, SetupGame, $routeParams) {
         $scope.SetupGame = { 'players': [] };
         $scope.algorithms = ["TotallyRandom", "Random", "Autobalance"];
         $scope.SetupGame.algorithm = "Autobalance";
@@ -17,7 +17,7 @@ siAgeApp.controller('SetupGamesController',
             }
             , function (error) {
                 $scope.loading_players = false;
-                $scope.error = "Unable to load league list!";
+                $scope.error = $rootScope.getFriendlyErrorText(error);
             });
 
         $scope.ToggleSelectAllPlayers = function () {
@@ -76,7 +76,7 @@ siAgeApp.controller('SetupGamesController',
                 //error
                 function (error) {
                     $scope.settingUpGame = false;
-                    $scope.error = "Unable to setup game!";
+                    $scope.error = $rootScope.getFriendlyErrorText(error);
                 }
             );
         };

@@ -1,7 +1,7 @@
 ﻿var siAgeApp = angular.module('SiAgeApp');
 
 siAgeApp.controller('RegisterPlayerController',
-    function ($scope, Player, $timeout) {
+    function ($rootScope, $scope, Player, $timeout) {
         $scope.newplayer = new Player();
 
         $scope.loading_players = true;
@@ -9,17 +9,18 @@ siAgeApp.controller('RegisterPlayerController',
             function (data) {
                 $scope.loading_players = false;
                 $scope.players = data;
+                $scope.error = "";
             }
             , function (error) {
                 $scope.loading_players = false;
-                $scope.error = "Unable to load players list!";
+                $scope.error = $rootScope.getFriendlyErrorText(error);
             });
 
         $scope.submitPlayer = function () {
             Player.save($scope.newplayer).$promise.then(
                 //success
                 function(value) {
-                    $scope.players.push($scope.newplayer);
+                    $scope.players.push(value.player);
                     $scope.newplayer = new Player();
                     $scope.error = "";
                     $scope.success = value.response;
@@ -29,15 +30,7 @@ siAgeApp.controller('RegisterPlayerController',
                 },
                 //error
                 function(error) {
-                    if (error.data.error_code == "VALIDATION_ERROR_NOT_LOGGED_INN") {
-                        $scope.error = "You need to login to use this function.";
-                    }
-                    else if (error.data.error_code == "VALIDATION_ERROR_NOT_AUTHENTICATED") {
-                        $scope.error = "You need to claim an existing player before you can register other players.";
-                    }
-                    else {
-                        $scope.error = error.data.error_message;
-                    };
+                    $scope.error = $rootScope.getFriendlyErrorText(error);
                 }
             );
         };

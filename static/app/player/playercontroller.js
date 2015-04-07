@@ -1,7 +1,7 @@
 ﻿var siAgeApp = angular.module('SiAgeApp');
 
 siAgeApp.controller('PlayerController',
-    function ($scope, Player, User, Game, $routeParams) {
+    function ($rootScope, $scope, Player, User, Game, $routeParams) {
         $scope.user = User.get();
 
         $scope.loading_player = true;
@@ -14,7 +14,7 @@ siAgeApp.controller('PlayerController',
             },
             function (error) {
                 $scope.loading_player = false;
-                $scope.error = "Unable to load player info!";
+                $scope.error = $rootScope.getFriendlyErrorText(error);
             }
     	);
 
@@ -26,7 +26,7 @@ siAgeApp.controller('PlayerController',
             }
             , function (error) {
                 $scope.loading_games = false;
-                $scope.error = "Unable to load game list!";
+                $scope.error = $rootScope.getFriendlyErrorText(error);
             });
         };
     }
