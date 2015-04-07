@@ -7,7 +7,7 @@
         <div id="gamesWrapper" ng-show="!settingUpGame" ng-animate-children>
             <div ng-show="games.length > 0" class="box margin_top" ng-repeat="game in games">
                 <h4>Game {{$index + 1}} <span style="float: right; font-weight: normal;">Rating dif: {{game.rating_dif}}</span></h4>
-                <table ng-repeat="team in game.teams">
+                <table ng-repeat="team in game.teams" class="list_table">
                     <tr>
                         <td style="width: 100px;">
                             Team {{$index + 1}}
@@ -15,7 +15,7 @@
                             Rating: {{team.rating}}
                         </td>
                         <td>
-                            <table>
+                            <table class="list_table">
                                 <tr ng-repeat="player in team.players | orderBy:['-rating','nick']" class="setup_game_player_anim">
                                     <td>
                                         {{player.nick}}
