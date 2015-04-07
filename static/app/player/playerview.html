@@ -13,7 +13,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="game in games">
+                    <tr ng-repeat="game in games | orderBy: 'date_epoch' : true">
                         <td><a href="/games/{{game.id}}" title="View game">{{game.date | date : 'dd.MM.yyyy'}} | {{game.title}} {{game.team_format}}</a></td>
                     </tr>
                 </tbody>
@@ -73,7 +73,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="teammate in player.stats.teammate_fit">
+                    <tr ng-repeat="teammate in player.stats.teammate_fit | orderBy:['-win_chance','-wins', '-played', 'nick']">
                         <td><a href="/players/{{teammate.teammate.nick}}" title="View player {{teammate.teammate.nick}}">{{teammate.teammate.nick}}</a></td>
                         <td>{{teammate.played}}</td>
                         <td>{{teammate.wins}}</td>
@@ -94,7 +94,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="civilization in player.stats.civ_fit">
+                    <tr ng-repeat="civilization in player.stats.civ_fit | orderBy:['-win_chance','-wins', '-played', 'civ']">
                         <td><a href="">{{civilization.civ}}</a></td>
                         <td>{{civilization.played}}</td>
                         <td>{{civilization.wins}}</td>
