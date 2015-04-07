@@ -37,14 +37,21 @@ class GamesHandler(webapp2.RequestHandler):
         # get data according to if its for a specific player or not
         if player_id:
             game_keys = [player_result.game for player_result in data]
-            game_data = [game.get_data(data_detail) for game in ndb.get_multi(game_keys)]
+            games_data = [game.get_data(data_detail) for game in ndb.get_multi(game_keys)]
+            self._expand_game_data_with_is_winner(games_data, data)
         else:
-            game_data = [game.get_data(data_detail) for game in data]
+            games_data = [game.get_data(data_detail) for game in data]
         
         # RETURN RESPONSE
         self.response.headers['Content-Type'] = 'application/json'
-        self.response.out.write(json.dumps(game_data))
-
+        self.response.out.write(json.dumps(games_data))
+    
+    def _expand_game_data_with_is_winner(self, games_data, player_results):
+        for game in games_data:
+            for res in player_results:
+                if res.game.id() == game['id']:
+                    game['is_winner'] = res.is_winner
+                    
     #@ndb.transactional
     def post(self):
         """ --------- CREATE GAME --------- """
