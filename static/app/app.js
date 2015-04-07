@@ -44,6 +44,10 @@ siAgeApp.config(['$routeProvider', '$locationProvider',
                 templateUrl: 'static/app/setupgames/setupgamesview.html',
                 controller: 'SetupGamesController'
             })
+            .when('/admin', {
+                templateUrl: 'static/app/admin/adminview.html',
+                controller: 'AdminController'
+            })
             .otherwise({
                 redirectTo: '/league'
             });
