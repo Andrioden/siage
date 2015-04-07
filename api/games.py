@@ -125,14 +125,15 @@ class GamesHandler(webapp2.RequestHandler):
 class GameHandler(webapp2.RequestHandler):
     def get(self, game_id):
         """ --------- GET SINGLE GAME --------- """
-
+        data_detail = self.request.get('data_detail', "simple")
+        
         # BUILD DATA
         game = Game.get_by_id(int(game_id))
 
         # RETURN RESPONSE
         if game:
             self.response.headers['Content-Type'] = 'application/json'
-            self.response.out.write(json.dumps(game.get_data()))
+            self.response.out.write(json.dumps(game.get_data(data_detail)))
         else:
             self.response.out.write(json.dumps({'error': "GAME_NOT_FOUND"}))
 
