@@ -460,3 +460,11 @@ select option{
 .info {
     color: #ffdcb6;
 }
+
+.rating_trend_icon_up_vertical_fix {
+    padding-bottom: 3px;
+}
+
+.rating_trend_icon_down_vertical_fix {
+    padding-bottom: 2px;
+}
