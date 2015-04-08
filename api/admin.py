@@ -1,17 +1,28 @@
 #!/usr/bin/env python
 
 import webapp2
+import json
 from rating import recalculate_ratings
 from models import PlayerResult, Player
 import logging
 
 class RecalcHandler(webapp2.RequestHandler):
-    def get(self):
+    def post(self):
+
+        if not validate_logged_in_admin(self.response):
+            return
+        
         recalculate_ratings()
-        self.response.write("OK")
+
+        self.response.headers['Content-Type'] = 'application/json'
+        self.response.out.write(json.dumps({'response': "Ratings recalculated"}))
         
 class CleanDBHandler(webapp2.RequestHandler):
-    def get(self):
+    def post(self):
+
+        if not validate_logged_in_admin(self.response):
+            return
+
         """ This admin function will contain all historic and current clean up method. 
         Please uncomment them when they are run on prod
         
@@ -34,19 +45,26 @@ class CleanDBHandler(webapp2.RequestHandler):
             self._delete_property(player, 'stats_civ_most_losses_name')
             self._delete_property(player, 'stats_civ_most_losses_count')
             player.put()
-        self.response.write("OK")
+        self.response.headers['Content-Type'] = 'application/json'
+        self.response.out.write(json.dumps({'response': "The database has been cleaned"}))
+
     def _delete_property(self, obj, property_name):
         if property_name in obj._properties:
             del obj._properties[property_name]
             
 class ClearStatsHandler(webapp2.RequestHandler):
-    def get(self):
+    def post(self):
+
+        if not validate_logged_in_admin(self.response):
+            return
+
         for player in Player.query():
             player.clear_stats()
-        self.response.write("OK")
+        self.response.headers['Content-Type'] = 'application/json'
+        self.response.out.write(json.dumps({'response': "Player statistics have been cleared"}))
         
 app = webapp2.WSGIApplication([
-    (r'/admin/recalc/', RecalcHandler),
-    (r'/admin/cleandb/', CleanDBHandler),
-    (r'/admin/clearstats/', ClearStatsHandler),
+    (r'/api/admin/recalc/', RecalcHandler),
+    (r'/api/admin/cleandb/', CleanDBHandler),
+    (r'/api/admin/clearstats/', ClearStatsHandler),
 ], debug=True)

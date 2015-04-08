@@ -110,7 +110,7 @@ siAgeApp.directive('autoFocus', function ($timeout) {
 });
 
 
-angular.module('SiAgeApp').run(function ($rootScope) {
+siAgeApp.run(function ($rootScope) {
     $rootScope.getFriendlyErrorText = function (error) {
         if (error.data.error_message) {
             return error.data.error_message;
@@ -118,3 +118,21 @@ angular.module('SiAgeApp').run(function ($rootScope) {
         else return error;
     }
 });
+
+
+siAgeApp.directive('ngConfirmClick', [
+    function() {
+        return {
+            link: function (scope, element, attr) {
+                var msg = attr.ngConfirmClick || "Are you sure?";
+                var clickAction = attr.confirmedClick;
+                element.bind('click', function (event) {
+                    console.log(JSON.stringify(msg));
+                    if (window.confirm(msg)) {
+                        scope.$apply(clickAction);
+                    }
+                });
+            }
+        };
+    }
+]);

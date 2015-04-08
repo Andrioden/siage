@@ -7,7 +7,7 @@ from models import Game, Player, PlayerResult
 from datetime import datetime
 from google.appengine.ext import ndb
 from rating import RatingCalculator
-from api.utils import error_400, validate_logged_inn
+from api.utils import error_400, validate_logged_in
 
 
 class GamesHandler(webapp2.RequestHandler):
@@ -60,7 +60,7 @@ class GamesHandler(webapp2.RequestHandler):
         # VALIDATING
         if not self._validate_no_empty_player_results(request_data['playerResults']):
             return
-        if not validate_logged_inn(self.response):
+        if not validate_logged_in(self.response):
             return
         # CREATE GAME OBJECT
         game_date = datetime.fromtimestamp(request_data['date_epoch'])

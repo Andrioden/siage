@@ -1,12 +1,62 @@
 ﻿<div id="main_content">
+    <h1>Admin panel</h1>
     <div class="right_content">
-        
+
     </div>
     <div class="left_content">
-        Admin panel to come
-
-        <br />
-        <br />
-        <br />
+        <div class="admin_function">
+            <section class="admin_row">
+                <div class="admin_cell button">
+                    <button class="button admin_action" confirmed-click="Recalc()"
+                            ng-confirm-click="Are you sure you want to recalculate ratings?">
+                        Recalculate ratings
+                    </button>
+                </div>
+                <div class="admin_cell description">
+                    This will recalculate rating for all players.
+                </div>
+            </section>
+            <section class="admin_response">
+                <img ng-show="recalc_processing" src="static/assets/img/ajax-loader.gif">
+                <span ng-show="recalc_response" class="success">{{recalc_response}}</span>
+                <span ng-show="recalc_error" class="error">{{recalc_error}}</span>
+            </section>
+        </div>
+        <div class="admin_function">
+            <section class="admin_row">
+                <div class="admin_cell button">
+                    <button class="button admin_action" confirmed-click="CleanDB()"
+                            ng-confirm-click="Are you sure you want clean the database?">
+                        Clean database
+                    </button>
+                </div>
+                <div class="admin_cell description">
+                    This will clean the database, removing deleted fields and values.
+                </div>
+            </section>
+            <section class="admin_response">
+                <img ng-show="cleandb_processing" src="static/assets/img/ajax-loader.gif">
+                <span ng-show="cleandb_response" class="success">{{cleandb_response}}</span>
+                <span ng-show="cleandb_error" class="error">{{cleandb_error}}</span>
+            </section>
+        </div>
+        <div class="admin_function">
+            <section class="admin_row">
+                <div class="admin_cell button">
+                    <button class="button admin_action" confirmed-click="ClearStats()"
+                            ng-confirm-click="Are you sure you want clear all stats?">
+                        Clear stats
+                    </button>
+                </div>
+                <div class="admin_cell description">
+                    This will clear all player statistics, meaning they will be recalculated the next time each player is loaded.
+                </div>
+            </section>
+            <section class="admin_response">
+                <img ng-show="clearstats_processing" src="static/assets/img/ajax-loader.gif">
+                <span ng-show="clearstats_response" class="success">{{clearstats_response}}</span>
+                <span ng-show="clearstats_error" class="error">{{clearstats_error}}</span>
+            </section>
+        </div>
     </div>
 </div>

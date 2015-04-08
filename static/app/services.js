@@ -31,6 +31,14 @@ siAgeApp
         });
     })
 
+    .factory('Admin', function ($resource) {
+        return $resource('/api/admin/:action/', {}, {
+            recalc: { method: 'POST', params: { action: 'recalc' }, isArray: false },
+            cleandb: { method: 'POST', params: { action: 'cleandb' }, isArray: false },
+            clearstats: { method: 'POST', params: { action: 'clearstats' }, isArray: false }
+        });
+    })
+
     .factory('SetupGame', function ($resource) {
         return $resource('/api/setupgame/', {}, {
             submit: { method: 'POST' }
