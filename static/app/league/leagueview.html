@@ -20,25 +20,27 @@
     <div class="left_content">
         <table class="info_table">
             <thead>
-                <tr>
-                    <td>Player</td>
-                    <td>Played</td>
-                    <td>Win%</td>
-                    <td>Rating</td>
-                </tr>
+            <tr>
+                <td class="mini"></td>
+                <td>Player</td>
+                <td>Played</td>
+                <td>Win%</td>
+                <td>Rating</td>
+            </tr>
             </thead>
             <tbody>
                 <tr ng-show="loading_players">
                     <td><img src="static/assets/img/ajax-loader.gif"></td>
                 </tr>
-                <tr ng-repeat="player in players | orderBy:['-rating','nick'] | orderEmpty: 'played': 'toBottom'">
-                    <td><a href="/players/{{player.nick}}" title="View profile">{{player.nick}}</a></td>
-                    <td>{{player.played}}</td>
-                    <td ng-show="player.win_chance">{{player.win_chance}}%</td>
-                    <td ng-show="!player.win_chance">0%</td>
-                    <td ng-show="player.played > 0">{{player.rating}} <img class="rating_trend_icon_up_vertical_fix" ng-show="player.rating_trend == '+'" src="static/assets/img/arrow_green_up.png"><img class="rating_trend_icon_down_vertical_fix" ng-show="player.rating_trend == '-'" src="static/assets/img/arrow_red_down.png"></td>
-                    <td ng-show="player.played == 0">Unrated</td>
-                </tr>
+            <tr ng-repeat="player in players | orderBy:['-rating','nick'] | orderEmpty: 'played': 'toBottom'">
+                <td class="mini">{{$index + 1}}.</td>
+                <td><a href="/players/{{player.nick}}" title="View profile">{{player.nick}}</a></td>
+                <td>{{player.played}}</td>
+                <td ng-show="player.win_chance">{{player.win_chance}}%</td>
+                <td ng-show="!player.win_chance">0%</td>
+                <td ng-show="player.played > 0">{{player.rating}} <img class="rating_trend_icon_up_vertical_fix" ng-show="player.rating_trend == '+'" src="static/assets/img/arrow_green_up.png"><img class="rating_trend_icon_down_vertical_fix" ng-show="player.rating_trend == '-'" src="static/assets/img/arrow_red_down.png"></td>
+                <td ng-show="player.played == 0">Unrated</td>
+            </tr>
             </tbody>
         </table>
         <span class="error">{{error}}</span>
