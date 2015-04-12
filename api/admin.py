@@ -4,6 +4,7 @@ import webapp2
 import json
 from rating import recalculate_ratings
 from models import PlayerResult, Player
+from api.utils import validate_logged_in_admin
 import logging
 
 class RecalcHandler(webapp2.RequestHandler):
