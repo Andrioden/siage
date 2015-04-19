@@ -6,6 +6,7 @@ import logging
 from models import Player
 from utils import error_400, validate_logged_in
 
+
 class PlayersHandler(webapp2.RequestHandler):
     def get(self):
         """ --------- GET PLAYERLIST --------- """
@@ -33,6 +34,7 @@ class PlayersHandler(webapp2.RequestHandler):
             new_player = Player(nick = nick).put().get()
             self.response.headers['Content-Type'] = 'application/json'
             self.response.out.write(json.dumps({'response': "Player %s saved successfully" % new_player.nick, 'player': new_player.get_data()}))
+
 
 class PlayerHandler(webapp2.RequestHandler):
     def get(self, player_id_or_nick):

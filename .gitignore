@@ -3,7 +3,7 @@
 # Aptana Studio files
 .project
 .pydevproject
-
+.idea
 
 
 ################# PYTHON HELPER IGNORE BELOW ################
