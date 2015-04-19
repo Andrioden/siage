@@ -55,7 +55,7 @@ class Player(ndb.Model):
         }
         
     def _get_rating_trend(self):
-        two_weeks_ago = datetime.now() - timedelta(days=14)
+        two_weeks_ago = datetime.now() - timedelta(days=10)
         rating_two_weeks_ago = PlayerResult.query(PlayerResult.player == self.key, PlayerResult.game_date < two_weeks_ago).order(-PlayerResult.game_date).get()
         if rating_two_weeks_ago:
             rating_now = PlayerResult.query(PlayerResult.player == self.key).order(-PlayerResult.game_date).get()
@@ -92,7 +92,7 @@ class Player(ndb.Model):
                     'game_id': self.stats_worst_score_per_min_game.id()
                 },
                 'teammate_fit': self.stats_teammate_fit,
-                'civ_fit': self.stats_civ_fit     
+                'civ_fit': self.stats_civ_fit
             }
         }
     def _calc_and_update_stats_if_needed(self):
