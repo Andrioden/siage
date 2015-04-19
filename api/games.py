@@ -21,7 +21,6 @@ class GamesHandler(webapp2.RequestHandler):
         query = None
         if player_id:
             query = PlayerResult.query(PlayerResult.player == ndb.Key(Player, int(player_id))).order(-PlayerResult.game_date)
-            #game_keys = [res.game for res in PlayerResult.query(PlayerResult.player == ndb.Key(Player, int(player_id)))]
         else:
             query = Game.query().order(-Game.date)
         
@@ -38,7 +37,7 @@ class GamesHandler(webapp2.RequestHandler):
         if player_id:
             game_keys = [player_result.game for player_result in data]
             games_data = [game.get_data(data_detail) for game in ndb.get_multi(game_keys)]
-            self._expand_game_data_with_is_winner(games_data, data)
+            self._expand_game_data_with_player_result_data(games_data, data)
         else:
             games_data = [game.get_data(data_detail) for game in data]
         
@@ -46,11 +45,12 @@ class GamesHandler(webapp2.RequestHandler):
         self.response.headers['Content-Type'] = 'application/json'
         self.response.out.write(json.dumps(games_data))
     
-    def _expand_game_data_with_is_winner(self, games_data, player_results):
+    def _expand_game_data_with_player_result_data(self, games_data, player_results):
         for game in games_data:
             for res in player_results:
                 if res.game.id() == game['id']:
                     game['is_winner'] = res.is_winner
+                    game['stats_rating'] = res.stats_rating
                     
     #@ndb.transactional
     def post(self):
