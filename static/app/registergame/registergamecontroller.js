@@ -184,7 +184,6 @@ siAgeApp.controller('RegisterGameController',
             $scope.game.duration_seconds = null;
             $scope.game.game_type = "Random Map";
             $scope.game.location = null;
-            $scope.game.size = "Normal (6 player)";
             $scope.game.difficulty = "Standard";
             $scope.game.resources = "Standard";
             $scope.game.population = 200;
