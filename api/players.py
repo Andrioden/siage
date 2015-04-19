@@ -10,8 +10,10 @@ from utils import error_400, validate_logged_in
 class PlayersHandler(webapp2.RequestHandler):
     def get(self):
         """ --------- GET PLAYERLIST --------- """
+        data_detail = self.request.get('data_detail', "simple")
+
         # BUILD DATA
-        players_data = [player.get_data("simple") for player in Player.query()]
+        players_data = [player.get_data(data_detail) for player in Player.query()]
 
         # RETURN RESPONSE
         self.response.headers['Content-Type'] = 'application/json'
