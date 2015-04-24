@@ -69,7 +69,7 @@ class Player(ndb.Model):
             return "n"
         
     def _get_stats_data(self):
-        if self._calc_and_update_stats_if_needed() == False:
+        if self.calc_and_update_stats_if_needed() == False:
             return {}
         return {
             'stats': {
@@ -95,7 +95,7 @@ class Player(ndb.Model):
                 'civ_fit': self.stats_civ_fit
             }
         }
-    def _calc_and_update_stats_if_needed(self):
+    def calc_and_update_stats_if_needed(self):
         if self.stats_average_score == None:
             player_results = PlayerResult.query(PlayerResult.player == self.key).fetch()
             if len(player_results) == 0:
