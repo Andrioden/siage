@@ -63,6 +63,5 @@ class PlayerHandler(webapp2.RequestHandler):
 
 app = webapp2.WSGIApplication([
     (r'/api/players/', PlayersHandler),
-    (r'/api/players/(\d+)', PlayerHandler),
-    (r'/api/players/(\S+)', PlayerHandler)
+    (r'/api/players/(.*)', PlayerHandler),
 ], debug=True)
