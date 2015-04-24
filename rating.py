@@ -1,5 +1,3 @@
-from models import PlayerResult, Player, Game
-from google.appengine.ext import ndb
 import math
 from operator import attrgetter
 import logging
@@ -10,6 +8,9 @@ class RatingCalculator:
         self.player_results = []
 
     def add_player_results_from_dict(self, player_results_dict):
+        from models import PlayerResult, Player # On demand loading modules because they break the tests
+        from google.appengine.ext import ndb # On demand loading modules because they break the tests
+
         for player_res_dict in player_results_dict:
             player_key = ndb.Key(Player, int(player_res_dict['player_id']))
             last_player_result = PlayerResult.get_last_result_for_player(player_key)
@@ -30,10 +31,11 @@ class RatingCalculator:
         """
         1. Find total rating among all players
         2. Find teams total rating. Also adds single team players
-        3. Find chance to win for players
+        3. Find chance to win for team
         4. Find gain/lost using K-factor
-        5. If playing in a team adjust according to score
-        6. Give/take point if a rounding error was produced to top/bottom scorer.
+        5. Adjust rating change according to amount of teams
+        6. If playing in a team adjust according to score
+        7. Give/take point if a rounding error was produced to top/bottom scorer.
         
         """
         self._validate_winner_list()
@@ -57,7 +59,7 @@ class RatingCalculator:
 #         print "Team ratings: %s" % team_ratings
         
         for res in self.player_results:
-            # 3. Find chance to win
+            # 3. Find chance to win for team
             if res.team:
                 team_rating = self._get_team_rating(res.team)
             else:
@@ -70,8 +72,12 @@ class RatingCalculator:
                 team_rating_change = (1.0 - win_chance) * K_FACTOR
             else:
                 team_rating_change = win_chance * -1.0 * K_FACTOR
-            
-            # 5. If playing in a team adjust according to score
+
+            # 5. Adjust rating change according to amount of teams
+            if self._get_amount_of_teams() > 2:
+                team_rating_change = team_rating_change / 2
+
+            # 6. If playing in a team adjust according to score
             player_team_size = self._get_team_size(res.team)
             if res.team and player_team_size > 1:
                 base_rating_part = team_rating_change * (1.0 - SCORE_ADJUST_FACTOR) / player_team_size
@@ -82,18 +88,20 @@ class RatingCalculator:
                     # I am not sure why this works mathematically, but it works on distributing a negative score in a favorish manner to the high scorers.
                     score_rating_part = team_rating_change * SCORE_ADJUST_FACTOR * (1.0 - score_percent) / (player_team_size - 1)
                 player_rating_change =  int(round(base_rating_part + score_rating_part))
-#                 print "base_rating_part %s" % base_rating_part
-#                 print "score_percent %s" % score_percent
-#                 print "score_rating_part %s" % score_rating_part
-#                 print "player_rating_change %s" % player_rating_change
+                # print "team_rating_change %s" % team_rating_change
+                # print "base_rating_part %s" % base_rating_part
+                # print "score_percent %s" % score_percent
+                # print "score_rating_part %s" % score_rating_part
+                # print "player_rating_change %s" % player_rating_change
             else:
                 player_rating_change = int(round(team_rating_change))
-            
+
+
             res.rating_change = player_rating_change
             res.new_rating = res.prev_rating + player_rating_change
             logging.info("Team: %s | Player: %s | winchance: %s | team rating change: %s | player score %s | score adjusted rating: %s | rating: %s to %s " % (res.team, res.player_id, win_chance, team_rating_change, res.score, player_rating_change, res.prev_rating, res.new_rating))
-#             print "Team: %s | Player: %s | winchance: %s | team rating change: %s | player score %s | score adjusted rating: %s | rating: %s to %s " % (res.team, res.player_id, win_chance, team_rating_change, res.score, player_rating_change, res.prev_rating, res.new_rating)
-        # 6. Validate that an equal amount of rating have been lost as gained. 
+            print "Team: %s | Player: %s | winchance: %s | team rating change: %s | player score %s | score adjusted rating: %s | rating: %s to %s " % (res.team, res.player_id, win_chance, team_rating_change, res.score, player_rating_change, res.prev_rating, res.new_rating)
+        # 7. Validate that an equal amount of rating have been lost as gained.
         #    If a difference is found. Give point from top score or remove from bottom.
         total_rating_change = sum(res.rating_change for res in self.player_results)
 #         print "Total rating change before adjustments: %s" % total_rating_change
@@ -140,7 +148,16 @@ class RatingCalculator:
             if res.team == team:
                 size += 1
         return size
-    
+
+    def _get_amount_of_teams(self):
+        amount = 0
+        teams_counted = []
+        for res in self.player_results:
+            if res.team and res.team not in teams_counted:
+                amount += 1
+                teams_counted.append(res.team)
+        return amount
+
     def _validate_winner_list(self):
         winner_teams_or_players = []
         for res in self.player_results:
@@ -167,7 +184,8 @@ class RatingPlayerResult:
     def __str__(self):
         return "Player ID %s | Score: %s | new rating; %s | rating change: %s" % (self.player_id, self.score, self.new_rating, self.rating_change)
     
-def recalculate_ratings():  
+def recalculate_ratings():
+    from models import PlayerResult, Game # On demand loading modules because they break the tests
     logging.info("----- RECALCULATING RATINGS ------")
     for game in Game.query().order(Game.date).fetch():
         logging.info("Recalculating for game %s" % game.key.id())
