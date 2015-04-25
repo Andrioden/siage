@@ -18,7 +18,8 @@ class SetupGameHandler(webapp2.RequestHandler):
         for player_id in player_ids:
             player = ndb.Key(Player, int(player_id)).get()
             player.calc_and_update_stats_if_needed()
-            players.append({'id': player.key.id(), 'nick': player.nick, 'rating': player.rating(), 'score_per_min': player.stats_average_score_per_min})
+            score_per_min = player.stats_average_score_per_min if player.stats_average_score_per_min else 0
+            players.append({'id': player.key.id(), 'nick': player.nick, 'rating': player.rating(), 'score_per_min': score_per_min})
         logging.info(players)
         
         algorithm = request_data['algorithm']
@@ -30,14 +31,14 @@ class SetupGameHandler(webapp2.RequestHandler):
         elif algorithm == "Autobalance":
             setup_data = self._random_setup_best_attempt(players, 50)
         elif algorithm == "AutobalanceSR":
-            setup_data = self._random_setup_best_attempt_score_and_minirandomized_rating(players, 20)
+            setup_data = self._random_setup_best_attempt_score_and_minirandomized_rating(players, 25)
 
         # RETURN RESPONSE
         self.response.headers['Content-Type'] = 'application/json'
         self.response.out.write(json.dumps(setup_data))
 
     def _random_setup_best_attempt_score_and_minirandomized_rating(self, players, attempts):
-        setup_avg_score_per_min =  sum([player['score_per_min'] for player in players])
+        setup_avg_score_per_min = sum([player['score_per_min'] for player in players])
 
         for player in players:
             skill_guess = player['rating'] + random.randint(-5,5)
