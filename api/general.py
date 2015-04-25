@@ -13,13 +13,13 @@ class SetupGameHandler(webapp2.RequestHandler):
     def post(self):
         request_data = json.loads(self.request.body)
 
-        player_ids = request_data['players']
+        player_inputs = request_data['players']
         players = []
-        for player_id in player_ids:
-            player = ndb.Key(Player, int(player_id)).get()
+        for player_input in player_inputs:
+            player = ndb.Key(Player, int(player_input['id'])).get()
             player.calc_and_update_stats_if_needed()
             score_per_min = player.stats_average_score_per_min if player.stats_average_score_per_min else 0
-            players.append({'id': player.key.id(), 'nick': player.nick, 'rating': player.rating(), 'score_per_min': score_per_min})
+            players.append({'id': player.key.id(), 'nick': player.nick, 'rating': player_input['rating'], 'score_per_min': score_per_min})
         logging.info(players)
         
         algorithm = request_data['algorithm']

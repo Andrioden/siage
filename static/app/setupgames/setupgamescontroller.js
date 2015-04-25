@@ -31,7 +31,8 @@ siAgeApp.controller('SetupGamesController',
                 for (i = 0; i < $scope.players.length; i++) {
                     $scope.players[i].joining = true;
                 }
-            } else {
+            }
+            else {
                 for (i = 0; i < $scope.players.length; i++) {
                     $scope.players[i].joining = !$scope.players[i].joining;
                 }
@@ -50,7 +51,10 @@ siAgeApp.controller('SetupGamesController',
             var trebVoteList = [];
             for (var i = 0; i < $scope.players.length; i++) {
                 if ($scope.players[i].joining) {
-                    $scope.SetupGame.players.push($scope.players[i].id);
+                    $scope.SetupGame.players.push({
+                        'id': $scope.players[i].id,
+                        'rating': $scope.players[i].rating
+                    });
                     if ($scope.players[i].trebuchet_vote) {
                         trebVoteList.push(true);
                     } else {

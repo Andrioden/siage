@@ -52,6 +52,7 @@
                     <tr>
                         <td><h4>Players <a href="" style="font-weight: normal;" ng-click="ToggleSelectAllPlayers()">(All)</a></h4></td>
                         <td><h4>Trebuchet vote</h4></td>
+                        <td><h4>Adjust rating</h4></td>
                     </tr>
                     <tr ng-repeat="player in players | orderBy:['-rating','nick']">
                         <td>
@@ -64,6 +65,9 @@
                         <td>
                             <input ng-disabled="!player.joining" class="checkbox" type="checkbox" name="trebuchet_vote"
                                    ng-model="player.trebuchet_vote" />
+                        </td>
+                        <td>
+                            <input type="number" value="{{player.rating}}" name="player_rating" ng-model="player.rating">
                         </td>
                     </tr>
                 </tbody>
