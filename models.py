@@ -7,6 +7,7 @@ import operator
 
 CIVILIZATIONS = ['Aztec', 'Britons', 'Byzantines', 'Celts', 'Chinese', 'Franks', 'Goths', 'Huns', 'Incas', 'Indians', 'Italians', 'Japanese', 'Koreans', 'Magyars', 'Mayans', 'Mongols', 'Persians', 'Saracens', 'Slavs', 'Spanish', 'Teutons', 'Turks', 'Vikings']
 
+
 class Player(ndb.Model):
     nick = ndb.StringProperty(required=True)
     userid = ndb.StringProperty(default=None)
@@ -19,10 +20,33 @@ class Player(ndb.Model):
     stats_average_score_per_min = ndb.FloatProperty(default=None)
     stats_best_score_per_min = ndb.FloatProperty(default=None)
     stats_best_score_per_min_game = ndb.KeyProperty(kind='Game', default=None)
+    stats_percentage_topping_score = ndb.FloatProperty(default=None)
     stats_worst_score_per_min = ndb.FloatProperty(default=None)
     stats_worst_score_per_min_game = ndb.KeyProperty(kind='Game', default=None)
+    """
+    The teammate_fit is a list with data in the following format: {
+        'teammate': {
+            'id': X1,
+            'nick': X2
+        },
+        'played': X3,
+        'wins': X4
+        'win_chance': X5,
+        'points': X6
+    }
+    """
     stats_teammate_fit = ndb.PickleProperty(default=None)
+    """
+    The civ_fit is a list with data in the following format: {
+        'civ': X1
+        'played': X3,
+        'wins': X4
+        'win_chance': X5,
+        'points': X6
+    }
+    """
     stats_civ_fit = ndb.PickleProperty(default=None)
+
     def rating(self):
         """ To avoid hitting the db unneccessary the rating value is stored in memory.
         """
@@ -93,10 +117,12 @@ class Player(ndb.Model):
                     'value': round(self.stats_worst_score_per_min, 1),
                     'game_id': self.stats_worst_score_per_min_game.id()
                 },
+                'percentage_topping_score': self.stats_percentage_topping_score,
                 'teammate_fit': self.stats_teammate_fit,
                 'civ_fit': self.stats_civ_fit
             }
         }
+
     def calc_and_update_stats_if_needed(self):
         if self.stats_average_score == None:
             player_results = PlayerResult.query(PlayerResult.player == self.key).fetch()
@@ -124,26 +150,33 @@ class Player(ndb.Model):
         
         total_score = 0
         total_seconds = 0
-        for result in player_results:
-            related_game = result.game.get()
-            total_score += result.score
+        topped_score_while_in_team = 0
+        for res in player_results:
+            related_game = res.game.get()
+            total_score += res.score
             total_seconds += related_game.duration_seconds
-            score_per_min = result.score / (related_game.duration_seconds / 60.0)
-            if result.score > self.stats_best_score:
-                self.stats_best_score = result.score
-                self.stats_best_score_game = result.game
-            if result.score < self.stats_worst_score:
-                self.stats_worst_score = result.score
-                self.stats_worst_score_game = result.game
+            score_per_min = res.score / (related_game.duration_seconds / 60.0)
+            if res.score > self.stats_best_score:
+                self.stats_best_score = res.score
+                self.stats_best_score_game = res.game
+            if res.score < self.stats_worst_score:
+                self.stats_worst_score = res.score
+                self.stats_worst_score_game = res.game
             if score_per_min > self.stats_best_score_per_min:
                 self.stats_best_score_per_min = score_per_min
-                self.stats_best_score_per_min_game = result.game
+                self.stats_best_score_per_min_game = res.game
             if score_per_min < self.stats_worst_score_per_min:
                 self.stats_worst_score_per_min = score_per_min
-                self.stats_worst_score_per_min_game = result.game
+                self.stats_worst_score_per_min_game = res.game
+            # Score topping?
+            team_mates_results = PlayerResult.query(PlayerResult.game == res.game, PlayerResult.team == res.team).fetch()
+            if len(team_mates_results) > 1:
+                if res.score == max([team_mate_res.score for team_mate_res in team_mates_results]):
+                    topped_score_while_in_team += 1
             
         self.stats_average_score = total_score / len(player_results)
         self.stats_average_score_per_min = total_score / (total_seconds / 60.0)
+        self.stats_percentage_topping_score = topped_score_while_in_team * 100 / len(player_results)
         
     def _calc_stats_best_civ(self, player_results):
         civ_won_dict = {}
@@ -169,6 +202,7 @@ class Player(ndb.Model):
             worst_civ = max(civ_lost_dict.iteritems(), key=operator.itemgetter(1))[0]
             self.stats_civ_most_losses_name = worst_civ
             self.stats_civ_most_losses_count = civ_lost_dict[worst_civ]
+
     def _calc_stats_teammate_fit(self, player_results):
         # First map wins and played to teammate_fit
         teammate_fit = {}
@@ -188,8 +222,10 @@ class Player(ndb.Model):
             teammate_id = int(teammate_id)
             teammate_dict['win_chance'] = int(teammate_dict['wins'] * 100.0 / teammate_dict['played'])
             teammate_dict['teammate']['nick'] = Player.get_by_id(teammate_dict['teammate']['id']).nick
+            teammate_dict['points'] = int((teammate_dict['wins']*2 - teammate_dict['played']) * teammate_dict['win_chance'])
             teammate_fit_list.append(teammate_dict)
         self.stats_teammate_fit = teammate_fit_list
+
     def _calc_stats_civ_fit(self, player_results):
         # First map wins and played to the civs
         civ_fit = {}
@@ -203,8 +239,10 @@ class Player(ndb.Model):
         civ_fit_list = []
         for civ_name, civ_dict in civ_fit.iteritems(): 
             civ_dict['win_chance'] = int(civ_dict['wins'] * 100.0 / civ_dict['played'])
+            civ_dict['points'] = int((civ_dict['wins']*2 - civ_dict['played']) * civ_dict['win_chance'])
             civ_fit_list.append(civ_dict)
         self.stats_civ_fit = civ_fit_list
+
     def clear_stats(self):
         for variable_name in self.__dict__['_values'].keys(): # __dict__['_values'] contains all class object variables
             if 'stats_' in variable_name:
@@ -235,6 +273,7 @@ class Game(ndb.Model):
     trebuchet_allowed = ndb.BooleanProperty(required=False)
     # Values that are not neccesarry to store but stored to avoid having to recompute values every time the value is needed
     derived_game_format = ndb.StringProperty(required=False)
+
     def game_format(self):
         if self.derived_game_format:
             return self.derived_game_format
@@ -256,6 +295,7 @@ class Game(ndb.Model):
             self.derived_game_format = game_format[:-1]
             self.put()
             return self.derived_game_format
+
     def get_data(self, data_detail="simple"):  
         data = {}
         if data_detail in ["simple", "full"]:
@@ -287,6 +327,7 @@ class Game(ndb.Model):
                 'player_results': [res.get_data() for res in PlayerResult.query(PlayerResult.game==self.key)]     
             })
         return data
+
     @classmethod
     def _settings_data(cls):
         return {
@@ -303,6 +344,7 @@ class Game(ndb.Model):
             'locations': list(cls.location._choices)
         }
 
+
 class PlayerResult(ndb.Model):
     player = ndb.KeyProperty(kind=Player, required=True)
     game = ndb.KeyProperty(kind=Game, required=True)
@@ -313,17 +355,21 @@ class PlayerResult(ndb.Model):
     team = ndb.IntegerProperty(choices=[1,2,3,4])
     civilization = ndb.StringProperty(required=True, choices=CIVILIZATIONS)
     stats_rating = ndb.IntegerProperty(required=True)
+
     @classmethod
     def _settings_data(cls):
         return {
             'teams': list(cls.team._choices),
             'civilizations': list(cls.civilization._choices)
         }
+
     @classmethod
     def get_last_result_for_player(cls, player_key):
         return PlayerResult.query(PlayerResult.player == player_key).order(-PlayerResult.game_date).get()
+
     def get_previous_result(self):
         return PlayerResult.query(PlayerResult.player == self.player, PlayerResult.game_date < self.game_date).order(-PlayerResult.game_date).get()
+
     def get_data(self):
         player_entity = self.player.get()
         return{
@@ -337,9 +383,20 @@ class PlayerResult(ndb.Model):
             'stats_rating': self.stats_rating,
             'rating_earned': self.rating_earned()
         }
+
     def rating_earned(self):
         previous_result = self.get_previous_result()
         if previous_result:
             return self.stats_rating - previous_result.stats_rating
         else:
             return self.stats_rating - PLAYER_RATING_START_VALUE
+
+
+# class GlobalStats(ndb.Model):
+#     worst_couple_player1 = ndb.KeyProperty(kind=Player)
+#     worst_couple_player2 = ndb.KeyProperty(kind=Player)
+#     best_couple_player1 = ndb.KeyProperty(kind=Player)
+#     best_couple_player2 = ndb.KeyProperty(kind=Player)
+#     most_frequent_score_topper_player = ndb.KeyProperty(kind=Player)
+#     most_frequent_score_topper_games = ndb.IntegerProperty()
+#     most_frequent_score_topper_of_total = ndb.IntegerProperty()

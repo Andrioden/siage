@@ -29,7 +29,10 @@ handlers:
 
 - url: /api/admin/.*
   script: api.admin.app
-  
+
+- url: /api/globalstats/.*
+  script: api.globalstats.app
+
 - url: /api/.*
   script: api.general.app
 

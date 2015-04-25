@@ -26,9 +26,9 @@ class CleanDBHandler(webapp2.RequestHandler):
         if not validate_logged_in_admin(self.response):
             return
 
-        """ This admin function will contain all historic and current clean up method. 
+        """ This admin function will contain all historic and current clean up method.
         Please uncomment them when they are run on prod
-        
+
         """
         logging.info("----- 01.04.2015 - PlayerResult: removing next_player_result  ------")
         for res in PlayerResult.query():
@@ -36,7 +36,7 @@ class CleanDBHandler(webapp2.RequestHandler):
                 del res._properties['next_player_result']
             res.game_date = res.game.get().date
             res.put()
-        
+
         logging.info("----- 01.04.2015 - Player: removing some stats best/worst properties  ------")
         for player in Player.query():
             self._delete_property(player, 'stats_best_civ')

@@ -60,6 +60,10 @@
                 <td>Worst score per min</td>
                 <td>{{player.stats.worst_score_per_min.value}} in <a href="/games/{{player.stats.worst_score_per_min.game_id}}" title="View game">this game</a></td>
             </tr>
+            <tr>
+                <td>Topping score in team %:</td>
+                <td>{{player.stats.percentage_topping_score}}%</td>
+            </tr>
             </tbody>
         </table>
     </div>
@@ -74,14 +78,16 @@
                         <td>Games</td>
                         <td>Wins</td>
                         <td>Win%</td>
+                        <td>Points</td>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="teammate in player.stats.teammate_fit | orderBy:['-win_chance','-wins', '-played', 'nick']">
+                    <tr ng-repeat="teammate in player.stats.teammate_fit | orderBy:['-points', '-win_chance', '-wins', '-played', 'nick']">
                         <td><a href="/players/{{teammate.teammate.nick}}" title="View player {{teammate.teammate.nick}}">{{teammate.teammate.nick}}</a></td>
                         <td>{{teammate.played}}</td>
                         <td>{{teammate.wins}}</td>
                         <td>{{teammate.win_chance}}%</td>
+                        <td>{{teammate.points}}</td>
                     </tr>
                 </tbody>
             </table>
@@ -95,14 +101,16 @@
                         <td>Games</td>
                         <td>Wins</td>
                         <td>Win%</td>
+                        <td>Points</td>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="civilization in player.stats.civ_fit | orderBy:['-win_chance','-wins', '-played', 'civ']">
+                    <tr ng-repeat="civilization in player.stats.civ_fit | orderBy:['-points', '-win_chance', '-wins', '-played', 'civ']">
                         <td><a href="">{{civilization.civ}}</a></td>
                         <td>{{civilization.played}}</td>
                         <td>{{civilization.wins}}</td>
                         <td>{{civilization.win_chance}}%</td>
+                        <td>{{civilization.points}}</td>
                     </tr>
                 </tbody>
             </table>
