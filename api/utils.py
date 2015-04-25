@@ -21,14 +21,14 @@ def forbidden_403(response, code, message):
     response.out.write(json.dumps({'error_code': code, 'error_message': message}))
 
 
-def validate_logged_in(response):
+def validate_authenticated(response):
     user = users.get_current_user()
     player = Player.query(Player.userid == user.user_id()).get()
     if not user:
         unauthorized_401(response, "VALIDATION_ERROR_NOT_LOGGED_INN", "The browsing user is not logged in.")
         return False
     elif not player:
-        unauthorized_401(response, "VALIDATION_ERROR_NOT_AUTHENTICATED", "The browsing user is logged in with google account, but have not authenticated.")
+        unauthorized_401(response, "VALIDATION_ERROR_NOT_CLAIMED", "The browsing user is logged in with google account, but have not claimed a player.")
         return False
     elif not player.verified:
         unauthorized_401(response, "VALIDATION_ERROR_NOT_VERIFIED", "The browsing user has not been verified, the player claim has not been verified by an admin.")

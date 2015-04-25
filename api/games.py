@@ -3,11 +3,11 @@
 import webapp2
 import json
 import logging
-from models import Game, Player, PlayerResult
+from models import Game, Player, PlayerResult, Rule
 from datetime import datetime
 from google.appengine.ext import ndb
 from rating import RatingCalculator
-from api.utils import error_400, validate_logged_in
+from api.utils import error_400, validate_authenticated
 
 
 class GamesHandler(webapp2.RequestHandler):
@@ -60,12 +60,20 @@ class GamesHandler(webapp2.RequestHandler):
         # VALIDATING
         if not self._validate_no_empty_player_results(request_data['playerResults']):
             return
-        if not validate_logged_in(self.response):
+        if not validate_authenticated(self.response):
             return
+
         # CREATE GAME OBJECT
         game_date = datetime.fromtimestamp(request_data['date_epoch'])
-        
+
+        rule_id = request_data.get('rule_id', None)
+        if rule_id:
+            rule_key = ndb.Key(Rule, int(rule_id))
+        else:
+            rule_key = None
+
         game_key = Game(
+            rule = rule_key,
             # After finish values
             date = game_date,
             duration_seconds = request_data['duration_seconds'],
@@ -108,10 +116,11 @@ class GamesHandler(webapp2.RequestHandler):
                 stats_rating = new_ratings[player_key.id()]
             ).put()
         
-        self._clear_all_player_stats() 
+        self._clear_all_player_stats()
 
+        # RETURN RESPONSE
         self.response.headers['Content-Type'] = 'application/json'
-        self.response.out.write(json.dumps({'response': "Success!", 'game_id': game_key.id()}))
+        self.response.out.write(json.dumps({'response': "success", 'game_id': game_key.id()}))
     def _validate_no_empty_player_results(self, player_results):
         for player_result in player_results:
             if player_result['player_id'] == None or not player_result['player_id'].isdigit():

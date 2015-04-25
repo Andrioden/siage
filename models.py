@@ -250,7 +250,19 @@ class Player(ndb.Model):
         self.put()
 
 
+class Rule(ndb.Model):
+    name = ndb.StringProperty(required=True)
+    description = ndb.StringProperty(required=True)
+
+    def get_data(self):
+        return {
+            'id': self.key.id(),
+            'name': self.name,
+            'description': self.name
+        }
+
 class Game(ndb.Model):
+    rule = ndb.KeyProperty(kind=Rule, default=None)
     # After finish values
     date = ndb.DateTimeProperty(required=False)
     duration_seconds = ndb.IntegerProperty(required=False)

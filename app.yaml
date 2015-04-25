@@ -33,6 +33,9 @@ handlers:
 - url: /api/globalstats/.*
   script: api.globalstats.app
 
+- url: /api/rules/.*
+  script: api.rules.app
+
 - url: /api/.*
   script: api.general.app
 

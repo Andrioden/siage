@@ -4,7 +4,7 @@ import webapp2
 import json
 import logging
 from models import Player
-from utils import error_400, validate_logged_in, validate_logged_in_admin
+from utils import error_400, validate_authenticated, validate_logged_in_admin
 
 class PlayersHandler(webapp2.RequestHandler):
     def get(self):
@@ -21,7 +21,7 @@ class PlayersHandler(webapp2.RequestHandler):
     def post(self):
         """ --------- CREATE PLAYER --------- """
         # VALIDATING
-        if not validate_logged_in(self.response):
+        if not validate_authenticated(self.response):
             return
         
         # Create player and return response
