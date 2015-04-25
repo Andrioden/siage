@@ -40,6 +40,7 @@
         <form name="gameSetupForm" ng-submit="setupGame()">
             <h4>Teams</h4>
             <select ng-model="SetupGame.algorithm" class="wide" ng-options="alg as alg for alg in algorithms"></select>
+            <input ng-model="SetupGame.team_setup" placeholder="Example: 2v2v3">
             <br />
             <br />
             <table class="info_table">
