@@ -7,17 +7,19 @@ from models import PlayerResult, Player
 from api.utils import validate_logged_in_admin
 import logging
 
+
 class RecalcHandler(webapp2.RequestHandler):
     def post(self):
 
         if not validate_logged_in_admin(self.response):
             return
-        
+
         recalculate_ratings()
 
         self.response.headers['Content-Type'] = 'application/json'
         self.response.out.write(json.dumps({'response': "Ratings recalculated"}))
-        
+
+
 class CleanDBHandler(webapp2.RequestHandler):
     def post(self):
 
@@ -52,7 +54,8 @@ class CleanDBHandler(webapp2.RequestHandler):
     def _delete_property(self, obj, property_name):
         if property_name in obj._properties:
             del obj._properties[property_name]
-            
+
+
 class ClearStatsHandler(webapp2.RequestHandler):
     def post(self):
 
@@ -63,9 +66,28 @@ class ClearStatsHandler(webapp2.RequestHandler):
             player.clear_stats()
         self.response.headers['Content-Type'] = 'application/json'
         self.response.out.write(json.dumps({'response': "Player statistics have been cleared"}))
-        
+
+
+class UnverifiedPlayersHandler(webapp2.RequestHandler):
+    def get(self):
+
+        if not validate_logged_in_admin(self.response):
+            return
+
+        # BUILD DATA
+        unverified_players = []
+        for player in Player.query():
+            if not player.verified:
+                unverified_players.append(player.get_data())
+
+        # RETURN DATA
+        self.response.headers['Content-Type'] = 'application/json'
+        self.response.out.write(json.dumps(unverified_players))
+
+
 app = webapp2.WSGIApplication([
     (r'/api/admin/recalc/', RecalcHandler),
     (r'/api/admin/cleandb/', CleanDBHandler),
     (r'/api/admin/clearstats/', ClearStatsHandler),
+    (r'/api/admin/unverifiedplayers/', UnverifiedPlayersHandler),
 ], debug=True)

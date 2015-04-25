@@ -10,6 +10,7 @@ CIVILIZATIONS = ['Aztec', 'Britons', 'Byzantines', 'Celts', 'Chinese', 'Franks',
 class Player(ndb.Model):
     nick = ndb.StringProperty(required=True)
     userid = ndb.StringProperty(default=None)
+    verified = ndb.BooleanProperty(default=False)
     stats_average_score = ndb.IntegerProperty(default=None)
     stats_best_score = ndb.IntegerProperty(default=None)
     stats_best_score_game = ndb.KeyProperty(kind='Game', default=None)
@@ -51,6 +52,7 @@ class Player(ndb.Model):
             'wins': wins,
             'win_chance': None if played == 0 else int(wins * 100.0 / played),
             'is_claimed': True if self.userid else False,
+            'verified': True if self.verified == True else False,
             'rating_trend': self._get_rating_trend() # Only used for league, might need to further limit when this loads
         }
         
@@ -108,6 +110,7 @@ class Player(ndb.Model):
             self.put()
             return True
         return True
+
     def _calc_stats_score_related(self, player_results):
         self.stats_best_score = 0
         self.stats_best_score_game = None

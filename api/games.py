@@ -139,7 +139,7 @@ class GameHandler(webapp2.RequestHandler):
 
     def put(self, gameId):
         self.response.headers['Content-Type'] = 'application/text'
-        self.response.out.write("PUT (Update) received with data: " + self.request.body)
+        self.response.out.write("PUT (Update) received with data, no action taken: " + self.request.body)
 
 
 

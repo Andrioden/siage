@@ -11,7 +11,8 @@ class UserHandler(webapp2.RequestHandler):
         if user:
             player = Player.query(Player.userid == user.user_id()).get()
             player_nick = player.nick if player else None
-            user_data = { 'user_name': user.nickname(), 'logged_in': True,  'player': player_nick, 'is_admin': users.is_current_user_admin() };
+            player_verified = player.verified if player else None
+            user_data = {'user_name': user.nickname(), 'logged_in': True,  'player': player_nick, 'is_admin': users.is_current_user_admin(), 'verified': player_verified};
             self.response.out.write(json.dumps(user_data))
         else:
             self.response.out.write(json.dumps({}))

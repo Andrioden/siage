@@ -17,10 +17,8 @@ JINJA_ENVIRONMENT = jinja2.Environment(
 
 class MainHandler(webapp2.RequestHandler):
     def get(self):
-
         template = JINJA_ENVIRONMENT.get_template('index.html')
-        data = {} # TODO Andre: Fjern plz?
-        self.response.write(template.render(data))
+        self.response.write(template.render())
         
 app = webapp2.WSGIApplication([
     ('/.*', MainHandler),

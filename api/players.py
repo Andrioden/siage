@@ -4,8 +4,7 @@ import webapp2
 import json
 import logging
 from models import Player
-from utils import error_400, validate_logged_in
-
+from utils import error_400, validate_logged_in, validate_logged_in_admin
 
 class PlayersHandler(webapp2.RequestHandler):
     def get(self):
@@ -58,8 +57,28 @@ class PlayerHandler(webapp2.RequestHandler):
 
     def put(self, player_id_or_nick):
         """ --------- UPDATE SINGLE PLAYER --------- """
-        self.response.headers['Content-Type'] = 'application/text'
-        self.response.out.write("PUT (Update) received with data: " + self.request.body)
+
+        if not validate_logged_in_admin(self.response):
+            return
+
+        # PROCESS REQUEST
+        if player_id_or_nick.isdigit():
+            player = Player.get_by_id(int(player_id_or_nick))
+        else:
+            player = Player.query(Player.nick == player_id_or_nick).get()
+
+        userid = self.request.get("userid", None)
+        if not userid == None:
+            player.userid = userid
+
+        verified = self.request.get("verified", None)
+        if not verified == None:
+            player.verified = (verified.lower() == "true")
+
+        player.put()
+
+        self.response.headers['Content-Type'] = 'application/json'
+        self.response.out.write(json.dumps(player.get_data("simple")))
 
 app = webapp2.WSGIApplication([
     (r'/api/players/', PlayersHandler),
