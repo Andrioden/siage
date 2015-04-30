@@ -31,13 +31,13 @@ class SetupGameHandler(webapp2.RequestHandler):
             score_per_min = player.stats_average_score_per_min if player.stats_average_score_per_min else 0
             players.append({'id': player.key.id(), 'nick': player.nick, 'rating': player_input['rating'], 'score_per_min': score_per_min})
         
-        if algorithm == "TotallyRandom":
+        if algorithm == "RandomManyTeams":
             setup_data = self._random_setup(players, "random_team_setup")
         elif algorithm == "Random":
             setup_data = self._random_setup(players, team_setup)
-        elif algorithm == "Autobalance":
+        elif algorithm == "AutoBalance":
             setup_data = self._random_setup_best_attempt(players, 50, team_setup)
-        elif algorithm == "AutobalanceSR":
+        elif algorithm == "AutoBalanceSAMR":
             setup_data = self._random_setup_best_attempt_score_and_minirandomized_rating(players, 25, team_setup)
 
         # RETURN RESPONSE
