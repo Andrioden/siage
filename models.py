@@ -222,7 +222,7 @@ class Player(ndb.Model):
             teammate_id = int(teammate_id)
             teammate_dict['win_chance'] = int(teammate_dict['wins'] * 100.0 / teammate_dict['played'])
             teammate_dict['teammate']['nick'] = Player.get_by_id(teammate_dict['teammate']['id']).nick
-            teammate_dict['points'] = int((teammate_dict['wins']*2 - teammate_dict['played']) * teammate_dict['win_chance'])
+            teammate_dict['points'] = self._fit_points(teammate_dict['wins'], teammate_dict['played'], teammate_dict['win_chance'])
             teammate_fit_list.append(teammate_dict)
         self.stats_teammate_fit = teammate_fit_list
 
@@ -239,9 +239,12 @@ class Player(ndb.Model):
         civ_fit_list = []
         for civ_name, civ_dict in civ_fit.iteritems(): 
             civ_dict['win_chance'] = int(civ_dict['wins'] * 100.0 / civ_dict['played'])
-            civ_dict['points'] = int((civ_dict['wins']*2 - civ_dict['played']) * civ_dict['win_chance'])
+            civ_dict['points'] = self._fit_points(civ_dict['wins'], civ_dict['played'], civ_dict['win_chance'])
             civ_fit_list.append(civ_dict)
         self.stats_civ_fit = civ_fit_list
+
+    def _fit_points(self, wins, played, win_chance):
+        return (wins * 2) - played
 
     def clear_stats(self):
         for variable_name in self.__dict__['_values'].keys(): # __dict__['_values'] contains all class object variables
