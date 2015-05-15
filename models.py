@@ -226,10 +226,9 @@ class Player(ndb.Model):
         # Convert to list, add player nick to info and calc win chance
         teammate_fit_list = []
         for teammate_id, teammate_dict in teammate_fit.iteritems():
-            teammate_id = int(teammate_id)
             teammate_dict['win_chance'] = int(teammate_dict['wins'] * 100.0 / teammate_dict['played'])
             teammate_dict['teammate']['nick'] = Player.get_by_id(teammate_dict['teammate']['id']).nick
-            teammate_dict['points'] = self._fit_points(teammate_dict['wins'], teammate_dict['played'], teammate_dict['win_chance'])
+            teammate_dict['points'] = _fit_points(teammate_dict['wins'], teammate_dict['played'])
             teammate_fit_list.append(teammate_dict)
         self.stats_teammate_fit = teammate_fit_list
 
@@ -246,12 +245,9 @@ class Player(ndb.Model):
         civ_fit_list = []
         for civ_name, civ_dict in civ_fit.iteritems(): 
             civ_dict['win_chance'] = int(civ_dict['wins'] * 100.0 / civ_dict['played'])
-            civ_dict['points'] = self._fit_points(civ_dict['wins'], civ_dict['played'], civ_dict['win_chance'])
+            civ_dict['points'] = _fit_points(civ_dict['wins'], civ_dict['played'])
             civ_fit_list.append(civ_dict)
         self.stats_civ_fit = civ_fit_list
-
-    def _fit_points(self, wins, played, win_chance):
-        return (wins * 2) - played
 
     def clear_stats(self):
         for variable_name in self.__dict__['_values'].keys(): # __dict__['_values'] contains all class object variables
@@ -416,9 +412,11 @@ class PlayerResult(ndb.Model):
 
 class CivilizationStats(ndb.Model):
     name = ndb.StringProperty(required=True, choices=CIVILIZATIONS)
-    played = ndb.IntegerProperty(required=False)
-    wins = ndb.IntegerProperty(required=False)
-    win_chance = ndb.IntegerProperty(required=False)
+    played = ndb.IntegerProperty()
+    wins = ndb.IntegerProperty()
+    win_chance = ndb.IntegerProperty()
+    average_score_per_min = ndb.FloatProperty()
+    player_fit = ndb.PickleProperty()
 
     def get_data(self):
         if not self.calc_and_update_stats_if_needed():
@@ -428,7 +426,9 @@ class CivilizationStats(ndb.Model):
             'stats': {
                 'played': self.played,
                 'wins': self.wins,
-                'win_chance': self.win_chance
+                'win_chance': self.win_chance,
+                'average_score_per_min': round(self.average_score_per_min, 1),
+                'player_fit': self.player_fit
             }
         }
 
@@ -437,20 +437,53 @@ class CivilizationStats(ndb.Model):
             player_results = PlayerResult.query(PlayerResult.civilization == self.name).fetch()
             if len(player_results) == 0:
                 return False
-            self._calc_stats(player_results)
+            self._calc_stats_basic(player_results)
+            self._calc_stats_player_fit(player_results)
             self.put()
             return True
         return True
 
-    def _calc_stats(self, player_results):
+    def _calc_stats_basic(self, player_results):
         self.played = 0
         self.wins = 0
+
+        total_score = 0
+        total_seconds = 0
         for res in player_results:
+            related_game = res.game.get()
+            total_score += res.score
+            total_seconds += related_game.duration_seconds
             self.played += 1
             if res.is_winner:
                 self.wins += 1
 
         self.win_chance = int(self.wins * 100.0 / self.played)
+        self.stats_average_score = total_score / len(player_results)
+        self.average_score_per_min = total_score / (total_seconds / 60.0)
+
+    def _calc_stats_player_fit(self, player_results):
+        # First map wins and played to the players
+        player_fit = {}
+        for res in player_results:
+            player_id = res.player.id()
+            if not player_fit.has_key(player_id):
+                player_fit[player_id] = {'player': {'id': player_id}, 'played': 0, 'wins': 0}
+            player_fit[player_id]['played'] += 1
+            if res.is_winner:
+                player_fit[player_id]['wins'] += 1
+        # Convert to list and calc win_chance
+        player_fit_list = []
+        for player_id, player_dict in player_fit.iteritems():
+            player_dict['win_chance'] = int(player_dict['wins'] * 100.0 / player_dict['played'])
+            player_dict['points'] = _fit_points(player_dict['wins'], player_dict['played'])
+            player_dict['player']['nick'] = Player.get_by_id(player_dict['player']['id']).nick
+            player_fit_list.append(player_dict)
+        self.player_fit = player_fit_list
+
+
+def _fit_points(wins, played):
+    return (wins * 2) - played
+
 
 # class GlobalStats(ndb.Model):
 #     worst_couple_player1 = ndb.KeyProperty(kind=Player)
