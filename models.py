@@ -81,13 +81,20 @@ class Player(ndb.Model):
         }
         
     def _get_rating_trend(self):
-        two_weeks_ago = datetime.now() - timedelta(days=10)
-        rating_two_weeks_ago = PlayerResult.query(PlayerResult.player == self.key, PlayerResult.game_date < two_weeks_ago).order(-PlayerResult.game_date).get()
-        if rating_two_weeks_ago:
-            rating_now = PlayerResult.query(PlayerResult.player == self.key).order(-PlayerResult.game_date).get()
-            if rating_now.stats_rating > rating_two_weeks_ago.stats_rating:
+        newest_player_result = PlayerResult.query(PlayerResult.player == self.key).order(-PlayerResult.game_date).get()
+        if not newest_player_result:
+            return "n"
+        else:
+            newest_player_result_date = newest_player_result.game_date
+
+        previous_round_date = newest_player_result_date - timedelta(days=5)
+        previous_round = PlayerResult.query(PlayerResult.player == self.key, PlayerResult.game_date < previous_round_date).order(-PlayerResult.game_date).get()
+
+        if previous_round:
+            logging.info(newest_player_result)
+            if newest_player_result.stats_rating > previous_round.stats_rating:
                 return "+"
-            elif rating_now.stats_rating == rating_two_weeks_ago.stats_rating:
+            elif newest_player_result.stats_rating == previous_round.stats_rating:
                 return "n"
             else:
                 return "-"
