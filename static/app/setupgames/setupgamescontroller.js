@@ -49,6 +49,7 @@ siAgeApp.controller('SetupGamesController',
             $scope.settingUpGame = true;
 
             var trebVoteList = [];
+            $scope.SetupGame.players = [];
             for (var i = 0; i < $scope.players.length; i++) {
                 if ($scope.players[i].joining) {
                     $scope.SetupGame.players.push({
@@ -71,7 +72,6 @@ siAgeApp.controller('SetupGamesController',
                     $scope.error = "";
                     $scope.games = data.games;
                     $scope.total_rating_dif = data.total_rating_dif;
-                    $scope.SetupGame.players = [];
                     $scope.settingUpGame = false;
                 },
                 //error
