@@ -31,6 +31,7 @@ def add_test_data_games(number_of_games):
         add_test_data_randomized_game(datetime.now() - timedelta(days=number_of_games-i))
     recalculate_ratings()
 
+
 def add_test_data_randomized_game(game_date):
     game_key = Game(
         # After finish values

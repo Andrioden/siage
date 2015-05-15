@@ -3,50 +3,39 @@
 import webapp2
 import json
 import logging
-from models import PlayerResult
+from models import CivilizationStats, CIVILIZATIONS
+from utils import error_400
 
 
 class CivsHandler(webapp2.RequestHandler):
     def get(self):
         """ --------- GET CIVLIST DATA --------- """
         self.response.headers['Content-Type'] = 'application/json'
-        self.response.out.write(json.dumps(_get_civ_stats()))
+        civs_stats_data = [_get_stats_for_civ(civ) for civ in CIVILIZATIONS]
+        self.response.out.write(json.dumps(civs_stats_data))
 
 
 class CivHandler(webapp2.RequestHandler):
     def get(self, civ_name):
         """ --------- GET SINGLE CIV --------- """
         self.response.headers['Content-Type'] = 'application/json'
-        self.response.out.write(json.dumps(_get_civ_stats(civ_name)))
+
+        # Validate if actual civ
+        if not civ_name in CIVILIZATIONS:
+            error_400(self.response, "VALIDATION_ERROR_UNKNOWN_CIV", "The civilization %s is unknown" % civ_name)
+            return
+
+        self.response.out.write(json.dumps(_get_stats_for_civ(civ_name)))
 
 
-def _get_civ_stats(civ_filter_name=None):
-    # Customize query if only a specific civ should be queried
-    player_results = PlayerResult.query()
-    if civ_filter_name:
-        player_results = player_results.filter(PlayerResult.civilization == civ_filter_name)
+def _get_stats_for_civ(civ_name):
+        civ_stats = CivilizationStats.query(CivilizationStats.name == civ_name).get()
+        if not civ_stats:
+            civ_stats = CivilizationStats(name = civ_name)
 
-    # Get raw data from db
-    civs_data = {}
-    for res in player_results:
-        if not civs_data.has_key(res.civilization):
-            civs_data[res.civilization] = {'name': res.civilization, 'played': 0, 'wins': 0}
-        civs_data[res.civilization]['played'] += 1
-        if res.is_winner:
-            civs_data[res.civilization]['wins'] += 1
+        civ_stats.calc_and_update_stats_if_needed()
 
-    # Process data and return it according to single civ or full civ list
-    if civ_filter_name:
-        civ_data = civs_data[civ_filter_name]
-        civ_data['win_chance'] = int(civ_data['wins'] * 100.0 / civ_data['played'])
-        return civ_data
-    else:
-        civs_data_list = []
-        for key, civ_dict in civs_data.iteritems():
-            civ_dict['win_chance'] = int(civ_dict['wins'] * 100.0 / civ_dict['played'])
-            civs_data_list.append(civ_dict)
-        return civs_data_list
-
+        return civ_stats.get_data()
 
 app = webapp2.WSGIApplication([
     (r'/api/civs/', CivsHandler),

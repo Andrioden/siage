@@ -99,8 +99,8 @@ class RatingCalculator:
 
             res.rating_change = player_rating_change
             res.new_rating = res.prev_rating + player_rating_change
-            logging.info("Team: %s | Player: %s | winchance: %s | team rating change: %s | player score %s | score adjusted rating: %s | rating: %s to %s " % (res.team, res.player_id, win_chance, team_rating_change, res.score, player_rating_change, res.prev_rating, res.new_rating))
-            print "Team: %s | Player: %s | winchance: %s | team rating change: %s | player score %s | score adjusted rating: %s | rating: %s to %s " % (res.team, res.player_id, win_chance, team_rating_change, res.score, player_rating_change, res.prev_rating, res.new_rating)
+            #logging.info("Team: %s | Player: %s | winchance: %s | team rating change: %s | player score %s | score adjusted rating: %s | rating: %s to %s " % (res.team, res.player_id, win_chance, team_rating_change, res.score, player_rating_change, res.prev_rating, res.new_rating))
+            #print "Team: %s | Player: %s | winchance: %s | team rating change: %s | player score %s | score adjusted rating: %s | rating: %s to %s " % (res.team, res.player_id, win_chance, team_rating_change, res.score, player_rating_change, res.prev_rating, res.new_rating)
         # 7. Validate that an equal amount of rating have been lost as gained.
         #    If a difference is found. Give point from top score or remove from bottom.
         total_rating_change = sum(res.rating_change for res in self.player_results)
@@ -115,7 +115,7 @@ class RatingCalculator:
         
         total_rating_change = sum(res.rating_change for res in self.player_results)
         if total_rating_change != 0:
-            logging.info([str(res) for res in self.player_results])
+            #logging.info([str(res) for res in self.player_results])
             raise Exception("Rating algorithm failed. Difference between rating gained and lost after correction: %s" % total_rating_change)
             
     def _add_rating_to_top_scored_player(self, value):

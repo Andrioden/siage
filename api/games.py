@@ -3,7 +3,7 @@
 import webapp2
 import json
 import logging
-from models import Game, Player, PlayerResult, Rule
+from models import Game, Player, PlayerResult, Rule, CivilizationStats
 from datetime import datetime
 from google.appengine.ext import ndb
 from rating import RatingCalculator
@@ -117,6 +117,7 @@ class GamesHandler(webapp2.RequestHandler):
             ).put()
         
         self._clear_all_player_stats()
+        ndb.delete_multi(CivilizationStats.query().fetch(keys_only=True))
 
         # RETURN RESPONSE
         self.response.headers['Content-Type'] = 'application/json'

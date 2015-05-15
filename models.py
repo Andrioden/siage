@@ -102,7 +102,7 @@ class Player(ndb.Model):
             return "n"
         
     def _get_stats_data(self):
-        if self.calc_and_update_stats_if_needed() == False:
+        if not self.calc_and_update_stats_if_needed():
             return {}
         return {
             'stats': {
@@ -413,6 +413,44 @@ class PlayerResult(ndb.Model):
         else:
             return self.stats_rating - PLAYER_RATING_START_VALUE
 
+
+class CivilizationStats(ndb.Model):
+    name = ndb.StringProperty(required=True, choices=CIVILIZATIONS)
+    played = ndb.IntegerProperty(required=False)
+    wins = ndb.IntegerProperty(required=False)
+    win_chance = ndb.IntegerProperty(required=False)
+
+    def get_data(self):
+        if not self.calc_and_update_stats_if_needed():
+            return {}
+        return {
+            'name': self.name,
+            'stats': {
+                'played': self.played,
+                'wins': self.wins,
+                'win_chance': self.win_chance
+            }
+        }
+
+    def calc_and_update_stats_if_needed(self):
+        if self.played is None:
+            player_results = PlayerResult.query(PlayerResult.civilization == self.name).fetch()
+            if len(player_results) == 0:
+                return False
+            self._calc_stats(player_results)
+            self.put()
+            return True
+        return True
+
+    def _calc_stats(self, player_results):
+        self.played = 0
+        self.wins = 0
+        for res in player_results:
+            self.played += 1
+            if res.is_winner:
+                self.wins += 1
+
+        self.win_chance = int(self.wins * 100.0 / self.played)
 
 # class GlobalStats(ndb.Model):
 #     worst_couple_player1 = ndb.KeyProperty(kind=Player)
