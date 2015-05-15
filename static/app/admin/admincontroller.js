@@ -5,6 +5,8 @@ siAgeApp.controller('AdminController',
 
         $scope.Recalc = function () {
             $scope.recalc_processing = true;
+            $scope.recalc_response = "";
+            $scope.recalc_error = "";
             Admin.recalc().$promise.then(
                 //success
                 function (data) {
@@ -24,6 +26,8 @@ siAgeApp.controller('AdminController',
 
         $scope.CleanDB = function () {
             $scope.cleandb_processing = true;
+            $scope.cleandb_response = "";
+            $scope.cleandb_error = "";
             Admin.cleandb().$promise.then(
                 //success
                 function (data) {
@@ -43,6 +47,8 @@ siAgeApp.controller('AdminController',
 
         $scope.ClearStats = function () {
             $scope.clearstats_processing = true;
+            $scope.clearstats_response = "";
+            $scope.clearstats_error = "";
             Admin.clearstats().$promise.then(
                 //success
                 function (data) {
@@ -59,4 +65,5 @@ siAgeApp.controller('AdminController',
                 }
             );
         };
-    });
+    }
+);
