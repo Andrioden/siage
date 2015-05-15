@@ -20,6 +20,10 @@ siAgeApp.config(['$routeProvider', '$locationProvider',
                 templateUrl: 'static/app/league/leagueview.html',
                 controller: 'LeagueController'
             })
+             .when('/civs', {
+                 templateUrl: 'static/app/civilizations/civilizationsview.html',
+                 controller: 'CivilizationsController'
+             })
             .when('/registergame', {
                 templateUrl: 'static/app/registergame/registergameview.html',
                 controller: 'RegisterGameController'

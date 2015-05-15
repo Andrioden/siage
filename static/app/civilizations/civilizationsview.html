@@ -1,0 +1,40 @@
+﻿<div id="main_content">
+    <div class="right_content">
+
+    </div>
+    <div class="left_content">
+        <table class="info_table">
+            <thead>
+            <tr>
+                <td class="mini"></td>
+                <td>Civilization</td>
+                <td>Played</td>
+                <td>Win%</td>
+                <td>Score/Minute</td>
+            </tr>
+            </thead>
+            <tbody>
+                <tr ng-show="loading_civilizations">
+                    <td><img src="static/assets/img/ajax-loader.gif"></td>
+                </tr>
+                <tr ng-repeat="civ in civilizations | orderBy:['-stats.win_chance', '-stats.played', '-stats.average_score_per_min'] | orderEmpty: 'stats': 'toBottom'">
+                    <td class="mini">{{$index + 1}}.</td>
+                    <td><a href="/civs/{{civ.name}}" title="View civilization">{{civ.name}}</a></td>
+                    <td ng-show="civ.stats">{{civ.stats.played}}</td>
+                    <td ng-show="civ.stats">{{civ.stats.win_chance}}%</td>
+                    <td ng-show="civ.stats">{{civ.stats.average_score_per_min}}</td>
+                </tr>
+            </tbody>
+        </table>
+        <span class="error">{{error}}</span>
+    </div>
+</div>
+
+<style>
+    #nav_bar li a#civs {
+        background-color: rgba(140, 140, 140, 0.35);
+        -webkit-box-shadow: 6px 4px 38px -8px rgba(0,0,0,0.47);
+        -moz-box-shadow: 6px 4px 38px -8px rgba(0,0,0,0.47);
+        box-shadow: 6px 4px 38px -8px rgba(0,0,0,0.47);
+    }
+</style>

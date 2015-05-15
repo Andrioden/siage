@@ -31,6 +31,15 @@ siAgeApp
         });
     })
 
+    .factory('Civilization', function ($resource) {
+        return $resource('/api/civs/:name', { name: '@name' }, {
+            get: { method: 'GET', isArray: false, cache: true },
+            query: { method: 'GET', isArray: true },
+            save: { method: 'POST' },
+            update: { method: 'PUT' }
+        });
+    })
+
     .factory('Admin', function ($resource) {
         return $resource('/api/admin/:action/', {}, {
             recalc: { method: 'POST', params: { action: 'recalc' }, isArray: false },
