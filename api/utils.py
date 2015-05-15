@@ -24,7 +24,9 @@ def forbidden_403(response, code, message):
 def validate_authenticated(response):
     user = users.get_current_user()
     player = Player.query(Player.userid == user.user_id()).get()
-    if not user:
+    if users.is_current_user_admin():
+        return True
+    elif not user:
         unauthorized_401(response, "VALIDATION_ERROR_NOT_LOGGED_INN", "The browsing user is not logged in.")
         return False
     elif not player:
