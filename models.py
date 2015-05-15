@@ -439,17 +439,24 @@ class CivilizationStats(ndb.Model):
     player_fit = ndb.PickleProperty()
 
     def get_data(self):
+        data = {
+            'name': self.name
+        }
+        data.update(self._get_stats_data())
+        return data
+
+    def _get_stats_data(self):
         if not self.calc_and_update_stats_if_needed():
             return {}
-        return {
-            'name': self.name,
-            'stats': {
-                'played': self.played,
-                'wins': self.wins,
-                'win_chance': self.win_chance,
-                'average_score_per_min': round(self.average_score_per_min, 1),
-                'player_fit': self.player_fit
-            }
+        else:
+            return {
+                'stats': {
+                    'played': self.played,
+                    'wins': self.wins,
+                    'win_chance': self.win_chance,
+                    'average_score_per_min': round(self.average_score_per_min, 1),
+                    'player_fit': self.player_fit
+                }
         }
 
     def calc_and_update_stats_if_needed(self):
