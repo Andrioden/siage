@@ -60,7 +60,7 @@ class SetupGameHandler(webapp2.RequestHandler):
         best_setup = None
         for _ in range(attempts):
             potential_setup = self._random_setup(players, team_setup)
-            if best_setup == None:
+            if best_setup is None:
                 best_setup = potential_setup
             elif potential_setup['total_rating_dif'] < best_setup['total_rating_dif']:
                 best_setup = potential_setup

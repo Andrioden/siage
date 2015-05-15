@@ -124,7 +124,7 @@ class GamesHandler(webapp2.RequestHandler):
         self.response.out.write(json.dumps({'response': "success", 'game_id': game_key.id()}))
     def _validate_no_empty_player_results(self, player_results):
         for player_result in player_results:
-            if player_result['player_id'] == None or not player_result['player_id'].isdigit():
+            if player_result['player_id'] is None or not player_result['player_id'].isdigit():
                 error_400(self.response, "VALIDATION_ERROR_EMPTY_PLAYER_RESULTS", "Player Results contain items without a valid player id.")
                 return False
         return True

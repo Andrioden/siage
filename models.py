@@ -23,6 +23,8 @@ class Player(ndb.Model):
     stats_percentage_topping_score = ndb.FloatProperty(default=None)
     stats_worst_score_per_min = ndb.FloatProperty(default=None)
     stats_worst_score_per_min_game = ndb.KeyProperty(kind='Game', default=None)
+    stats_longest_winning_streak = ndb.IntegerProperty(default=None)
+    stats_longest_losing_streak = ndb.IntegerProperty(default=None)
     """
     The teammate_fit is a list with data in the following format: {
         'teammate': {
@@ -54,7 +56,7 @@ class Player(ndb.Model):
             return self._current_rating_cached
         else:
             last_player_result = PlayerResult.get_last_result_for_player(self.key)
-            self._current_rating_cached = 1000 if last_player_result == None else last_player_result.stats_rating
+            self._current_rating_cached = 1000 if last_player_result is None else last_player_result.stats_rating
             return self._current_rating_cached
     def get_data(self, data_detail="simple"):
         data = {}
@@ -125,19 +127,22 @@ class Player(ndb.Model):
                     'game_id': self.stats_worst_score_per_min_game.id()
                 },
                 'percentage_topping_score': self.stats_percentage_topping_score,
+                'longest_winning_streak': self.stats_longest_winning_streak,
+                'longest_losing_streak': self.stats_longest_losing_streak,
                 'teammate_fit': self.stats_teammate_fit,
                 'civ_fit': self.stats_civ_fit
             }
         }
 
     def calc_and_update_stats_if_needed(self):
-        if self.stats_average_score == None:
-            player_results = PlayerResult.query(PlayerResult.player == self.key).fetch()
+        if self.stats_average_score is None:
+            player_results = PlayerResult.query(PlayerResult.player == self.key).order(PlayerResult.game_date).fetch()
             if len(player_results) == 0:
                 return False
             self._calc_stats_score_related(player_results)
             self._calc_stats_best_civ(player_results)
             self._calc_stats_worst_civ(player_results)
+            self._calc_stats_streaks(player_results)
             self._calc_stats_teammate_fit(player_results)
             self._calc_stats_civ_fit(player_results)
             self.put()
@@ -209,6 +214,21 @@ class Player(ndb.Model):
             worst_civ = max(civ_lost_dict.iteritems(), key=operator.itemgetter(1))[0]
             self.stats_civ_most_losses_name = worst_civ
             self.stats_civ_most_losses_count = civ_lost_dict[worst_civ]
+
+    def _calc_stats_streaks(self, player_results):
+        self.stats_longest_winning_streak = 0
+        self.stats_longest_losing_streak = 0
+        current_winning_streak = 0
+        current_losing_streak = 0
+        for result in player_results:
+            if result.is_winner:
+                current_losing_streak = 0
+                current_winning_streak += 1
+                self.stats_longest_winning_streak = max(self.stats_longest_winning_streak, current_winning_streak)
+            else:
+                current_winning_streak = 0
+                current_losing_streak += 1
+                self.stats_longest_losing_streak = max(self.stats_longest_losing_streak, current_losing_streak)
 
     def _calc_stats_teammate_fit(self, player_results):
         # First map wins and played to teammate_fit
@@ -302,7 +322,7 @@ class Game(ndb.Model):
             game_format = ""
             # First add people with teams, sorted by the most common
             for key, value in counted_teams.most_common():
-                if key == None: # People without teams is dealth with afterwards so v1v1.. is at the end
+                if key is None: # People without teams is dealth with afterwards so v1v1.. is at the end
                     pass
                 else:
                     game_format += "%sv" % value
