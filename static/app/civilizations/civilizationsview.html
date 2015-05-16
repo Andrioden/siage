@@ -10,19 +10,27 @@
                 <td>Civilization</td>
                 <td>Played</td>
                 <td>Win%</td>
-                <td>Score/Minute</td>
+                <td>Score/M</td>
+                <td>Points</td>
+                <td>Best players</td>
             </tr>
             </thead>
             <tbody>
                 <tr ng-show="loading_civilizations">
                     <td><img src="static/assets/img/ajax-loader.gif"></td>
                 </tr>
-                <tr ng-repeat="civ in civilizations | orderBy:['-stats.win_chance', '-stats.played', '-stats.average_score_per_min'] | orderEmpty: 'stats': 'toBottom'">
+                <tr ng-repeat="civ in civilizations | orderBy:['-stats.points','-stats.win_chance', '-stats.played', '-stats.average_score_per_min'] | orderEmpty: 'stats': 'toBottom'">
                     <td class="mini">{{$index + 1}}.</td>
                     <td><a href="/civs/{{civ.name}}" title="View civilization">{{civ.name}}</a></td>
                     <td ng-show="civ.stats">{{civ.stats.played}}</td>
                     <td ng-show="civ.stats">{{civ.stats.win_chance}}%</td>
                     <td ng-show="civ.stats">{{civ.stats.average_score_per_min}}</td>
+                    <td ng-show="civ.stats">{{civ.stats.points}}</td>
+                    <td ng-show="civ.stats" class="nowrap">
+                        <span ng-repeat="player_fit in civ.stats.best_players">
+                            <a href="/players/{{player_fit.player.nick}}">{{player_fit.player.nick}}</a><span ng-show="!$last">,</span>
+                        </span>
+                    </td>
                 </tr>
             </tbody>
         </table>

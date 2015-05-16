@@ -357,6 +357,10 @@ input[type=number]::-webkit-outer-spin-button {
     width: 220px;
 }
 
+#main_view .info_table td.nowrap{
+    white-space: nowrap;
+}
+
 #main_view .info_table td.mini {
     width: 30px;
 }
@@ -531,5 +535,3 @@ select {
             background-color: #495935;
             border-color: #42522e;
         }
-
-
