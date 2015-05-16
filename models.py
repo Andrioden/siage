@@ -453,6 +453,7 @@ class CivilizationStats(ndb.Model):
                 'stats': {
                     'played': self.played,
                     'wins': self.wins,
+                    'points': _fit_points(self.wins, self.played),
                     'win_chance': self.win_chance,
                     'average_score_per_min': round(self.average_score_per_min, 1),
                     'player_fit': self.player_fit
