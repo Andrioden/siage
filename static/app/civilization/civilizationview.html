@@ -1,0 +1,50 @@
+﻿<div id="main_content">
+    <h1 ng-show="!loading_player">
+        <span>{{civ.name}}</span>
+    </h1>
+    <img ng-show="loading_civilization" src="static/assets/img/ajax-loader.gif">
+    <div class="right_content">
+
+    </div>
+    <div class="left_content">
+        <table ng-show="!loading_civilization" class="info_table">
+            <tbody>
+                <tr>
+                    <td>Won/Total</td>
+                    <td>{{civ.stats.wins}}/{{civ.stats.played}} ({{civ.stats.win_chance}}%)</td>
+                </tr>
+                <tr>
+                    <td>Average score per min</td>
+                    <td>{{civ.stats.average_score_per_min}}</td>
+                </tr>
+            </tbody>
+        </table>
+        <span class="error">{{error}}</span>
+    </div>
+
+    <div class="bottom_content">
+        <div class="box margin_top">
+            <h4>Played by player</h4>
+            <table class="list_table">
+                <thead>
+                    <tr>
+                        <td></td>
+                        <td>Games</td>
+                        <td>Wins</td>
+                        <td>Win%</td>
+                        <td>Points</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="player in civ.stats.player_fit | orderBy:['-points', '-win_chance', '-wins', '-played', 'nick']">
+                        <td><a href="/players/{{player.player.nick}}" title="View player {{player.player.nick}}">{{player.player.nick}}</a></td>
+                        <td>{{player.played}}</td>
+                        <td>{{player.wins}}</td>
+                        <td>{{player.win_chance}}%</td>
+                        <td>{{player.points}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>        
+    </div>
+</div>

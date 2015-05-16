@@ -114,7 +114,7 @@
                 </thead>
                 <tbody>
                     <tr ng-repeat="civilization in player.stats.civ_fit | orderBy:['-points', '-win_chance', '-wins', '-played', 'civ']">
-                        <td><a href="">{{civilization.civ}}</a></td>
+                        <td><a href="/civs/{{civilization.civ}}" title="View player {{civilization.civ}}">{{civilization.civ}}</a></td>
                         <td>{{civilization.played}}</td>
                         <td>{{civilization.wins}}</td>
                         <td>{{civilization.win_chance}}%</td>
