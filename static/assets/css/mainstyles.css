@@ -536,3 +536,8 @@ select {
             background-color: #495935;
             border-color: #42522e;
         }
+
+
+ .text_highlighted{
+     color: #df633b;
+ }
