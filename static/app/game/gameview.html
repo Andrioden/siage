@@ -33,7 +33,7 @@
         </table>
     </div>
     <div class="left_content">
-        <table ng-show="!loading_game" class="info_table">
+        <table ng-show="!loading_game" class="info_table" ng-init="ShowDetails = false">
             <tbody>
                 <tr>
                     <td>Date</td>
@@ -44,10 +44,6 @@
                     <td>{{game.duration_minutes}} minutes</td>
                 </tr>
                 <tr>
-                    <td>Game type</td>
-                    <td>{{game.game_type}}</td>
-                </tr>
-                <tr>
                     <td>Map type</td>
                     <td>{{game.location}}</td>
                 </tr>
@@ -56,47 +52,57 @@
                     <td>{{game.size}}</td>
                 </tr>
                 <tr>
-                    <td>Difficulty</td>
-                    <td>{{game.difficulty}}</td>
-                </tr>
-                <tr>
-                    <td>Resources</td>
-                    <td>{{game.resources}}</td>
-                </tr>
-                <tr>
-                    <td>Game speed</td>
-                    <td>{{game.game_speed}}</td>
-                </tr>
-                <tr>
-                    <td>Reveal map</td>
-                    <td>{{game.reveal_map}}</td>
-                </tr>
-                <tr>
-                    <td>Victory</td>
-                    <td>{{game.victory}}</td>
-                </tr>
-                <tr>
-                    <td>Starting age</td>
-                    <td>{{game.starting_age}}</td>
-                </tr>
-                <tr>
-                    <td>Population</td>
-                    <td>{{game.population}}</td>
-                </tr>
-                <tr>
-                    <td>All techs</td>
-                    <td>{{game.all_techs | yesNo}}</td>
-                </tr>
-                <tr>
-                    <td>Teams together</td>
-                    <td>{{game.team_together | yesNo}}</td>
-                </tr>
-                <tr>
                     <td>Trebuchet</td>
                     <td>{{game.trebuchet_allowed | yesNo}}</td>
                 </tr>
+                <tr ng-show="ShowDetails" ng-animate="">
+                    <td>Game type</td>
+                    <td>{{game.game_type}}</td>
+                </tr>
+                <tr ng-show="ShowDetails">
+                    <td>Difficulty</td>
+                    <td>{{game.difficulty}}</td>
+                </tr>
+                <tr ng-show="ShowDetails">
+                    <td>Resources</td>
+                    <td>{{game.resources}}</td>
+                </tr>
+                <tr ng-show="ShowDetails">
+                    <td>Game speed</td>
+                    <td>{{game.game_speed}}</td>
+                </tr>
+                <tr ng-show="ShowDetails">
+                    <td>Reveal map</td>
+                    <td>{{game.reveal_map}}</td>
+                </tr>
+                <tr ng-show="ShowDetails">
+                    <td>Victory</td>
+                    <td>{{game.victory}}</td>
+                </tr>
+                <tr ng-show="ShowDetails">
+                    <td>Starting age</td>
+                    <td>{{game.starting_age}}</td>
+                </tr>
+                <tr ng-show="ShowDetails">
+                    <td>Population</td>
+                    <td>{{game.population}}</td>
+                </tr>
+                <tr ng-show="ShowDetails">
+                    <td>All techs</td>
+                    <td>{{game.all_techs | yesNo}}</td>
+                </tr>
+                <tr ng-show="ShowDetails">
+                    <td>Teams together</td>
+                    <td>{{game.team_together | yesNo}}</td>
+                </tr>
             </tbody>
         </table>
+        <p>
+            <a ng-click="ShowDetails = !ShowDetails" href="">
+                <span ng-show="!ShowDetails">Show details</span>
+                <span ng-show="ShowDetails">Hide details</span>
+            </a>
+        </p>
         <span class="error">{{error}}</span>
     </div>
 </div>
