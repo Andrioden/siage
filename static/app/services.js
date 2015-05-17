@@ -41,7 +41,7 @@ siAgeApp
     })
 
     .factory('Admin', function ($resource) {
-        return $resource('/api/admin/:action/', {}, {
+        return $resource('/api/actions/admin/:action/', {}, {
             recalc: { method: 'POST', params: { action: 'recalc' }, isArray: false },
             cleandb: { method: 'POST', params: { action: 'cleandb' }, isArray: false },
             clearstats: { method: 'POST', params: { action: 'clearstats' }, isArray: false }
@@ -49,7 +49,7 @@ siAgeApp
     })
 
     .factory('SetupGame', function ($resource) {
-        return $resource('/api/setupgame/', {}, {
+        return $resource('/api/actions/setupgame/', {}, {
             submit: { method: 'POST' }
         });
 

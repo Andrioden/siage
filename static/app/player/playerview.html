@@ -1,7 +1,7 @@
 ﻿<div id="main_content">
     <h1 ng-show="!loading_player">
         <span>{{player.nick}}</span>
-        <span ng-show="user.logged_in && !user.player && player.is_claimed == false"> (<a href="/api/claimplayer/{{player.id}}" title="View game" target="_self">claim player</a>)</span>
+        <span ng-show="user.logged_in && !user.player && player.is_claimed == false"> (<a href="/api/actions/claimplayer/{{player.id}}" title="View game" target="_self">claim player</a>)</span>
     </h1>
     <img ng-show="loading_player" src="static/assets/img/ajax-loader.gif">
     <div class="right_content" >

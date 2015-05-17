@@ -27,17 +27,17 @@ handlers:
 - url: /api/gamesettings/.*
   script: api.gamesettings.app
 
-- url: /api/admin/.*
-  script: api.admin.app
-
 - url: /api/globalstats/.*
   script: api.globalstats.app
 
 - url: /api/rules/.*
   script: api.rules.app
 
-- url: /api/.*
-  script: api.general.app
+- url: /api/actions/admin/.*
+  script: api.actions_admin.app
+
+- url: /api/actions/.*
+  script: api.actions.app
 
 - url: /.*
   script: main.app

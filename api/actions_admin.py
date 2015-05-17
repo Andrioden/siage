@@ -73,7 +73,7 @@ class ClearStatsHandler(webapp2.RequestHandler):
 
 
 app = webapp2.WSGIApplication([
-    (r'/api/admin/recalc/', RecalcHandler),
-    (r'/api/admin/cleandb/', CleanDBHandler),
-    (r'/api/admin/clearstats/', ClearStatsHandler),
+    (r'/api/actions/admin/recalc/', RecalcHandler),
+    (r'/api/actions/admin/cleandb/', CleanDBHandler),
+    (r'/api/actions/admin/clearstats/', ClearStatsHandler),
 ], debug=True)

@@ -137,10 +137,10 @@ class SetupGameHandler(webapp2.RequestHandler):
     def _validate_team_setup(self, player_count, team_setup):
         team_setup_player_slots = sum([int(team_size) for team_size in team_setup.split('v')])
         if player_count > 8:
-            error_400(self.response, "TEAM_SETUP_WRONG", "The algorithm does not support predefined team setup with more than 8 players. You tried with %s" % player_count)
+            error_400(self.response, "TEAM_SETUP_ERROR", "The algorithm does not support predefined team setup with more than 8 players. You tried with %s" % player_count)
             return False
         elif not player_count == team_setup_player_slots:
-            error_400(self.response, "TEAM_SETUP_WRONG", "The amount of players (%s) do not match the team setup player slots (%s)" % (player_count, team_setup_player_slots))
+            error_400(self.response, "TEAM_SETUP_ERROR", "The amount of players (%s) do not match the team setup player slots (%s)" % (player_count, team_setup_player_slots))
             return False
         else:
             return True
@@ -166,6 +166,6 @@ class ClaimPlayerHandler(webapp2.RequestHandler):
                 error_400(self.response, "NOT_LOGGED_INN", "The visiting user is not logged inn.")
         
 app = webapp2.WSGIApplication([
-    (r'/api/setupgame/', SetupGameHandler),
-    (r'/api/claimplayer/(\d+)', ClaimPlayerHandler),
+    (r'/api/actions/setupgame/', SetupGameHandler),
+    (r'/api/actions/claimplayer/(\d+)', ClaimPlayerHandler),
 ], debug=True)
