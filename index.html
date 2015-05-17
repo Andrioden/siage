@@ -38,7 +38,7 @@
 </head>
 <body ng-controller="UserController">
     <div id="main_wrapper">
-        <header id="Header">
+        <header id="header">
             {% raw %}
             <aside id="login_section">
                 <span ng-show="user.logged_in && user.player"><a href="/players/{{user.player}}" title="View profile">{{user.player}}</a></span>
@@ -70,8 +70,13 @@
         </header>
 
         <div id="main_view" ng-view=""></div>
-
         <div class="Push"></div>
+        <footer id="footer">
+            <p>Created by Bj&oslash;rn Tore Gjerde and Andr&eacute; S. Hansen</p>
+            <a href="https://github.com/Andrioden/siage/issues" target="_blank">Suggestions</a>
+        </footer>
+
+
     </div>
 </body>
 </html>
