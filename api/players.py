@@ -10,13 +10,20 @@ class PlayersHandler(webapp2.RequestHandler):
     def get(self):
         """ --------- GET PLAYERLIST --------- """
         data_detail = self.request.get('data_detail', "simple")
-        verified = self.request.get('verified')
+        verified = self.request.get('verified', "")
+        claimed = self.request.get('claimed', "")
 
         # BUILD DATA
         query = Player.query()
+
         if verified.lower() in ["true", "false"]:
             verified_bool = verified.lower() == "true"
             query = query.filter(Player.verified == verified_bool)
+
+        if claimed.lower() == "true":
+            query = query.filter(Player.userid != None) # have to use !=
+        elif claimed.lower() == "false":
+            query = query.filter(Player.userid == None) # have to use ==
 
         players_data = [player.get_data(data_detail) for player in query]
 
