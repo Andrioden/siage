@@ -26,7 +26,10 @@ siAgeApp.controller('CivilizationsController',
                 var player_fits = $scope.civilizations[i].stats.player_fit;
                 player_fits.sort(comparePointsForPlayers);
                 $scope.civilizations[i].stats.best_players = player_fits.slice(0, 3);
-                $scope.civilizations[i].stats.worst_player = player_fits.slice(player_fits.length - 1, player_fits.length)[0];
+
+                if (player_fits.length > 3) {
+                    $scope.civilizations[i].stats.worst_player = player_fits.slice(player_fits.length - 1, player_fits.length)[0];
+                }                
             };
         };
 
