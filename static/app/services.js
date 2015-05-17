@@ -33,7 +33,7 @@ siAgeApp
 
     .factory('Civilization', function ($resource) {
         return $resource('/api/civs/:name', { name: '@name' }, {
-            get: { method: 'GET', isArray: false, cache: true },
+            get: { method: 'GET', isArray: false },
             query: { method: 'GET', isArray: true },
             save: { method: 'POST' },
             update: { method: 'PUT' }
