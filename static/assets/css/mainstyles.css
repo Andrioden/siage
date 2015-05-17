@@ -357,8 +357,9 @@ input[type=number]::-webkit-outer-spin-button {
     width: 220px;
 }
 
-#main_view .info_table td.nowrap{
+#main_view .info_table td.nowrap_with_padding{
     white-space: nowrap;
+    padding-right: 25px;
 }
 
 #main_view .info_table td.mini {

@@ -9,6 +9,7 @@ siAgeApp.controller('GamesController',
                 $scope.games = data;
                 $scope.generateSearchStrings();
                 $scope.loading_games = false;
+                $scope.error = "";
             }
             , function (error) {
                 $scope.loading_games = false;

@@ -7,7 +7,7 @@ siAgeApp.controller('CivilizationsController',
         Civilization.query(
             function (data) {
                 $scope.civilizations = data;
-                $scope.setBestPlayersForCivs();
+                $scope.setBestAndWorstPlayersForCivs();
                 $scope.loading_civilizations = false;
                 $scope.error = "";
             }
@@ -21,18 +21,20 @@ siAgeApp.controller('CivilizationsController',
         };
 
 
-        $scope.setBestPlayersForCivs = function () {
+        $scope.setBestAndWorstPlayersForCivs = function () {
             for (i = 0; i < $scope.civilizations.length; i++) {
-                $scope.civilizations[i].stats.player_fit.sort(comparePointsForPlayers);
-                $scope.civilizations[i].stats.best_players = $scope.civilizations[i].stats.player_fit.slice(0,3);
+                var player_fits = $scope.civilizations[i].stats.player_fit;
+                player_fits.sort(comparePointsForPlayers);
+                $scope.civilizations[i].stats.best_players = player_fits.slice(0, 3);
+                $scope.civilizations[i].stats.worst_player = player_fits.slice(player_fits.length - 1, player_fits.length)[0];
             };
         };
 
         function comparePointsForPlayers(a, b) {
             if (a.points < b.points)
-                return -1;
-            if (a.points > b.points)
                 return 1;
+            if (a.points > b.points)
+                return -1;
             return 0;
         }
     });
