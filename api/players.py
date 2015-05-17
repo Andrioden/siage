@@ -10,9 +10,15 @@ class PlayersHandler(webapp2.RequestHandler):
     def get(self):
         """ --------- GET PLAYERLIST --------- """
         data_detail = self.request.get('data_detail', "simple")
+        verified = self.request.get('verified')
 
         # BUILD DATA
-        players_data = [player.get_data(data_detail) for player in Player.query()]
+        query = Player.query()
+        if verified.lower() in ["true", "false"]:
+            verified_bool = verified.lower() == "true"
+            query = query.filter(Player.verified == verified_bool)
+
+        players_data = [player.get_data(data_detail) for player in query]
 
         # RETURN RESPONSE
         self.response.headers['Content-Type'] = 'application/json'

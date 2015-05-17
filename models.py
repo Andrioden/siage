@@ -93,7 +93,6 @@ class Player(ndb.Model):
         previous_round = PlayerResult.query(PlayerResult.player == self.key, PlayerResult.game_date < previous_round_date).order(-PlayerResult.game_date).get()
 
         if previous_round:
-            logging.info(newest_player_result)
             if newest_player_result.stats_rating > previous_round.stats_rating:
                 return "+"
             elif newest_player_result.stats_rating == previous_round.stats_rating:

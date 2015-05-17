@@ -72,26 +72,8 @@ class ClearStatsHandler(webapp2.RequestHandler):
         self.response.out.write(json.dumps({'response': "Player statistics have been cleared"}))
 
 
-class UnverifiedPlayersHandler(webapp2.RequestHandler):
-    def get(self):
-
-        if not validate_logged_in_admin(self.response):
-            return
-
-        # BUILD DATA
-        unverified_players = []
-        for player in Player.query():
-            if not player.verified:
-                unverified_players.append(player.get_data())
-
-        # RETURN DATA
-        self.response.headers['Content-Type'] = 'application/json'
-        self.response.out.write(json.dumps(unverified_players))
-
-
 app = webapp2.WSGIApplication([
     (r'/api/admin/recalc/', RecalcHandler),
     (r'/api/admin/cleandb/', CleanDBHandler),
     (r'/api/admin/clearstats/', ClearStatsHandler),
-    (r'/api/admin/unverifiedplayers/', UnverifiedPlayersHandler),
 ], debug=True)
