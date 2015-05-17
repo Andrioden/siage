@@ -19,7 +19,7 @@ siAgeApp.controller('PlayerController',
     	);
 
         $scope.load_games_for_player = function () {
-            Game.query({ max: 10, player_id: $scope.player.id },
+            Game.query({ player_id: $scope.player.id },
             function (data) {
                 $scope.games = data;
                 $scope.loading_games = false;

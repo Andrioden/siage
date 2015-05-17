@@ -4,22 +4,22 @@
         <span ng-show="user.logged_in && !user.player && player.is_claimed == false"> (<a href="/api/claimplayer/{{player.id}}" title="View game" target="_self">claim player</a>)</span>
     </h1>
     <img ng-show="loading_player" src="static/assets/img/ajax-loader.gif">
-    <div class="right_content">
-        <div class="box">
+    <div class="right_content" >
+        <div class="box" style="height: 400px; overflow: auto;">
             <table class="list_table">
                 <thead>
-                <tr>
-                    <td style="width: 25px"></td>
-                    <td>Games</td>
-                </tr>
+                    <tr>
+                        <td style="width: 25px"></td>
+                        <td>Games</td>
+                    </tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat="game in games | orderBy: 'date_epoch' : true">
-                    <td>
-                        <img class="icon" title="Winner" ng-show="game.is_winner" src="/static/assets/img/crown_w_rock.png">
-                    </td>
-                    <td><a href="/games/{{game.id}}" title="View game">{{game.date | date : 'dd.MM.yyyy'}} | {{game.title}} {{game.team_format}}</a></td>
-                </tr>
+                    <tr ng-repeat="game in games | orderBy: 'date_epoch' : true">
+                        <td>
+                            <img class="icon" title="Winner" ng-show="game.is_winner" src="/static/assets/img/crown_w_rock.png">
+                        </td>
+                        <td><a href="/games/{{game.id}}" title="View game">{{game.date | date : 'dd.MM.yyyy'}} | {{game.title}} {{game.team_format}}</a></td>
+                    </tr>
                 </tbody>
             </table>
         </div>
@@ -27,51 +27,51 @@
     <div class="left_content">
         <table ng-show="!loading_player" class="info_table">
             <tbody>
-            <tr>
-                <td>Rating</td>
-                <td ng-show="player.played > 0">{{player.rating}}</td>
-                <td ng-show="player.played == 0">Unrated</td>
-            </tr>
-            <tr>
-                <td>Won/Total</td>
-                <td>{{player.wins}}/{{player.played}} ({{player.win_chance}}%)</td>
-            </tr>
-            <tr>
-                <td>Average score</td>
-                <td>{{player.stats.average_score}}</td>
-            </tr>
-            <tr>
-                <td>Best score</td>
-                <td>{{player.stats.best_score.value}} in <a href="/games/{{player.stats.best_score.game_id}}" title="View game">this game</a></td>
-            </tr>
-            <tr>
-                <td>Worst score</td>
-                <td>{{player.stats.worst_score.value}} in <a href="/games/{{player.stats.worst_score.game_id}}" title="View game">this game</a></td>
-            </tr>
-            <tr>
-                <td>Average score per min</td>
-                <td>{{player.stats.average_score_per_min}}</td>
-            </tr>
-            <tr>
-                <td>Best score per min</td>
-                <td>{{player.stats.best_score_per_min.value}} in <a href="/games/{{player.stats.best_score_per_min.game_id}}" title="View game">this game</a></td>
-            </tr>
-            <tr>
-                <td>Worst score per min</td>
-                <td>{{player.stats.worst_score_per_min.value}} in <a href="/games/{{player.stats.worst_score_per_min.game_id}}" title="View game">this game</a></td>
-            </tr>
-            <tr>
-                <td>Top scoring player in team</td>
-                <td>{{player.stats.percentage_topping_score}}%</td>
-            </tr>
-            <tr>
-                <td>Longest winning streak</td>
-                <td>{{player.stats.longest_winning_streak}}</td>
-            </tr>
-            <tr>
-                <td>Longest losing streak</td>
-                <td>{{player.stats.longest_losing_streak}}</td>
-            </tr>
+                <tr>
+                    <td>Rating</td>
+                    <td ng-show="player.played > 0">{{player.rating}}</td>
+                    <td ng-show="player.played == 0">Unrated</td>
+                </tr>
+                <tr>
+                    <td>Won/Total</td>
+                    <td>{{player.wins}}/{{player.played}} ({{player.win_chance}}%)</td>
+                </tr>
+                <tr>
+                    <td>Average score</td>
+                    <td>{{player.stats.average_score}}</td>
+                </tr>
+                <tr>
+                    <td>Best score</td>
+                    <td>{{player.stats.best_score.value}} in <a href="/games/{{player.stats.best_score.game_id}}" title="View game">this game</a></td>
+                </tr>
+                <tr>
+                    <td>Worst score</td>
+                    <td>{{player.stats.worst_score.value}} in <a href="/games/{{player.stats.worst_score.game_id}}" title="View game">this game</a></td>
+                </tr>
+                <tr>
+                    <td>Average score per min</td>
+                    <td>{{player.stats.average_score_per_min}}</td>
+                </tr>
+                <tr>
+                    <td>Best score per min</td>
+                    <td>{{player.stats.best_score_per_min.value}} in <a href="/games/{{player.stats.best_score_per_min.game_id}}" title="View game">this game</a></td>
+                </tr>
+                <tr>
+                    <td>Worst score per min</td>
+                    <td>{{player.stats.worst_score_per_min.value}} in <a href="/games/{{player.stats.worst_score_per_min.game_id}}" title="View game">this game</a></td>
+                </tr>
+                <tr>
+                    <td>Top scoring player in team</td>
+                    <td>{{player.stats.percentage_topping_score}}%</td>
+                </tr>
+                <tr>
+                    <td>Longest winning streak</td>
+                    <td>{{player.stats.longest_winning_streak}}</td>
+                </tr>
+                <tr>
+                    <td>Longest losing streak</td>
+                    <td>{{player.stats.longest_losing_streak}}</td>
+                </tr>
             </tbody>
         </table>
     </div>
