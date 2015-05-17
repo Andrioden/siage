@@ -24,7 +24,9 @@
                     <td>{{player_result.team}}</td>
                     <td>{{player_result.score}}</td>
                     <td title="Rating after the game was finished">
-                        {{player_result.stats_rating}} (<span ng-class="{'green': player_result.rating_earned >= 0, 'red': player_result.rating_earned < 0}"><span ng-if="player_result.rating_earned >= 0">+</span>{{player_result.rating_earned}}</span>)
+                        {{player_result.stats_rating}}
+                        <span ng-if="player_result.rating_earned >= 0">(<span class="green">+{{player_result.rating_earned}}</span>)</span>
+                        <span ng-if="player_result.rating_earned < 0">(<span class="red">{{player_result.rating_earned}}</span>)</span>
                     </td>
                 </tr>
             </tbody>

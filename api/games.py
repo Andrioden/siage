@@ -46,11 +46,13 @@ class GamesHandler(webapp2.RequestHandler):
         self.response.out.write(json.dumps(games_data))
     
     def _expand_game_data_with_player_result_data(self, games_data, player_results):
+        # Set stats rating from the player_results object
         for game in games_data:
             for res in player_results:
                 if res.game.id() == game['id']:
                     game['is_winner'] = res.is_winner
                     game['stats_rating'] = res.stats_rating
+
                     
     #@ndb.transactional
     def post(self):
