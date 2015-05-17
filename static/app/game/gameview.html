@@ -19,7 +19,7 @@
                         <img class="icon" title="Winner" ng-show="player_result.is_winner" src="/static/assets/img/crown_w_rock.png">
                         <img class="icon" title="Host" ng-show="player_result.is_host" src="/static/assets/img/host.png">
                     </td>
-                    <td><a href="/players/{{player_result.player.nick}}" title="View player {{player_result.player.nick}}">{{player_result.player.nick}}</a></td>
+                    <td><a ng-class="{text_highlighted: '{{user.player}}' == '{{player_result.player.nick}}'}" href="/players/{{player_result.player.nick}}" title="View player {{player_result.player.nick}}">{{player_result.player.nick}}</a></td>
                     <td><a href="/civs/{{player_result.civilization}}" title="View civilization {{player_result.civilization}}">{{player_result.civilization}}</a></td>
                     <td>{{player_result.team}}</td>
                     <td>{{player_result.score}}</td>
