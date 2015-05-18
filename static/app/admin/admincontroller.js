@@ -51,7 +51,7 @@ siAgeApp.controller('AdminController',
                 function (data) {
                     $scope.verifyplayer_processing = false;
                     player = data;
-                    if (!data.is_claimed) {
+                    if (!data.claimed) {
                         $scope.verifyplayer_response = "Player claim for " + data.nick + " successfully rejected";
                     } else {
                         $scope.verifyplayer_error = "Failed to reject player claim for " + data.nick;

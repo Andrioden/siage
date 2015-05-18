@@ -77,7 +77,7 @@ class Player(ndb.Model):
             'played': played,
             'wins': wins,
             'win_chance': None if played == 0 else int(wins * 100.0 / played),
-            'is_claimed': True if self.userid else False,
+            'claimed': True if self.userid else False,
             'verified': True if self.verified == True else False,
             'rating_trend': self._get_rating_trend() # Only used for league, might need to further limit when this loads
         }
