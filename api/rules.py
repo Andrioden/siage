@@ -15,21 +15,24 @@ class RulesHandler(webapp2.RequestHandler):
 
     def post(self):
         """ --------- CREATE RULE --------- """
+        request_data = json.loads(self.request.body)
 
         # VALIDATING
         if not validate_authenticated(self.response):
             return
 
         # PROCESS REQUEST
-        new_rule = Rule(name = self.request.get('name'), description = self.request.get('description')).put()
+
+        new_rule_key = Rule(name = request_data['name'], description = request_data['description']).put()
 
         # RETURN RESPONSE
         self.response.headers['Content-Type'] = 'application/json'
-        self.response.out.write(json.dumps(new_rule.get().get_data()))
+        self.response.out.write(json.dumps(new_rule_key.get().get_data()))
 
 class RuleHandler(webapp2.RequestHandler):
     def put(self, rule_id):
         """ --------- UPDATE RULE --------- """
+        request_data = json.loads(self.request.body)
 
         # VALIDATING
         if not validate_authenticated(self.response):
@@ -37,8 +40,8 @@ class RuleHandler(webapp2.RequestHandler):
 
         # PROCESS REQUEST
         rule = Rule.get_by_id(int(rule_id))
-        rule.name = self.request.get('name')
-        rule.description = self.request.get('description')
+        rule.name = request_data['name']
+        rule.description = request_data['description']
         rule.put()
 
         # RETURN RESPONSE

@@ -372,7 +372,7 @@ class Game(ndb.Model):
         return data
 
     @classmethod
-    def _settings_data(cls):
+    def settings_data(cls):
         return {
             'game_types': list(cls.game_type._choices),
             'sizes': list(cls.size._choices),
@@ -400,7 +400,7 @@ class PlayerResult(ndb.Model):
     stats_rating = ndb.IntegerProperty(required=True)
 
     @classmethod
-    def _settings_data(cls):
+    def settings_data(cls):
         return {
             'teams': list(cls.team._choices),
             'civilizations': list(cls.civilization._choices)

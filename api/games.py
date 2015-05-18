@@ -53,8 +53,6 @@ class GamesHandler(webapp2.RequestHandler):
                     game['is_winner'] = res.is_winner
                     game['stats_rating'] = res.stats_rating
 
-                    
-    #@ndb.transactional
     def post(self):
         """ --------- CREATE GAME --------- """
         request_data = json.loads(self.request.body)

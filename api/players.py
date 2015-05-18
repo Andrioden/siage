@@ -70,6 +70,7 @@ class PlayerHandler(webapp2.RequestHandler):
 
     def put(self, player_id_or_nick):
         """ --------- UPDATE SINGLE PLAYER --------- """
+        request_data = json.loads(self.request.body)
 
         if not validate_logged_in_admin(self.response):
             return
@@ -79,8 +80,6 @@ class PlayerHandler(webapp2.RequestHandler):
             player = Player.get_by_id(int(player_id_or_nick))
         else:
             player = Player.query(Player.nick == player_id_or_nick).get()
-
-        request_data = json.loads(self.request.body)
 
         if request_data.has_key('userid'):
             player.userid = request_data['userid']
