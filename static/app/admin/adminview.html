@@ -68,8 +68,8 @@
             <table class="list_table">
                 <tr ng-repeat="player in unverified_players">
                     <td>{{player.nick}}</td>
-                    <td><a ng-click="RespondToClaim(player, true)" href="">Verify</a></td>
-                    <td><a ng-click="RespondToClaim(player, false)" href="">Reject</a></td>
+                    <td><a ng-click="VerifyClaim(player)" href="">Verify</a></td>
+                    <td><a ng-click="RejectClaim(player)" href="">Reject</a></td>
                 </tr>
                 <tr ng-show="unverified_players.length == 0">
                     <td>No unverified players</td>

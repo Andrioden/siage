@@ -5,7 +5,7 @@ siAgeApp.controller('AdminController',
 
         $scope.loading_unverified_players = true;
 
-        Player.query({ verified: false }).$promise.then(
+        Player.query({ verified: false, claimed: true }).$promise.then(
             function (data) {
                 $scope.unverified_players = data;
                 $scope.loading_unverified_players = false;
@@ -17,20 +17,44 @@ siAgeApp.controller('AdminController',
             }
             );
 
-        $scope.RespondToClaim = function (player, _verified) {
+        $scope.VerifyClaim = function (player) {
             $scope.verifyplayer_processing = true;
             $scope.verifyplayer_response = "";
             $scope.verifyplayer_error = "";
 
-            Player.update({ player_id: player.nick }, { verified: _verified}).$promise.then(
+            Player.update({ player_id: player.nick }, { verified: true}).$promise.then(
                 //success
                 function (data) {
                     $scope.verifyplayer_processing = false;
                     player = data;
                     if(data.verified){
-                        $scope.verifyplayer_response = "Player " + data.nick + " verified";
+                        $scope.verifyplayer_response = "Player claim for " + data.nick + " verified";
                     } else {
-                        $scope.verifyplayer_error = "Verification of player " + data.nick + " failed";
+                        $scope.verifyplayer_error = "Failed to verify player claim for " + data.nick;
+                    }
+                },
+                //error
+                function (error) {
+                    $scope.verifyplayer_processing = false;
+                    $scope.verifyplayer_error = $rootScope.getFriendlyErrorText(error);
+                }
+              );
+        };
+
+        $scope.RejectClaim = function (player) {
+            $scope.verifyplayer_processing = true;
+            $scope.verifyplayer_response = "";
+            $scope.verifyplayer_error = "";
+
+            Player.update({ player_id: player.nick }, { userid: null }).$promise.then(
+                //success
+                function (data) {
+                    $scope.verifyplayer_processing = false;
+                    player = data;
+                    if (!data.is_claimed) {
+                        $scope.verifyplayer_response = "Player claim for " + data.nick + " successfully rejected";
+                    } else {
+                        $scope.verifyplayer_error = "Failed to reject player claim for " + data.nick;
                     }
                 },
                 //error
