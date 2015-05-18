@@ -1,2 +1,0 @@
-- Se på muligheten for å slå på transactions for create game:
-	https://cloud.google.com/appengine/docs/python/datastore/transactions#Python_What_can_be_done_in_a_transaction

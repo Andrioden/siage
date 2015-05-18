@@ -1,7 +1,8 @@
 HOW TO SETUP THE ENVIRONMENT:
 ------------------------------------
 1. Download and install 2.7.x - https://www.python.org/downloads/
-2. Download and install Aptana Studio 3 - http://www.aptana.com/products/studio3/download.html
+2a. Download and install Aptana Studio 3 - http://www.aptana.com/products/studio3/download.html
+2b. Download PyCharm
 3. Download and install Google App Engine SDK for Python - https://cloud.google.com/appengine/downloads#Google_App_Engine_SDK_for_Python
 4. Download and install GitHub for Windows - https://windows.github.com/
 5. In GitHub for Windows: Clone "siage" from github.

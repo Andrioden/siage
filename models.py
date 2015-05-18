@@ -86,21 +86,27 @@ class Player(ndb.Model):
         newest_player_result = PlayerResult.query(PlayerResult.player == self.key).order(-PlayerResult.game_date).get()
         if not newest_player_result:
             return "n"
-        else:
-            newest_player_result_date = newest_player_result.game_date
 
-        previous_round_date = newest_player_result_date - timedelta(days=5)
+        newest_game_session_result = PlayerResult.query().order(-PlayerResult.game_date).get()
+        if not newest_game_session_result:
+            return "n"
+        else:
+            newest_game_session_date = newest_game_session_result.game_date
+
+        previous_round_date = newest_game_session_date - timedelta(days=5)
         previous_round = PlayerResult.query(PlayerResult.player == self.key, PlayerResult.game_date < previous_round_date).order(-PlayerResult.game_date).get()
 
         if previous_round:
-            if newest_player_result.stats_rating > previous_round.stats_rating:
-                return "+"
-            elif newest_player_result.stats_rating == previous_round.stats_rating:
-                return "n"
-            else:
-                return "-"
+            previous_rating = previous_round.stats_rating
         else:
+            previous_rating = PLAYER_RATING_START_VALUE
+
+        if newest_player_result.stats_rating > previous_rating:
+            return "+"
+        elif newest_player_result.stats_rating == previous_rating:
             return "n"
+        else:
+            return "-"
         
     def _get_stats_data(self):
         if not self.calc_and_update_stats_if_needed():
