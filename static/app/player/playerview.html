@@ -4,7 +4,10 @@
         <span ng-show="user.logged_in && !user.player && player.claimed == false"> (<a href="/api/actions/claimplayer/{{player.id}}" title="View game" target="_self">claim player</a>)</span>
     </h1>
     <img ng-show="loading_player" src="static/assets/img/ajax-loader.gif">
-    <div class="right_content" >
+
+    <div id="rating_graph"></div>
+
+    <div class="right_content">
         <div class="box" style="height: 400px; overflow: auto;">
             <table class="list_table">
                 <thead>
