@@ -1,4 +1,4 @@
-﻿var siAgeApp = angular.module('SiAgeApp', ['ngRoute', 'ngResource', 'ngAnimate', 'angulartics', 'angulartics.google.analytics']);
+﻿var siAgeApp = angular.module('SiAgeApp', ['ngRoute', 'ngResource', 'ngAnimate']);
 
 
 siAgeApp.controller('UserController',

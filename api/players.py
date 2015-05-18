@@ -80,13 +80,14 @@ class PlayerHandler(webapp2.RequestHandler):
         else:
             player = Player.query(Player.nick == player_id_or_nick).get()
 
-        userid = self.request.get("userid", None)
+        request_data = json.loads(self.request.body)
+        userid = request_data.get('userid')
         if not userid is None:
             player.userid = userid
 
-        verified = self.request.get("verified", None)
+        verified = request_data.get('verified')
         if not verified is None:
-            player.verified = (verified.lower() == "true")
+            player.verified = verified
 
         player.put()
 

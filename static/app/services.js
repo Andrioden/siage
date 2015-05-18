@@ -8,7 +8,7 @@ siAgeApp
     })
 
     .factory('Player', function ($resource) {
-        return $resource('/api/players/:player_id', { player_id: '@playerId' }, {
+        return $resource('/api/players/:player_id', null, {
             get: { method: 'GET', isArray: false },
             query: { method: 'GET', isArray: true },
             save: { method: 'POST' },
@@ -45,7 +45,7 @@ siAgeApp
             recalc: { method: 'POST', params: { action: 'recalc' }, isArray: false },
             cleandb: { method: 'POST', params: { action: 'cleandb' }, isArray: false },
             clearstats: { method: 'POST', params: { action: 'clearstats' }, isArray: false }
-        });
+        });        
     })
 
     .factory('SetupGame', function ($resource) {

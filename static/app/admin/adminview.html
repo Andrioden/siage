@@ -58,5 +58,25 @@
                 <span ng-show="clearstats_error" class="error">{{clearstats_error}}</span>
             </section>
         </div>
+
+        <div class="box margin_top">
+            <h4>Verify player claims</h4>            
+            <img ng-show="loading_unverified_players" src="static/assets/img/ajax-loader.gif">
+            <img ng-show="verifyplayer_processing" src="static/assets/img/ajax-loader.gif">
+            <span ng-show="verifyplayer_response" class="success">{{verifyplayer_response}}</span>
+            <span ng-show="verifyplayer_error" class="error">{{verifyplayer_error}}</span>
+            <table class="list_table">
+                <tr ng-repeat="player in unverified_players">
+                    <td>{{player.nick}}</td>
+                    <td><a ng-click="RespondToClaim(player, true)" href="">Verify</a></td>
+                    <td><a ng-click="RespondToClaim(player, false)" href="">Reject</a></td>
+                </tr>
+                <tr ng-show="unverified_players.length == 0">
+                    <td>No unverified players</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </table>
+        </div>
     </div>
 </div>

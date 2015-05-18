@@ -1,7 +1,45 @@
 ﻿var siAgeApp = angular.module('SiAgeApp');
 
 siAgeApp.controller('AdminController',
-    function ($rootScope, $scope, Admin, User, $timeout) {
+    function ($rootScope, $scope, Player, User, $timeout) {
+
+        $scope.loading_unverified_players = true;
+
+        Player.query({ verified: false }).$promise.then(
+            function (data) {
+                $scope.unverified_players = data;
+                $scope.loading_unverified_players = false;
+                $scope.error = "";
+            },
+            function (error) {
+                $scope.loading_unverified_players = false;
+                $scope.error = $rootScope.getFriendlyErrorText(error);
+            }
+            );
+
+        $scope.RespondToClaim = function (player, _verified) {
+            $scope.verifyplayer_processing = true;
+            $scope.verifyplayer_response = "";
+            $scope.verifyplayer_error = "";
+
+            Player.update({ player_id: player.nick }, { verified: _verified}).$promise.then(
+                //success
+                function (data) {
+                    $scope.verifyplayer_processing = false;
+                    player = data;
+                    if(data.verified){
+                        $scope.verifyplayer_response = "Player " + data.nick + " verified";
+                    } else {
+                        $scope.verifyplayer_error = "Verification of player " + data.nick + " failed";
+                    }
+                },
+                //error
+                function (error) {
+                    $scope.verifyplayer_processing = false;
+                    $scope.verifyplayer_error = $rootScope.getFriendlyErrorText(error);
+                }
+              );
+        };
 
         $scope.Recalc = function () {
             $scope.recalc_processing = true;
