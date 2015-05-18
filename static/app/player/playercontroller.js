@@ -65,7 +65,11 @@ function drawRatingGraph(player_results) {
         colors: ['#df633b'],
         pointSize: 5,
         chartArea: { 'width': '100%', 'height': '100%' },
-        legend: { position: 'none' }
+        legend: { position: 'none' },
+        animation: {
+            duration: 1000,
+            startup: 'true'
+        }
 
     };
 
