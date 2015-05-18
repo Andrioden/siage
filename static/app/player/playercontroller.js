@@ -42,7 +42,7 @@ function drawRatingGraph(player_results) {
     var data = new google.visualization.DataTable();
     data.addColumn('string', 'X');
     data.addColumn('number', 'Rating');
-
+        
     data.addRows(chartData);
 
     var options = {
@@ -89,6 +89,7 @@ function prepareChartData(player_results) {
         chartData.push(temp);
     }
 
+    chartData.push(['Joined', 1000]);
     chartData.reverse();
 
     return chartData;
