@@ -22,7 +22,6 @@ siAgeApp.controller('PlayerController',
             function (data) {
                 $scope.games = data;
                 $scope.loading_games = false;
-
                 drawRatingGraph(data);
             }
             , function (error) {
@@ -40,9 +39,10 @@ function drawRatingGraph(player_results) {
     var chartData = prepareChartData(player_results);
 
     var data = new google.visualization.DataTable();
-    data.addColumn('string', 'X');
+    data.addColumn('string', 'Date');
     data.addColumn('number', 'Rating');
-        
+    data.addColumn({ type: 'string', name: 'URL', role: 'url' });
+
     data.addRows(chartData);
 
     var options = {
@@ -75,6 +75,16 @@ function drawRatingGraph(player_results) {
 
     var chart = new google.visualization.LineChart(document.getElementById('rating_graph'));
     chart.draw(data, options);
+
+    var handler = function (e) {
+        var sel = chart.getSelection();
+        sel = sel[0];
+        if (sel && sel['row'] && sel['column']) {
+            var gameUrl = chartData[sel['row']][2];
+            window.location = gameUrl;
+        }
+    }
+    google.visualization.events.addListener(chart, 'select', handler);
 }
 
 function prepareChartData(player_results) {
@@ -83,13 +93,14 @@ function prepareChartData(player_results) {
     for (i = 0; i < player_results.length; i++) {
         var temp = [
             player_results[i].date,
-            parseInt(player_results[i].stats_rating)
+            parseInt(player_results[i].stats_rating),
+            '/games/' + player_results[i].id
         ];
 
         chartData.push(temp);
     }
 
-    chartData.push(['Joined', 1000]);
+    chartData.push(['Joined', 1000, '']);
     chartData.reverse();
 
     return chartData;
