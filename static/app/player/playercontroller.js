@@ -1,7 +1,7 @@
 ﻿var siAgeApp = angular.module('SiAgeApp');
 
 siAgeApp.controller('PlayerController',
-    function ($rootScope, $scope, Player, User, Game, $routeParams) {
+    function ($rootScope, $scope, Player, User, Game, $routeParams, $location) {
         $scope.user = User.get();
 
         $scope.loading_player = true;
@@ -28,6 +28,10 @@ siAgeApp.controller('PlayerController',
                 $scope.loading_games = false;
                 $scope.error = $rootScope.getFriendlyErrorText(error);
             });
+        };
+
+        $scope.navigate = function (route) {
+            $location.path(route);
         };
     }
 );
@@ -81,7 +85,8 @@ function drawRatingGraph(player_results) {
         sel = sel[0];
         if (sel && sel['row'] && sel['column']) {
             var gameUrl = chartData[sel['row']][2];
-            window.location = gameUrl;
+            angular.element(document.getElementById('main_content')).scope().navigate(gameUrl);
+            angular.element(document.getElementById('main_content')).scope().$apply();
         }
     }
     google.visualization.events.addListener(chart, 'select', handler);
