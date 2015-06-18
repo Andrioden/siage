@@ -15,7 +15,7 @@ siAgeApp.controller('AdminController',
                 $scope.loading_unverified_players = false;
                 $scope.error = $rootScope.getFriendlyErrorText(error);
             }
-            );
+        );
 
         $scope.VerifyClaim = function (player) {
             $scope.verifyplayer_processing = true;
@@ -26,10 +26,11 @@ siAgeApp.controller('AdminController',
                 //success
                 function (data) {
                     $scope.verifyplayer_processing = false;
-                    player = data;
                     if(data.verified){
                         $scope.verifyplayer_response = "Player claim for " + data.nick + " verified";
-                    } else {
+                        removePlayerFromUnverifiedList(player);
+                    }
+                    else {
                         $scope.verifyplayer_error = "Failed to verify player claim for " + data.nick;
                     }
                 },
@@ -50,10 +51,11 @@ siAgeApp.controller('AdminController',
                 //success
                 function (data) {
                     $scope.verifyplayer_processing = false;
-                    player = data;
                     if (!data.claimed) {
                         $scope.verifyplayer_response = "Player claim for " + data.nick + " successfully rejected";
-                    } else {
+                        removePlayerFromUnverifiedList(player);
+                    }
+                    else {
                         $scope.verifyplayer_error = "Failed to reject player claim for " + data.nick;
                     }
                 },
@@ -127,5 +129,12 @@ siAgeApp.controller('AdminController',
                 }
             );
         };
+        
+        function removePlayerFromUnverifiedList(player) {
+            for (var i=0; i<$scope.unverified_players.length; i++ ) {
+                if ($scope.unverified_players[i].id == player.id) $scope.unverified_players.splice(i,1);
+            }
+        }
+
     }
 );
