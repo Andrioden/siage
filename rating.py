@@ -153,7 +153,9 @@ class RatingCalculator:
         amount = 0
         teams_counted = []
         for res in self.player_results:
-            if res.team and res.team not in teams_counted:
+            if res.team is None:
+                amount += 1
+            elif res.team and res.team not in teams_counted:
                 amount += 1
                 teams_counted.append(res.team)
         return amount

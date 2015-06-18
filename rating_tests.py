@@ -47,17 +47,15 @@ class TestSequenceFunctions(unittest.TestCase):
         new_ratings = rc.calc_and_get_new_rating_dict()
         print new_ratings
 
-    # def test_rating_basic2(self):
-    #     rc = RatingCalculator()
-    #     rc.player_results.append(RatingPlayerResult(101, True, 10000, 1, 1000))
-    #     rc.player_results.append(RatingPlayerResult(102, True, 2000, 1, 1000))
-    #     rc.player_results.append(RatingPlayerResult(103, False, 3333, 2, 1000))
-    #     rc.player_results.append(RatingPlayerResult(104, False, 6666, 2, 1000))
-    #     rc.player_results.append(RatingPlayerResult(104, False, 8888, 2, 1000))
-    #
-    #     new_ratings = rc.calc_and_get_new_rating_dict()
-    #     print new_ratings
-        
-        
+    def test_rating_FFA3(self):
+        rc = RatingCalculator()
+        rc.player_results.append(RatingPlayerResult(101, True, 59861, None, 1201))
+        rc.player_results.append(RatingPlayerResult(102, False, 53330, None, 947))
+        rc.player_results.append(RatingPlayerResult(103, False, 40837, None, 887))
+        rc.player_results.append(RatingPlayerResult(104, False, 5243, None, 978))
+
+        new_ratings = rc.calc_and_get_new_rating_dict()
+        print new_ratings
+
 if __name__ == '__main__':
     unittest.main()
