@@ -39,8 +39,8 @@
                 <td ng-show="player.win_chance">{{player.win_chance}}%</td>
                 <td ng-show="!player.win_chance">0%</td>
                 <td ng-show="player.played > 0">{{player.rating}}
-                    <img class="rating_trend_icon_up_vertical_fix" ng-show="player.rating_trend == '+'" src="static/assets/img/arrow_green_up.png" title="{{player.nick}} gained rating last gaming day. : D">
-                    <img class="rating_trend_icon_down_vertical_fix" ng-show="player.rating_trend == '-'" src="static/assets/img/arrow_red_down.png" title="{{player.nick}} lost rating last gaming day. : (">
+                    <img class="rating_trend_icon_up_vertical_fix" ng-show="player.rating_change_prev_round > 0" src="static/assets/img/arrow_green_up.png" title="{{player.nick}} gained {{player.rating_change_prev_round}} rating last gaming session. : D">
+                    <img class="rating_trend_icon_down_vertical_fix" ng-show="player.rating_change_prev_round < 0" src="static/assets/img/arrow_red_down.png" title="{{player.nick}} lost {{player.rating_change_prev_round * -1}} rating last gaming session. : (">
                 </td>
                 <td ng-show="player.played == 0">Unrated</td>
             </tr>

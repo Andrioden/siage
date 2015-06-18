@@ -79,17 +79,17 @@ class Player(ndb.Model):
             'win_chance': None if played == 0 else int(wins * 100.0 / played),
             'claimed': True if self.userid else False,
             'verified': True if self.verified == True else False,
-            'rating_trend': self._get_rating_trend() # Only used for league, might need to further limit when this loads
+            'rating_change_prev_round': self._get_rating_change_previous_round() # Only used for league, might need to further limit when this loads
         }
         
-    def _get_rating_trend(self):
+    def _get_rating_change_previous_round(self):
         newest_player_result = PlayerResult.query(PlayerResult.player == self.key).order(-PlayerResult.game_date).get()
         if not newest_player_result:
-            return "n"
+            return "0"
 
         newest_game_session_result = PlayerResult.query().order(-PlayerResult.game_date).get()
         if not newest_game_session_result:
-            return "n"
+            return "0"
         else:
             newest_game_session_date = newest_game_session_result.game_date
 
@@ -101,12 +101,7 @@ class Player(ndb.Model):
         else:
             previous_rating = PLAYER_RATING_START_VALUE
 
-        if newest_player_result.stats_rating > previous_rating:
-            return "+"
-        elif newest_player_result.stats_rating == previous_rating:
-            return "n"
-        else:
-            return "-"
+        return newest_player_result.stats_rating - previous_rating
         
     def _get_stats_data(self):
         if not self.calc_and_update_stats_if_needed():
