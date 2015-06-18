@@ -1,7 +1,7 @@
 ﻿var siAgeApp = angular.module('SiAgeApp');
 
 siAgeApp.controller('AdminController',
-    function ($rootScope, $scope, Player, User, $timeout) {
+    function ($rootScope, $scope, Admin, Player, User, $timeout) {
 
         $scope.loading_unverified_players = true;
 
