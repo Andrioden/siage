@@ -132,8 +132,7 @@
                 <tbody>
                     <tr ng-repeat="playerResult in game.playerResults">
                         <td>
-                            <select class="wide" ng-model="playerResult.player_id"
-                                    ng-change="removeSelectedPlayersFromList()">
+                            <select class="wide" ng-model="playerResult.player_id" ng-change="removeSelectedPlayersFromList()" tabindex="1">
                                 <option ng-repeat="player in allPlayers | orderBy:['first','nick']"
                                         ng-selected="player.id === playerResult.player_id"
                                         value="{{player.id}}"
@@ -144,20 +143,21 @@
                         </td>
                         <td>
                             <select ng-model="playerResult.civilization"
-                                    ng-options="civ for civ in civilizations | orderBy:'toString()'">
+                                    ng-options="civ for civ in civilizations | orderBy:'toString()'"
+                                    tabindex="2">
                                 <option value=""></option>
                             </select>
                         </td>
                         <td>
                             <select ng-model="playerResult.team"
                                     ng-options="team for team in teams"
-                                    ng-change="setWinnersByTeamChange(playerResult)">
+                                    ng-change="setWinnersByTeamChange(playerResult)"
+                                    tabindex="3">
                                 <option value=""></option>
                             </select>
                         </td>
                         <td>
-                            <input type="number" name="score" ng-model="playerResult.score" min="0"
-                                   valid-number />
+                            <input type="number" name="score" ng-model="playerResult.score" min="0" valid-number tabindex="4"/>
                         </td>
                         <td class="small">
                             <input class="checkbox" type="checkbox" name="is_winner"
