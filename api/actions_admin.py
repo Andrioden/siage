@@ -9,7 +9,7 @@ from api.utils import validate_logged_in_admin
 import logging
 
 
-class RecalcHandler(webapp2.RequestHandler):
+class ReCalcRatingHandler(webapp2.RequestHandler):
     def post(self):
 
         if not validate_logged_in_admin(self.response):
@@ -73,7 +73,7 @@ class ClearStatsHandler(webapp2.RequestHandler):
 
 
 app = webapp2.WSGIApplication([
-    (r'/api/actions/admin/recalc/', RecalcHandler),
+    (r'/api/actions/admin/recalcrating/', ReCalcRatingHandler),
     (r'/api/actions/admin/cleandb/', CleanDBHandler),
     (r'/api/actions/admin/clearstats/', ClearStatsHandler),
 ], debug=True)

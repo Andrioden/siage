@@ -71,7 +71,7 @@ siAgeApp.controller('AdminController',
             $scope.recalc_processing = true;
             $scope.recalc_response = "";
             $scope.recalc_error = "";
-            Admin.recalc().$promise.then(
+            Admin.recalcrating().$promise.then(
                 //success
                 function (data) {
                     $scope.recalc_response = data.response;
