@@ -31,6 +31,12 @@ siAgeApp
         });
     })
 
+    .factory('GlobalStats', function ($resource) {
+        return $resource('/api/globalstats/', {}, {
+            query: { method: 'GET', isArray: false, cache: true }
+        });
+    })
+
     .factory('Civilization', function ($resource) {
         return $resource('/api/civs/:name', { name: '@name' }, {
             get: { method: 'GET', isArray: false },

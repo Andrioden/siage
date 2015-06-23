@@ -1,0 +1,106 @@
+﻿<div id="main_content">
+    <img ng-show="loading_stats" src="static/assets/img/ajax-loader.gif">
+
+    <div class="right_content">
+
+    </div>
+
+    <div class="left_content">
+        <table ng-show="!loading_stats" class="info_table">
+            <tbody>
+                <tr>
+                    <td>Longest winning streak</td>
+                    <td>{{stats.longest_winning_streak.number}} -
+                        <a href="/players/{{stats.longest_winning_streak.player.nick}}" title="View profile">{{stats.longest_winning_streak.player.nick}}</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Longest losing streak</td>
+                    <td>{{stats.longest_losing_streak.number}} -
+                        <a href="/players/{{stats.longest_losing_streak.player.nick}}" title="View profile">{{stats.longest_losing_streak.player.nick}}</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Highest rating achieved</td>
+                    <td>{{stats.highest_rating_achieved.number}} -
+                        <a href="/players/{{stats.highest_rating_achieved.player.nick}}" title="View profile">{{stats.highest_rating_achieved.player.nick}}</a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Lowest rating achieved</td>
+                    <td>{{stats.lowest_rating_achieved.number}} -
+                        <a href="/players/{{stats.lowest_rating_achieved.player.nick}}" title="View profile">{{stats.lowest_rating_achieved.player.nick}}</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="bottom_content">
+        <div class="box margin_top">
+            <h4>Teammate fits</h4>
+            <table class="list_table">
+                <thead>
+                    <tr>
+                        <td></td>
+                        <td>Games</td>
+                        <td>Wins</td>
+                        <td>Win%</td>
+                        <td>Points</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="fit in stats.teammate_fits | orderBy:['-points', '-win_chance', '-wins', '-played', 'nick']">
+                        <td>
+                            <a ng-class="{text_highlighted: '{{user.player}}' == '{{fit.player.nick}}'}" href="/players/{{fit.player.nick}}" title="View player {{fit.player.nick}}">{{fit.player.nick}}</a>
+                            <span> + </span>
+                            <a ng-class="{text_highlighted: '{{user.player}}' == '{{fit.teammate.nick}}'}" href="/players/{{fit.teammate.nick}}" title="View player {{fit.teammate.nick}}">{{fit.teammate.nick}}</a>
+                        </td>
+                        <td>{{fit.played}}</td>
+                        <td>{{fit.wins}}</td>
+                        <td>{{fit.win_chance}}%</td>
+                        <td>{{fit.points}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="box margin_top">
+            <h4>Civilization fits</h4>
+            <table class="list_table">
+                <thead>
+                    <tr>
+                        <td></td>
+                        <td>Games</td>
+                        <td>Wins</td>
+                        <td>Win%</td>
+                        <td>Points</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="fit in stats.civ_fits | orderBy:['-points', '-win_chance', '-wins', '-played', 'civ']">
+                        <td>
+                            <a ng-class="{text_highlighted: '{{user.player}}' == '{{fit.player.nick}}'}" href="/players/{{fit.player.nick}}" title="View player {{fit.player.nick}}">{{fit.player.nick}}</a>
+                            <span> as </span>
+                            <a href="/civs/{{fit.civ}}" title="View civilization {{civilization.civ}}">{{fit.civ}}</a>
+                        </td>
+                        <td>{{fit.played}}</td>
+                        <td>{{fit.wins}}</td>
+                        <td>{{fit.win_chance}}%</td>
+                        <td>{{fit.points}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <span class="error">{{error}}</span>
+</div>
+
+<style>
+    #nav_bar li a#globalstats {
+        background-color: rgba(140, 140, 140, 0.35);
+        -webkit-box-shadow: 6px 4px 38px -8px rgba(0, 0, 0, 0.47);
+        -moz-box-shadow: 6px 4px 38px -8px rgba(0, 0, 0, 0.47);
+        box-shadow: 6px 4px 38px -8px rgba(0, 0, 0, 0.47);
+    }
+</style>

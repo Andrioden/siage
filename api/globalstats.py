@@ -8,6 +8,10 @@ from models import PlayerResult, Player
 
 class GlobalStatsHandler(webapp2.RequestHandler):
     def get(self):
+        """
+        No caching is used for GlobalStats, as a need has not been discovered. Performance has been good.
+        If otherwise is experienced then we need to consider saving the global stats.
+        """
         players = Player.query().fetch()
 
         teammate_fits = []
@@ -38,6 +42,10 @@ class GlobalStatsHandler(webapp2.RequestHandler):
                 longest_losing_streak_number = player.stats_longest_losing_streak
                 longest_losing_streak_player = player
 
+        # Highest/Lowest rating achieved
+        highest_rating_result = PlayerResult.query().order(-PlayerResult.stats_rating).get()
+        lowest_rating_result = PlayerResult.query().order(PlayerResult.stats_rating).get()
+
         data = {
             'teammate_fits': teammate_fits,
             'civ_fits': civ_fits,
@@ -53,6 +61,20 @@ class GlobalStatsHandler(webapp2.RequestHandler):
                 'player': {
                     'id': longest_losing_streak_player.key.id(),
                     'nick': longest_losing_streak_player.nick
+                }
+            },
+            'highest_rating_achieved': {
+                'number': highest_rating_result.stats_rating,
+                'player': {
+                    'id': highest_rating_result.player.id(),
+                    'nick': highest_rating_result.player.get().nick
+                }
+            },
+            'lowest_rating_achieved': {
+                'number': lowest_rating_result.stats_rating,
+                'player': {
+                    'id': lowest_rating_result.player.id(),
+                    'nick': lowest_rating_result.player.get().nick
                 }
             }
         }
