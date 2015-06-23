@@ -33,7 +33,7 @@ siAgeApp
 
     .factory('GlobalStats', function ($resource) {
         return $resource('/api/globalstats/', {}, {
-            query: { method: 'GET', isArray: false, cache: true }
+            query: { method: 'GET', isArray: false }
         });
     })
 
