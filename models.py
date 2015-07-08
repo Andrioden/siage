@@ -12,6 +12,7 @@ class Player(ndb.Model):
     nick = ndb.StringProperty(required=True)
     userid = ndb.StringProperty(default=None)
     verified = ndb.BooleanProperty(default=False)
+    rating_adjustment = ndb.IntegerProperty(default=0)
     stats_average_score = ndb.IntegerProperty(default=None)
     stats_best_score = ndb.IntegerProperty(default=None)
     stats_best_score_game = ndb.KeyProperty(kind='Game', default=None)
@@ -53,11 +54,40 @@ class Player(ndb.Model):
         """ To avoid hitting the db unneccessary the rating value is stored in memory.
         """
         if hasattr(self, "_current_rating_cached"):
-            return self._current_rating_cached
+            return self._current_rating_cached + self.rating_adjustment
         else:
             last_player_result = PlayerResult.get_last_result_for_player(self.key)
             self._current_rating_cached = 1000 if last_player_result is None else last_player_result.stats_rating
-            return self._current_rating_cached
+            return self._current_rating_cached + self.rating_adjustment
+
+    def set_new_rating_adjustment(self, new_rating_adjustment):
+        rating_adjustment_dif = new_rating_adjustment - self.rating_adjustment
+        all_other_players = Player.query(Player.key != self.key).fetch()
+        rating_change_per_loop_value = 1 if rating_adjustment_dif < 0 else -1
+
+        # Divide the adjustment 1/-1 at a time for safety
+        i = 0
+        while rating_adjustment_dif != 0:
+            all_other_players[i].rating_adjustment += rating_change_per_loop_value
+            rating_adjustment_dif += rating_change_per_loop_value
+            self.rating_adjustment -= rating_change_per_loop_value
+            if i == len(all_other_players)-1:
+                i = 0
+            else:
+                i += 1
+
+        # Verify that the sum of all rating adjustments are 0
+        all_players = all_other_players + [self]
+        sum = 0
+        for player in all_players:
+            sum += player.rating_adjustment
+        if sum != 0:
+            raise Exception("Setting new rating adjustment algorithm failed. Total rating adjustment among all players is not 0.")
+
+        # Validation passed -> save now
+        for player in all_players:
+            player.put()
+
     def get_data(self, data_detail="simple"):
         data = {}
         if data_detail in ["simple", "full"]:
@@ -67,13 +97,14 @@ class Player(ndb.Model):
         return data
 
     def _get_base_data(self):
-        played = PlayerResult.query(PlayerResult.player==self.key).count()
-        wins = PlayerResult.query(PlayerResult.player==self.key, PlayerResult.is_winner==True).count()
+        played = PlayerResult.query(PlayerResult.player == self.key).count()
+        wins = PlayerResult.query(PlayerResult.player == self.key, PlayerResult.is_winner == True).count()
         
         return {
             'id': self.key.id(), 
             'nick': self.nick, 
             'rating': self.rating(),
+            'rating_adjustment': self.rating_adjustment,
             'played': played,
             'wins': wins,
             'win_chance': None if played == 0 else int(wins * 100.0 / played),
@@ -409,16 +440,16 @@ class PlayerResult(ndb.Model):
         return PlayerResult.query(PlayerResult.player == self.player, PlayerResult.game_date < self.game_date).order(-PlayerResult.game_date).get()
 
     def get_data(self):
-        player_entity = self.player.get()
+        player = self.player.get()
         return{
-            'player': {'id': player_entity.key.id(), 'nick': player_entity.nick},
+            'player': {'id': player.key.id(), 'nick': player.nick},
             'game': self.game.id(),
             'is_winner': self.is_winner,
             'is_host': self.is_host,
             'score': self.score,
             'team': self.team,
             'civilization': self.civilization,
-            'stats_rating': self.stats_rating,
+            'stats_rating': self.stats_rating + player.rating_adjustment,
             'rating_earned': self.rating_earned()
         }
 

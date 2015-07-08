@@ -72,8 +72,33 @@ class ClearStatsHandler(webapp2.RequestHandler):
         self.response.out.write(json.dumps({'response': "Player statistics have been cleared"}))
 
 
+class AdjustRatingHandler(webapp2.RequestHandler):
+    def post(self):
+
+        request_data = json.loads(self.request.body)
+        player_id = request_data['player_id']
+        new_rating_adjustment = request_data['new_rating_adjustment']
+
+        player = Player.get_by_id(int(player_id))
+        player.set_new_rating_adjustment(new_rating_adjustment)
+
+        self.response.headers['Content-Type'] = 'application/json'
+        self.response.out.write(json.dumps({'response': "%s now has an rating adjustment at %s" % (player.nick, new_rating_adjustment)}))
+
+class ResetRatingAdjustment(webapp2.RequestHandler):
+    def post(self):
+
+        for player in Player.query().fetch():
+            player.rating_adjustment = 0
+            player.put()
+
+        self.response.headers['Content-Type'] = 'application/json'
+        self.response.out.write(json.dumps({'response': "Rating adjustment reset"}))
+
 app = webapp2.WSGIApplication([
     (r'/api/actions/admin/recalcrating/', ReCalcRatingHandler),
     (r'/api/actions/admin/cleandb/', CleanDBHandler),
     (r'/api/actions/admin/clearstats/', ClearStatsHandler),
+    (r'/api/actions/admin/adjustrating/', AdjustRatingHandler),
+    (r'/api/actions/admin/resetratingadjustment/', ResetRatingAdjustment),
 ], debug=True)

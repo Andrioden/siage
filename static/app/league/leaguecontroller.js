@@ -12,7 +12,8 @@ siAgeApp.controller('LeagueController',
             ,function(error){
                 $scope.loading_players = false;
                 $scope.error = $rootScope.getFriendlyErrorText(error);
-            });
+            }
+        );
 
         $scope.loading_games = true;
         Game.query({max: 10},

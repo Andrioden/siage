@@ -4,6 +4,16 @@ siAgeApp.controller('AdminController',
     function ($rootScope, $scope, Admin, Player, User, $timeout) {
 
         $scope.loading_unverified_players = true;
+        $scope.adjust_rating_values = {};
+
+        Player.query(
+            function (data) {
+                $scope.players = data;
+            }
+            ,function(error){
+                $scope.error = $rootScope.getFriendlyErrorText(error);
+            }
+        );
 
         Player.query({ verified: false, claimed: true }).$promise.then(
             function (data) {
@@ -129,6 +139,35 @@ siAgeApp.controller('AdminController',
                 }
             );
         };
+
+        $scope.AdjustRating = function () {
+            $scope.adjustrating_processing = true;
+            $scope.adjustrating_response = "";
+            $scope.adjustrating_error = "";
+            Admin.adjustrating($scope.adjust_rating_values).$promise.then(
+                //success
+                function (data) {
+                    $scope.adjustrating_response = data.response;
+                    $scope.adjustrating_processing = false;
+                    $timeout(function () {
+                        $scope.adjustrating_response = "";
+                    }, 5000);
+                },
+                //error
+                function (error) {
+                    $scope.adjustrating_processing = false;
+                    $scope.adjustrating_error = $rootScope.getFriendlyErrorText(error);
+                }
+            );
+        }
+
+        $scope.setPlayerRatingAdjustment = function() {
+            console.log($scope.adjust_rating_values);
+            for (var i=0; i<$scope.players.length; i++ ) {
+                if ($scope.players[i].id == $scope.adjust_rating_values.player_id)
+                    $scope.adjust_rating_values.new_rating_adjustment = $scope.players[i].rating_adjustment;
+            }
+        }
         
         function removePlayerFromUnverifiedList(player) {
             for (var i=0; i<$scope.unverified_players.length; i++ ) {

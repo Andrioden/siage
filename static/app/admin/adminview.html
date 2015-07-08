@@ -4,6 +4,7 @@
 
     </div>
     <div class="left_content">
+
         <div class="admin_function">
             <section class="admin_row">
                 <div class="admin_cell button">
@@ -22,6 +23,7 @@
                 <span ng-show="recalc_error" class="error">{{recalc_error}}</span>
             </section>
         </div>
+
         <div class="admin_function">
             <section class="admin_row">
                 <div class="admin_cell button">
@@ -40,6 +42,7 @@
                 <span ng-show="cleandb_error" class="error">{{cleandb_error}}</span>
             </section>
         </div>
+
         <div class="admin_function">
             <section class="admin_row">
                 <div class="admin_cell button">
@@ -56,6 +59,29 @@
                 <img ng-show="clearstats_processing" src="static/assets/img/ajax-loader.gif">
                 <span ng-show="clearstats_response" class="success">{{clearstats_response}}</span>
                 <span ng-show="clearstats_error" class="error">{{clearstats_error}}</span>
+            </section>
+        </div>
+
+        <div class="admin_function">
+            <section class="admin_row">
+                <div class="admin_cell button">
+                    <button class="button admin_action" confirmed-click="AdjustRating()"
+                            ng-confirm-click="Are you sure you want to adjust rating?">
+                        Adjust rating
+                    </button>
+                </div>
+                <select ng-model="adjust_rating_values.player_id" ng-change="setPlayerRatingAdjustment()">
+                    <option ng-repeat="player in players | orderBy:['nick']" value="{{player.id}}">{{player.nick}}</option>
+                </select>
+                <input type="number" ng-model="adjust_rating_values.new_rating_adjustment">
+                <div class="admin_cell description" title="Keep in mind a new value is set, this is not a value that is added to the existing adjustment. Meaning if the player had -100, and -75 is input here. The new value is -75.">
+                    Will set an adjusted player rating value, and redistribute it to other players.
+                </div>
+            </section>
+            <section class="admin_response">
+                <img ng-show="adjustrating_processing" src="static/assets/img/ajax-loader.gif">
+                <span ng-show="adjustrating_response" class="success">{{adjustrating_response}}</span>
+                <span ng-show="adjustrating_error" class="error">{{adjustrating_error}}</span>
             </section>
         </div>
 
