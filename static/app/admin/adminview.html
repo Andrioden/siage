@@ -85,6 +85,23 @@
             </section>
         </div>
 
+        <div class="admin_function">
+            <section class="admin_row">
+                <div class="admin_cell button">
+                    <button class="button admin_action" confirmed-click="ResetRatingAdjustment()"
+                            ng-confirm-click="Are you sure you want to reset rating adjustment?">
+                        Reset rating adjustment
+                    </button>
+                </div>
+                <div class="admin_cell description" title="">Will set all players rating adjustment to 0.</div>
+            </section>
+            <section class="admin_response">
+                <img ng-show="resetratingadjustment_processing" src="static/assets/img/ajax-loader.gif">
+                <span ng-show="resetratingadjustment_response" class="success">{{resetratingadjustment_response}}</span>
+                <span ng-show="resetratingadjustment_error" class="error">{{resetratingadjustment_error}}</span>
+            </section>
+        </div>
+
         <div class="box margin_top">
             <h4>Verify player claims</h4>            
             <img ng-show="loading_unverified_players" src="static/assets/img/ajax-loader.gif">

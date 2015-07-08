@@ -51,7 +51,8 @@ siAgeApp
             recalcrating: { method: 'POST', params: { action: 'recalcrating' }, isArray: false },
             cleandb: { method: 'POST', params: { action: 'cleandb' }, isArray: false },
             clearstats: { method: 'POST', params: { action: 'clearstats' }, isArray: false },
-            adjustrating: { method: 'POST', params: { action: 'adjustrating' } }
+            adjustrating: { method: 'POST', params: { action: 'adjustrating' } },
+            resetratingadjustment: { method: 'POST', params: { action: 'resetratingadjustment' } }
         });        
     })
 

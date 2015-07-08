@@ -161,6 +161,27 @@ siAgeApp.controller('AdminController',
             );
         }
 
+        $scope.ResetRatingAdjustment = function () {
+            $scope.resetratingadjustment_processing = true;
+            $scope.resetratingadjustment_response = "";
+            $scope.resetratingadjustment_error = "";
+            Admin.resetratingadjustment().$promise.then(
+                //success
+                function (data) {
+                    $scope.resetratingadjustment_response = data.response;
+                    $scope.resetratingadjustment_processing = false;
+                    $timeout(function () {
+                        $scope.resetratingadjustment_response = "";
+                    }, 5000);
+                },
+                //error
+                function (error) {
+                    $scope.resetratingadjustment_processing = false;
+                    $scope.resetratingadjustment_error = $rootScope.getFriendlyErrorText(error);
+                }
+            );
+        }
+
         $scope.setPlayerRatingAdjustment = function() {
             console.log($scope.adjust_rating_values);
             for (var i=0; i<$scope.players.length; i++ ) {
