@@ -86,6 +86,7 @@
     </div>
 
     <div class="bottom_content">
+
         <div class="box margin_top">
             <h4>Playing with teammate</h4>
             <table class="list_table">
@@ -109,6 +110,31 @@
                 </tbody>
             </table>
         </div>
+
+        <div class="box margin_top">
+            <h4>Playing against player</h4>
+            <table class="list_table">
+                <thead>
+                    <tr>
+                        <td></td>
+                        <td>Games</td>
+                        <td>Wins</td>
+                        <td>Win%</td>
+                        <td>Points</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="enemy in player.stats.enemy_fit | orderBy:['-points', '-win_chance', '-wins', '-played', 'nick']">
+                        <td><a href="/players/{{enemy.enemy.nick}}" title="View player {{enemy.enemy.nick}}">{{enemy.enemy.nick}}</a></td>
+                        <td>{{enemy.played}}</td>
+                        <td>{{enemy.wins}}</td>
+                        <td>{{enemy.win_chance}}%</td>
+                        <td>{{enemy.points}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
         <div class="box margin_top">
             <h4>Playing as civilization</h4>
             <table class="list_table">
@@ -132,6 +158,7 @@
                 </tbody>
             </table>
         </div>
+
     </div>
 
     <span class="error">{{error}}</span>

@@ -39,6 +39,7 @@ class Player(ndb.Model):
     }
     """
     stats_teammate_fit = ndb.PickleProperty(default=None)
+    stats_enemy_fit = ndb.PickleProperty(default=None)
     """
     The civ_fit is a list with data in the following format: {
         'civ': X1
@@ -160,6 +161,7 @@ class Player(ndb.Model):
                 'longest_winning_streak': self.stats_longest_winning_streak,
                 'longest_losing_streak': self.stats_longest_losing_streak,
                 'teammate_fit': self.stats_teammate_fit,
+                'enemy_fit': self.stats_enemy_fit,
                 'civ_fit': self.stats_civ_fit
             }
         }
@@ -174,6 +176,7 @@ class Player(ndb.Model):
             self._calc_stats_worst_civ(player_results)
             self._calc_stats_streaks(player_results)
             self._calc_stats_teammate_fit(player_results)
+            self._calc_stats_enemy_fit(player_results)
             self._calc_stats_civ_fit(player_results)
             self.put()
             return True
@@ -267,12 +270,12 @@ class Player(ndb.Model):
             if res.team:
                 team_mates_results = PlayerResult.query(PlayerResult.game == res.game, PlayerResult.team == res.team, PlayerResult.player != res.player).fetch()
                 for team_mate_res in team_mates_results:
-                    team_mate_id = team_mate_res.player.id()
-                    if not teammate_fit.has_key(team_mate_id):
-                        teammate_fit[team_mate_id] = {'teammate': {'id': team_mate_id}, 'played': 0, 'wins': 0}
-                    teammate_fit[team_mate_id]['played'] += 1
+                    teammate_id = team_mate_res.player.id()
+                    if not teammate_fit.has_key(teammate_id):
+                        teammate_fit[teammate_id] = {'teammate': {'id': teammate_id}, 'played': 0, 'wins': 0}
+                    teammate_fit[teammate_id]['played'] += 1
                     if res.is_winner:
-                        teammate_fit[team_mate_id]['wins'] += 1
+                        teammate_fit[teammate_id]['wins'] += 1
         # Convert to list, add player nick to info and calc win chance
         teammate_fit_list = []
         for teammate_id, teammate_dict in teammate_fit.iteritems():
@@ -281,6 +284,29 @@ class Player(ndb.Model):
             teammate_dict['points'] = _fit_points(teammate_dict['wins'], teammate_dict['played'])
             teammate_fit_list.append(teammate_dict)
         self.stats_teammate_fit = teammate_fit_list
+        
+    def _calc_stats_enemy_fit(self, player_results):
+        # First map wins and played to enemy_fit
+        enemy_fit = {}
+        for res in player_results:
+            other_results = PlayerResult.query(PlayerResult.game == res.game, PlayerResult.player != res.player).fetch()
+            for other_res in other_results:
+                if other_res.team is not None and other_res.team == res.team:
+                    continue
+                enemy_id = other_res.player.id()
+                if not enemy_fit.has_key(enemy_id):
+                    enemy_fit[enemy_id] = {'enemy': {'id': enemy_id}, 'played': 0, 'wins': 0}
+                enemy_fit[enemy_id]['played'] += 1
+                if res.is_winner:
+                    enemy_fit[enemy_id]['wins'] += 1
+        # Convert to list, add player nick to info and calc win chance
+        enemy_fit_list = []
+        for enemy_id, enemy_dict in enemy_fit.iteritems():
+            enemy_dict['win_chance'] = int(enemy_dict['wins'] * 100.0 / enemy_dict['played'])
+            enemy_dict['enemy']['nick'] = Player.get_by_id(enemy_dict['enemy']['id']).nick
+            enemy_dict['points'] = _fit_points(enemy_dict['wins'], enemy_dict['played'])
+            enemy_fit_list.append(enemy_dict)
+        self.stats_enemy_fit = enemy_fit_list
 
     def _calc_stats_civ_fit(self, player_results):
         # First map wins and played to the civs

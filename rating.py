@@ -92,7 +92,6 @@ class RatingCalculator:
             else:
                 player_rating_change = int(round(team_rating_change))
 
-
             res.rating_change = player_rating_change
             res.new_rating = res.prev_rating + player_rating_change
             #logging.info("Team: %s | Player: %s | winchance: %s | team rating change: %s | player score %s | score adjusted rating: %s | rating: %s to %s " % (res.team, res.player_id, win_chance, team_rating_change, res.score, player_rating_change, res.prev_rating, res.new_rating))

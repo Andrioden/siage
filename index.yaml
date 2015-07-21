@@ -18,6 +18,11 @@ indexes:
 - kind: PlayerResult
   properties:
   - name: game
+  - name: player
+
+- kind: PlayerResult
+  properties:
+  - name: game
   - name: team
   - name: player
 

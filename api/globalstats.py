@@ -15,6 +15,7 @@ class GlobalStatsHandler(webapp2.RequestHandler):
         players = Player.query().fetch()
 
         teammate_fits = []
+        enemy_fits = []
         civ_fits = []
         longest_winning_streak_number = 0
         longest_winning_streak_player = None
@@ -29,6 +30,11 @@ class GlobalStatsHandler(webapp2.RequestHandler):
                     if not self._does_fits_list_have_with_teammate(teammate_fits, player.key.id(), teammate_fit['teammate']['id']):
                         teammate_fit['player'] = {'id': player.key.id(), 'nick': player.nick}
                         teammate_fits.append(teammate_fit)
+            # Enemy fits
+            if player.stats_enemy_fit:
+                for enemy_fit in player.stats_enemy_fit:
+                    enemy_fit['player'] = {'id': player.key.id(), 'nick': player.nick}
+                    enemy_fits.append(enemy_fit)
             # Civilization fits
             if player.stats_civ_fit:
                 for civ_fit in player.stats_civ_fit:
@@ -50,6 +56,7 @@ class GlobalStatsHandler(webapp2.RequestHandler):
 
         data = {
             'teammate_fits': teammate_fits,
+            'enemy_fits': enemy_fits,
             'civ_fits': civ_fits,
             'longest_winning_streak': {
                 'number': longest_winning_streak_number,
@@ -99,6 +106,7 @@ class GlobalStatsHandler(webapp2.RequestHandler):
             elif teammate_fit['teammate']['id'] == player2_id and teammate_fit['player']['id'] == player1_id:
                 return True
         return False
+
 
 app = webapp2.WSGIApplication([
     (r'/api/globalstats/', GlobalStatsHandler),

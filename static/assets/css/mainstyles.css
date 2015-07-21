@@ -426,6 +426,10 @@ input[type=number]::-webkit-outer-spin-button {
         padding-bottom: 5px;
     }
 
+.limit_table_rows tbody tr:nth-child(n+6) {
+    display: none;
+}
+
 .winner_team {
     /* background-color: rgba(140, 140, 140, 0.35);*/
     background-color: rgba(0,0,0,.40);
