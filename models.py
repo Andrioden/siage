@@ -129,7 +129,7 @@ class Player(ndb.Model):
         if previous_round:
             previous_rating = previous_round.stats_rating
         else:
-            previous_rating = PLAYER_RATING_START_VALUE
+            previous_rating = PLAYER_RATING_START_VALUE + self.rating_adjustment
 
         return newest_player_result.stats_rating - previous_rating
         
