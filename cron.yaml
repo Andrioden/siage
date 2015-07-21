@@ -1,5 +1,5 @@
 cron:
-- description: Weekly Backup
-  url: /_ah/datastore_admin/backup.create?name=WeeklyBackup&kind=Game&kind=Player&kind=PlayerResult&kind=Rule&filesystem=blobstore
+- description: Weekly Bucket Backup
+  url: /_ah/datastore_admin/backup.create?name=WeeklyBucketBackup&kind=Game&kind=Player&kind=PlayerResult&kind=Rule&filesystem=gs&gs_bucket_name=si-age-league.appspot.com
   schedule: every monday 04:00
   target: ah-builtin-python-bundle
