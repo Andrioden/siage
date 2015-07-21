@@ -408,17 +408,20 @@ input[type=number]::-webkit-outer-spin-button {
         padding: 0px;
     }
 
+        .list_table thead tr {
+            width: 100%;
+            padding: 0px;
+            margin: 0px;
+        }
+
     .list_table tbody {
         /*background: #fcfcfd;*/
         background-color: rgba(140, 140, 140, 0.35);
     }
 
-
-    .list_table thead tr {
-        width: 100%;
-        padding: 0px;
-        margin: 0px;
-    }
+        .list_table tbody td {
+            white-space: nowrap;
+        }
 
     .list_table td {
         padding-left: 15px;
