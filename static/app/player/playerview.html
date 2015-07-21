@@ -101,7 +101,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="fit in player.stats.teammate_fit | orderBy:['-points', '-win_chance', '-wins', '-played', 'nick']">
+                    <tr ng-repeat="fit in player.stats.teammate_fit | orderBy:['-points', '-win_chance', '-wins', '-score_per_min']">
                         <td><a href="/players/{{fit.teammate.nick}}" title="View player {{fit.teammate.nick}}">{{fit.teammate.nick}}</a></td>
                         <td>{{fit.played}}</td>
                         <td>{{fit.wins}}</td>
@@ -127,7 +127,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="fit in player.stats.enemy_fit | orderBy:['-points', '-win_chance', '-wins', '-played', 'nick']">
+                    <tr ng-repeat="fit in player.stats.enemy_fit | orderBy:['-points', '-win_chance', '-wins', '-score_per_min']">
                         <td><a href="/players/{{fit.enemy.nick}}" title="View player {{fit.enemy.nick}}">{{fit.enemy.nick}}</a></td>
                         <td>{{fit.played}}</td>
                         <td>{{fit.wins}}</td>
@@ -153,7 +153,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="fit in player.stats.civ_fit | orderBy:['-points', '-win_chance', '-wins', '-played', 'civ']">
+                    <tr ng-repeat="fit in player.stats.civ_fit | orderBy:['-points', '-win_chance', '-wins', '-score_per_min']">
                         <td><a href="/civs/{{fit.civ}}" title="View civilization {{fit.civ}}">{{fit.civ}}</a></td>
                         <td>{{fit.played}}</td>
                         <td>{{fit.wins}}</td>

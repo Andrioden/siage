@@ -63,16 +63,26 @@ siAgeApp.controller('LeagueController',
             for (var i=0; i<$scope.players.length; i++) {
                 var player = $scope.players[i];
                 if (player.stats) {
-                    player.stats.teammate_fit.sort(function(a, b) {return b.points - a.points})
+                    sortFitListByPointsAndWinChance(player.stats.teammate_fit);
                     if(player.stats.teammate_fit[0]) player.stats.top_teammate_fit = player.stats.teammate_fit[0].teammate.nick;
 
-                    player.stats.enemy_fit.sort(function(a, b) {return b.points - a.points})
+                    sortFitListByPointsAndWinChance(player.stats.enemy_fit);
                     if(player.stats.enemy_fit[0]) player.stats.top_enemy_fit = player.stats.enemy_fit[0].enemy.nick;
 
-                    player.stats.civ_fit.sort(function(a, b) {return b.points - a.points})
+                    sortFitListByPointsAndWinChance(player.stats.civ_fit);
                     if(player.stats.civ_fit[0]) player.stats.top_civ_fit = player.stats.civ_fit[0].civ;
                 }
             }
+        }
+
+        // Uses the thenBy micro js library for sorting easier with multiple sort conditions
+        function sortFitListByPointsAndWinChance(fitList) {
+            fitList.sort(
+                firstBy(function (v1, v2) { return v1.points - v2.points; }, -1)
+                .thenBy(function (v1, v2) { return v1.win_chance - v2.win_chance; }, -1)
+                .thenBy(function (v1, v2) { return v1.wins - v2.wins; }, -1)
+                .thenBy(function (v1, v2) { return v1.score_per_min - v2.score_per_min; }, -1)
+            )
         }
 
     }
