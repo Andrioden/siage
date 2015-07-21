@@ -268,18 +268,22 @@ class Player(ndb.Model):
         teammate_fit = {}
         for res in player_results:
             if res.team:
+                game_duration_seconds = res.game.get().duration_seconds
                 team_mates_results = PlayerResult.query(PlayerResult.game == res.game, PlayerResult.team == res.team, PlayerResult.player != res.player).fetch()
                 for team_mate_res in team_mates_results:
                     teammate_id = team_mate_res.player.id()
                     if not teammate_fit.has_key(teammate_id):
-                        teammate_fit[teammate_id] = {'teammate': {'id': teammate_id}, 'played': 0, 'wins': 0}
+                        teammate_fit[teammate_id] = {'teammate': {'id': teammate_id}, 'played': 0, 'wins': 0, 'total_duration_seconds': 0, 'total_score': 0}
                     teammate_fit[teammate_id]['played'] += 1
+                    teammate_fit[teammate_id]['total_duration_seconds'] += game_duration_seconds
+                    teammate_fit[teammate_id]['total_score'] += res.score
                     if res.is_winner:
                         teammate_fit[teammate_id]['wins'] += 1
         # Convert to list, add player nick to info and calc win chance
         teammate_fit_list = []
         for teammate_id, teammate_dict in teammate_fit.iteritems():
             teammate_dict['win_chance'] = int(teammate_dict['wins'] * 100.0 / teammate_dict['played'])
+            teammate_dict['score_per_min'] = round(teammate_dict['total_score'] / (teammate_dict['total_duration_seconds'] / 60.0), 1)
             teammate_dict['teammate']['nick'] = Player.get_by_id(teammate_dict['teammate']['id']).nick
             teammate_dict['points'] = _fit_points(teammate_dict['wins'], teammate_dict['played'])
             teammate_fit_list.append(teammate_dict)
@@ -289,20 +293,24 @@ class Player(ndb.Model):
         # First map wins and played to enemy_fit
         enemy_fit = {}
         for res in player_results:
+            game_duration_seconds = res.game.get().duration_seconds
             other_results = PlayerResult.query(PlayerResult.game == res.game, PlayerResult.player != res.player).fetch()
             for other_res in other_results:
                 if other_res.team is not None and other_res.team == res.team:
                     continue
                 enemy_id = other_res.player.id()
                 if not enemy_fit.has_key(enemy_id):
-                    enemy_fit[enemy_id] = {'enemy': {'id': enemy_id}, 'played': 0, 'wins': 0}
+                    enemy_fit[enemy_id] = {'enemy': {'id': enemy_id}, 'played': 0, 'wins': 0, 'total_duration_seconds': 0, 'total_score': 0}
                 enemy_fit[enemy_id]['played'] += 1
+                enemy_fit[enemy_id]['total_duration_seconds'] += game_duration_seconds
+                enemy_fit[enemy_id]['total_score'] += res.score
                 if res.is_winner:
                     enemy_fit[enemy_id]['wins'] += 1
         # Convert to list, add player nick to info and calc win chance
         enemy_fit_list = []
         for enemy_id, enemy_dict in enemy_fit.iteritems():
             enemy_dict['win_chance'] = int(enemy_dict['wins'] * 100.0 / enemy_dict['played'])
+            enemy_dict['score_per_min'] = round(enemy_dict['total_score'] / (enemy_dict['total_duration_seconds'] / 60.0), 1)
             enemy_dict['enemy']['nick'] = Player.get_by_id(enemy_dict['enemy']['id']).nick
             enemy_dict['points'] = _fit_points(enemy_dict['wins'], enemy_dict['played'])
             enemy_fit_list.append(enemy_dict)
@@ -312,15 +320,19 @@ class Player(ndb.Model):
         # First map wins and played to the civs
         civ_fit = {}
         for res in player_results:
+            game_duration_seconds = res.game.get().duration_seconds
             if not civ_fit.has_key(res.civilization):
-                civ_fit[res.civilization] = {'civ': res.civilization, 'played': 0, 'wins': 0}
+                civ_fit[res.civilization] = {'civ': res.civilization, 'played': 0, 'wins': 0, 'total_duration_seconds': 0, 'total_score': 0}
             civ_fit[res.civilization]['played'] += 1
+            civ_fit[res.civilization]['total_duration_seconds'] += game_duration_seconds
+            civ_fit[res.civilization]['total_score'] += res.score
             if res.is_winner:
                 civ_fit[res.civilization]['wins'] += 1
         # Convert to list and calc win_chance
         civ_fit_list = []
         for civ_name, civ_dict in civ_fit.iteritems(): 
             civ_dict['win_chance'] = int(civ_dict['wins'] * 100.0 / civ_dict['played'])
+            civ_dict['score_per_min'] = round(civ_dict['total_score'] / (civ_dict['total_duration_seconds'] / 60.0), 1)
             civ_dict['points'] = _fit_points(civ_dict['wins'], civ_dict['played'])
             civ_fit_list.append(civ_dict)
         self.stats_civ_fit = civ_fit_list

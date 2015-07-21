@@ -10,8 +10,8 @@
                 <td>Civilization</td>
                 <td>Played</td>
                 <td>Win%</td>
-                <td>Points</td>
                 <td>Score/M</td>
+                <td>Points</td>
                 <td>Best players</td>
                 <td>Worst player</td>
             </tr>
@@ -25,8 +25,8 @@
                     <td><a href="/civs/{{civ.name}}" title="View civilization">{{civ.name}}</a></td>
                     <td ng-show="civ.stats">{{civ.stats.played}}</td>
                     <td ng-show="civ.stats">{{civ.stats.win_chance}}%</td>
+                    <td ng-show="civ.stats">{{civ.stats.average_score_per_min}}</td>
                     <td ng-show="civ.stats">{{civ.stats.points}}</td>
-                    <td ng-show="civ.stats">{{civ.stats.average_score_per_min}}</td>                    
                     <td ng-show="civ.stats" class="nowrap_with_padding">
                         <span ng-repeat="player_fit in civ.stats.best_players">
                             <a ng-class="{text_highlighted: '{{user.player}}' == '{{player_fit.player.nick}}'}" href="/players/{{player_fit.player.nick}}">{{player_fit.player.nick}}</a><span ng-show="!$last">,</span>
