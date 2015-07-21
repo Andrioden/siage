@@ -19,11 +19,13 @@ class UserHandler(webapp2.RequestHandler):
         
 class LoginHandler(webapp2.RequestHandler):
     def get(self):
-        return webapp2.redirect(users.create_login_url())
+        redirect = self.request.get('redirect', "/")
+        return webapp2.redirect(users.create_login_url(redirect))
 
 class LogoutHandler(webapp2.RequestHandler):
     def get(self):
-        return webapp2.redirect(users.create_logout_url('/'))
+        redirect = self.request.get('redirect', "/")
+        return webapp2.redirect(users.create_logout_url(redirect))
 
 
 app = webapp2.WSGIApplication([

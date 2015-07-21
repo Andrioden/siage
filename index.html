@@ -36,8 +36,8 @@
                 <span ng-show="user.logged_in && user.player"><a href="/players/{{user.player}}" title="View profile">{{user.player}}</a></span>
                 <span ng-show="user.logged_in && !user.player" class="info">{{user.user_name}}</span>
                 <span ng-show="user.logged_in && user.is_admin"> | <a href="/admin">Admin</a></span>
-                <span ng-show="user.logged_in"> | <a href="/api/users/logout" target="_self">Logout</a></span>
-                <span ng-show="!user.logged_in"><a href="/api/users/login" target="_self">Login</a></span>
+                <span ng-show="user.logged_in"> | <a href="/api/users/logout?redirect={{location.path()}}" target="_self">Logout</a></span>
+                <span ng-show="!user.logged_in"><a href="/api/users/login?redirect={{location.path()}}" target="_self">Login</a></span>
                 <br />
                 <span class="info" ng-show="user.logged_in && !user.player">Claim an existing player to access more functionality</span>
                 <span class="info" ng-show="user.logged_in && user.player && !user.verified">Registering data not possible, awaiting player claim verification from admin</span>

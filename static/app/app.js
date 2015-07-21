@@ -11,7 +11,8 @@ siAgeApp.controller('UserController',
                 $scope.user = null;
             }
         );
-    });
+    }
+);
 
 siAgeApp.config(['$routeProvider', '$locationProvider',
     function ($routeProvider, $locationProvider) {
@@ -72,13 +73,11 @@ siAgeApp.config(['$resourceProvider', function ($resourceProvider) {
     $resourceProvider.defaults.stripTrailingSlashes = false;
 }]);
 
-
 siAgeApp.filter('yesNo', function () {
     return function (input) {
         return input ? 'Yes' : 'No';
     }
 });
-
 
 siAgeApp.filter('orderEmpty', function () {
     return function (array, key, type) {
@@ -121,7 +120,6 @@ siAgeApp.directive('autoFocus', function ($timeout) {
     };
 });
 
-
 siAgeApp.run(function ($rootScope) {
     $rootScope.getFriendlyErrorText = function (error) {
         if (error.data.error_message) {
@@ -131,6 +129,10 @@ siAgeApp.run(function ($rootScope) {
     }
 });
 
+// I did this to expose the location object to the html template. $location contains information about the current browser url path.
+siAgeApp.run(function($rootScope, $location) {
+    $rootScope.location = $location;
+});
 
 siAgeApp.directive('ngConfirmClick', [
     function() {
