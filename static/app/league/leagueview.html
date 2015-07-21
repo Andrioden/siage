@@ -1,5 +1,5 @@
 ﻿<div id="main_content">
-    <div class="right_content">
+    <div ng-show="!show_full_players_data" class="right_content">
         <table class="list_table">
             <thead>
             <tr>
@@ -15,7 +15,7 @@
             </tr>
             </tbody>
         </table>
-        <p ng-show="games.length > 0" style="float: right;"><a href="/games">Show all</a></p>
+        <p ng-show="games.length > 0" style="float: right;"><a href="/games">Show all games</a></p>
     </div>
     <div class="left_content">
         <table class="info_table">
@@ -26,26 +26,38 @@
                 <td>Played</td>
                 <td>Win%</td>
                 <td>Rating</td>
+                <td ng-show="show_full_players_data" title="Rating adjustment">RA</td>
+                <td ng-show="show_full_players_data" title="Score per minute">S/M</td>
+                <td ng-show="show_full_players_data">&lt;3 teammate</td>
+                <td ng-show="show_full_players_data">Best vs</td>
+                <td ng-show="show_full_players_data">Best civ</td>
+                <td ng-show="show_full_players_data">Top scorer</td>
+                <td ng-show="!show_full_players_data && !loading_players" title="Show full league stats"><a ng-click="toggleFullPlayersData()" href="">&gt;&gt;</a></td>
+                <td ng-show="show_full_players_data" title="Show basic league stats"><a ng-click="toggleFullPlayersData()" href="">&lt;&lt;</a></td>
             </tr>
             </thead>
             <tbody>
-                <tr ng-show="loading_players">
-                    <td><img src="static/assets/img/ajax-loader.gif"></td>
+                <tr ng-repeat="player in players | orderBy:['-rating','nick'] | orderEmpty: 'played': 'toBottom'">
+                    <td class="mini">{{$index + 1}}.</td>
+                    <td><a ng-class="{text_highlighted: '{{user.player}}' == '{{player.nick}}'}" href="/players/{{player.nick}}" title="View profile">{{player.nick}}</a></td>
+                    <td>{{player.played}}</td>
+                    <td ng-show="player.win_chance">{{player.win_chance}}%</td>
+                    <td ng-show="!player.win_chance">0%</td>
+                    <td ng-show="player.played > 0">{{player.rating}}
+                        <img class="rating_trend_icon_up_vertical_fix" ng-show="player.rating_change_prev_round > 0" src="static/assets/img/arrow_green_up.png" title="{{player.nick}} gained {{player.rating_change_prev_round}} rating last gaming session. : D">
+                        <img class="rating_trend_icon_down_vertical_fix" ng-show="player.rating_change_prev_round < 0" src="static/assets/img/arrow_red_down.png" title="{{player.nick}} lost {{player.rating_change_prev_round * -1}} rating last gaming session. : (">
+                    </td>
+                    <td ng-show="player.played == 0">Unrated</td>
+                    <td ng-show="show_full_players_data">{{player.rating_adjustment}}</td>
+                    <td ng-show="show_full_players_data">{{player.stats.average_score_per_min}}</td>
+                    <td ng-show="show_full_players_data">{{player.stats.top_teammate_fit}}</td>
+                    <td ng-show="show_full_players_data">{{player.stats.top_enemy_fit}}</td>
+                    <td ng-show="show_full_players_data">{{player.stats.top_civ_fit}}</td>
+                    <td ng-show="show_full_players_data" title="Top scoring player in team">{{player.stats.percentage_topping_score}}%</td>
                 </tr>
-            <tr ng-repeat="player in players | orderBy:['-rating','nick'] | orderEmpty: 'played': 'toBottom'">
-                <td class="mini">{{$index + 1}}.</td>
-                <td><a ng-class="{text_highlighted: '{{user.player}}' == '{{player.nick}}'}" href="/players/{{player.nick}}" title="View profile">{{player.nick}}</a></td>
-                <td>{{player.played}}</td>
-                <td ng-show="player.win_chance">{{player.win_chance}}%</td>
-                <td ng-show="!player.win_chance">0%</td>
-                <td ng-show="player.played > 0">{{player.rating}}
-                    <img class="rating_trend_icon_up_vertical_fix" ng-show="player.rating_change_prev_round > 0" src="static/assets/img/arrow_green_up.png" title="{{player.nick}} gained {{player.rating_change_prev_round}} rating last gaming session. : D">
-                    <img class="rating_trend_icon_down_vertical_fix" ng-show="player.rating_change_prev_round < 0" src="static/assets/img/arrow_red_down.png" title="{{player.nick}} lost {{player.rating_change_prev_round * -1}} rating last gaming session. : (">
-                </td>
-                <td ng-show="player.played == 0">Unrated</td>
-            </tr>
             </tbody>
         </table>
+        <div ng-show="loading_players"><img src="static/assets/img/ajax-loader.gif"></div>
     </div>
     <span class="error">{{error}}</span>
 </div>
