@@ -54,18 +54,17 @@ class Player(ndb.Model):
         """ To avoid hitting the db unneccessary the rating value is stored in memory.
         """
         if hasattr(self, "_current_rating_cached"):
-            return self._current_rating_cached + self.rating_adjustment
+            return self._current_rating_cached
         else:
-            last_player_result = PlayerResult.get_last_result_for_player(self.key)
-            self._current_rating_cached = 1000 if last_player_result is None else last_player_result.stats_rating
-            return self._current_rating_cached + self.rating_adjustment
+            self._current_rating_cached = PlayerResult.get_last_stats_rating(self.key)
+            return self._current_rating_cached
 
     def set_new_rating_adjustment(self, new_rating_adjustment):
         rating_adjustment_dif = new_rating_adjustment - self.rating_adjustment
         all_other_players = Player.query(Player.key != self.key).fetch()
         rating_change_per_loop_value = 1 if rating_adjustment_dif < 0 else -1
 
-        # Divide the adjustment 1/-1 at a time for safety
+        # Divide the adjustment +/-1 at a time for safety
         i = 0
         while rating_adjustment_dif != 0:
             all_other_players[i].rating_adjustment += rating_change_per_loop_value
@@ -433,11 +432,19 @@ class PlayerResult(ndb.Model):
         }
 
     @classmethod
-    def get_last_result_for_player(cls, player_key):
-        return PlayerResult.query(PlayerResult.player == player_key).order(-PlayerResult.game_date).get()
+    def get_last_stats_rating(cls, player_key):
+        last_result = PlayerResult.query(PlayerResult.player == player_key).order(-PlayerResult.game_date).get()
+        if last_result:
+            return last_result.stats_rating
+        else: # Is first player result calculating for
+            return PLAYER_RATING_START_VALUE + player_key.get().rating_adjustment
 
-    def get_previous_result(self):
-        return PlayerResult.query(PlayerResult.player == self.player, PlayerResult.game_date < self.game_date).order(-PlayerResult.game_date).get()
+    def get_previous_stats_rating(self):
+        previous_result = PlayerResult.query(PlayerResult.player == self.player, PlayerResult.game_date < self.game_date).order(-PlayerResult.game_date).get()
+        if previous_result:
+            return previous_result.stats_rating
+        else:
+            return PLAYER_RATING_START_VALUE + self.player.get().rating_adjustment
 
     def get_data(self):
         player = self.player.get()
@@ -449,16 +456,12 @@ class PlayerResult(ndb.Model):
             'score': self.score,
             'team': self.team,
             'civilization': self.civilization,
-            'stats_rating': self.stats_rating + player.rating_adjustment,
+            'stats_rating': self.stats_rating,
             'rating_earned': self.rating_earned()
         }
 
     def rating_earned(self):
-        previous_result = self.get_previous_result()
-        if previous_result:
-            return self.stats_rating - previous_result.stats_rating
-        else:
-            return self.stats_rating - PLAYER_RATING_START_VALUE
+        return self.stats_rating - self.get_previous_stats_rating()
 
 
 class CivilizationStats(ndb.Model):

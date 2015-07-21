@@ -83,7 +83,7 @@ class AdjustRatingHandler(webapp2.RequestHandler):
         player.set_new_rating_adjustment(new_rating_adjustment)
 
         self.response.headers['Content-Type'] = 'application/json'
-        self.response.out.write(json.dumps({'response': "%s now has an rating adjustment at %s" % (player.nick, new_rating_adjustment)}))
+        self.response.out.write(json.dumps({'response': "%s now has an rating adjustment at %s. Remember to recalculate ratings." % (player.nick, new_rating_adjustment)}))
 
 class ResetRatingAdjustment(webapp2.RequestHandler):
     def post(self):
@@ -93,7 +93,7 @@ class ResetRatingAdjustment(webapp2.RequestHandler):
             player.put()
 
         self.response.headers['Content-Type'] = 'application/json'
-        self.response.out.write(json.dumps({'response': "Rating adjustment reset"}))
+        self.response.out.write(json.dumps({'response': "Rating adjustment reset. Remember to recalculate ratings."}))
 
 app = webapp2.WSGIApplication([
     (r'/api/actions/admin/recalcrating/', ReCalcRatingHandler),

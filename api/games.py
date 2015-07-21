@@ -35,10 +35,9 @@ class GamesHandler(webapp2.RequestHandler):
         
         # get data according to if its for a specific player or not
         if player_id:
-            player = Player.get_by_id(int(player_id))
             game_keys = [player_result.game for player_result in data]
             games_data = [game.get_data(data_detail) for game in ndb.get_multi(game_keys)]
-            self._expand_game_data_with_player_result_data(games_data, data, player.rating_adjustment)
+            self._expand_game_data_with_player_result_data(games_data, data)
         else:
             games_data = [game.get_data(data_detail) for game in data]
         
@@ -46,13 +45,13 @@ class GamesHandler(webapp2.RequestHandler):
         self.response.headers['Content-Type'] = 'application/json'
         self.response.out.write(json.dumps(games_data))
     
-    def _expand_game_data_with_player_result_data(self, games_data, player_results, rating_adjustment):
+    def _expand_game_data_with_player_result_data(self, games_data, player_results):
         # Set stats rating from the player_results object
         for game in games_data:
             for res in player_results:
                 if res.game.id() == game['id']:
                     game['is_winner'] = res.is_winner
-                    game['stats_rating'] = res.stats_rating + rating_adjustment
+                    game['stats_rating'] = res.stats_rating
 
     def post(self):
         """ --------- CREATE GAME --------- """

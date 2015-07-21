@@ -13,12 +13,8 @@ class RatingCalculator:
 
         for player_res_dict in player_results_dict:
             player_key = ndb.Key(Player, int(player_res_dict['player_id']))
-            last_player_result = PlayerResult.get_last_result_for_player(player_key)
-            if last_player_result:
-                prev_rating = last_player_result.stats_rating
-            else:
-                prev_rating = PLAYER_RATING_START_VALUE
-            self.player_results.append(RatingPlayerResult(player_key.id(), player_res_dict['is_winner'], player_res_dict['score'], player_res_dict['team'], prev_rating))
+            last_rating = PlayerResult.get_last_stats_rating(player_key)
+            self.player_results.append(RatingPlayerResult(player_key.id(), player_res_dict['is_winner'], player_res_dict['score'], player_res_dict['team'], last_rating))
     
     def calc_and_get_new_rating_dict(self):
         self._calc_ratings()
@@ -195,11 +191,7 @@ def recalculate_ratings():
         # Recalc rating
         rc = RatingCalculator()
         for res in game_player_results:
-            previous_player_result = res.get_previous_result()
-            if previous_player_result:
-                previous_rating = previous_player_result.stats_rating
-            else:
-                previous_rating = PLAYER_RATING_START_VALUE
+            previous_rating = res.get_previous_stats_rating()
             rc.player_results.append(RatingPlayerResult(res.player.id(), res.is_winner, res.score, res.team, previous_rating))
         recalced_rating = rc.calc_and_get_new_rating_dict()
         # Update player result rating
