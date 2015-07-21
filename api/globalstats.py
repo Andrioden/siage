@@ -3,7 +3,7 @@
 import webapp2
 import json
 import logging
-from models import PlayerResult, Player
+from models import PlayerResult, Player, Game
 
 
 class GlobalStatsHandler(webapp2.RequestHandler):
@@ -42,9 +42,11 @@ class GlobalStatsHandler(webapp2.RequestHandler):
                 longest_losing_streak_number = player.stats_longest_losing_streak
                 longest_losing_streak_player = player
 
-        # Highest/Lowest rating achieved
         highest_rating_result = PlayerResult.query().order(-PlayerResult.stats_rating).get()
         lowest_rating_result = PlayerResult.query().order(PlayerResult.stats_rating).get()
+
+        longest_game = Game.query().order(-Game.duration_seconds).get()
+        shortest_game = Game.query().order(Game.duration_seconds).get()
 
         data = {
             'teammate_fits': teammate_fits,
@@ -76,6 +78,14 @@ class GlobalStatsHandler(webapp2.RequestHandler):
                     'id': lowest_rating_result.player.id(),
                     'nick': lowest_rating_result.player.get().nick
                 }
+            },
+            'longest_game': {
+                'duration_seconds': longest_game.duration_seconds,
+                'id': longest_game.key.id()
+            },
+            'shortest_game': {
+                'duration_seconds': shortest_game.duration_seconds,
+                'id': shortest_game.key.id()
             }
         }
         

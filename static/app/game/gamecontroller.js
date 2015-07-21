@@ -7,7 +7,6 @@ siAgeApp.controller('GameController',
             function (data) {
                 $scope.loading_game = false;
                 $scope.game = data;
-                $scope.game.duration_minutes = data.duration_seconds / 60;
                 $scope.error = "";
             },
             function (error) {

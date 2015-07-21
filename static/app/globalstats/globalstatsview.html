@@ -11,24 +11,25 @@
                     <td>{{stats.longest_winning_streak.number}} -
                         <a href="/players/{{stats.longest_winning_streak.player.nick}}" title="View profile">{{stats.longest_winning_streak.player.nick}}</a>
                     </td>
-                </tr>
-                <tr>
                     <td>Longest losing streak</td>
                     <td>{{stats.longest_losing_streak.number}} -
                         <a href="/players/{{stats.longest_losing_streak.player.nick}}" title="View profile">{{stats.longest_losing_streak.player.nick}}</a>
                     </td>
-                </tr>
                 <tr>
                     <td>Highest rating achieved</td>
                     <td>{{stats.highest_rating_achieved.number}} -
                         <a href="/players/{{stats.highest_rating_achieved.player.nick}}" title="View profile">{{stats.highest_rating_achieved.player.nick}}</a>
                     </td>
-                </tr>
-                <tr>
                     <td>Lowest rating achieved</td>
                     <td>{{stats.lowest_rating_achieved.number}} -
                         <a href="/players/{{stats.lowest_rating_achieved.player.nick}}" title="View profile">{{stats.lowest_rating_achieved.player.nick}}</a>
                     </td>
+                </tr>
+                <tr>
+                    <td>Longest game</td>
+                    <td><a href="/games/{{stats.longest_game.id}}" title="View profile">{{stats.longest_game.duration_seconds / 60}} minutes</a></td>
+                    <td>Shortest game</td>
+                    <td><a href="/games/{{stats.shortest_game.id}}" title="View profile">{{stats.shortest_game.duration_seconds / 60}} minutes</a></td>
                 </tr>
             </tbody>
         </table>
