@@ -160,8 +160,7 @@ class ClaimPlayerHandler(webapp2.RequestHandler):
                 else:
                     player.userid = user.user_id()
                     player.put()
-                    self.response.headers['Content-Type'] = 'application/json'
-                    self.response.out.write(json.dumps({'response': "OK"}))
+                    return webapp2.redirect("/players/" + player.nick)
             else:
                 error_400(self.response, "NOT_LOGGED_INN", "The visiting user is not logged inn.")
         
