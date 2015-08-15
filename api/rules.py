@@ -3,8 +3,10 @@
 import webapp2
 import json
 import logging
-from models import Rule
+from models import Rule, Game
 from utils import validate_authenticated, validate_logged_in_admin
+from google.appengine.ext import ndb
+from api.utils import error_400
 
 class RulesHandler(webapp2.RequestHandler):
     def get(self):
@@ -54,6 +56,8 @@ class RuleHandler(webapp2.RequestHandler):
         # VALIDATING
         if not validate_logged_in_admin(self.response):
             return
+        elif not self._validate_rule_not_in_use(rule_id):
+            return
 
         # PROCESS REQUEST
         Rule.get_by_id(int(rule_id)).key.delete()
@@ -61,6 +65,13 @@ class RuleHandler(webapp2.RequestHandler):
         # RETURN RESPONSE
         self.response.headers['Content-Type'] = 'application/json'
         self.response.out.write(json.dumps({'response': "success", 'rule_id': rule_id}))
+
+    def _validate_rule_not_in_use(self, rule_id):
+        if Game.query(Game.rule == ndb.Key(Rule, int(rule_id))).count() > 0:
+            error_400(self.response, "VALIDATION_ERROR_RULE_IN_USE", "The rule you tried to delete is used in a game. It should not be deleted.")
+            return False
+        else:
+            return True
 
 app = webapp2.WSGIApplication([
     (r'/api/rules/', RulesHandler),

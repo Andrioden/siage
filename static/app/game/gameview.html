@@ -55,6 +55,10 @@
                     <td>Trebuchet</td>
                     <td>{{game.trebuchet_allowed | yesNo}}</td>
                 </tr>
+                <tr>
+                    <td>Rule</td>
+                    <td title="{{game.rule.description}}">{{game.rule.name}}</td>
+                </tr>
                 <tr ng-show="ShowDetails" ng-animate="">
                     <td>Game type</td>
                     <td>{{game.game_type}}</td>

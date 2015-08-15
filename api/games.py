@@ -69,7 +69,7 @@ class GamesHandler(webapp2.RequestHandler):
         # CREATE GAME OBJECT
         game_date = datetime.fromtimestamp(request_data['date_epoch'])
 
-        rule_id = request_data.get('rule_id', None)
+        rule_id = request_data.get('rule', None)
         if rule_id:
             rule_key = ndb.Key(Rule, int(rule_id))
         else:

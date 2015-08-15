@@ -31,6 +31,16 @@ siAgeApp
         });
     })
 
+    .factory('Rule', function ($resource) {
+        return $resource('/api/rules/:rule_id', null, {
+            get: { method: 'GET', isArray: false },
+            query: { method: 'GET', isArray: true },
+            save: { method: 'POST' },
+            update: { method: 'PUT' },
+            delete: { method: 'DELETE' },
+        });
+    })
+
     .factory('GlobalStats', function ($resource) {
         return $resource('/api/globalstats/', {}, {
             query: { method: 'GET', isArray: false }
@@ -62,3 +72,4 @@ siAgeApp
         });
 
     });
+

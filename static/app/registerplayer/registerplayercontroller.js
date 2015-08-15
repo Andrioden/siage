@@ -14,7 +14,8 @@ siAgeApp.controller('RegisterPlayerController',
             , function (error) {
                 $scope.loading_players = false;
                 $scope.error = $rootScope.getFriendlyErrorText(error);
-            });
+            }
+        );
 
         $scope.submitPlayer = function () {
             Player.save($scope.newplayer).$promise.then(
@@ -38,4 +39,5 @@ siAgeApp.controller('RegisterPlayerController',
         $scope.hideError = function(){
             $scope.error = "";
         };
-    });
+    }
+);

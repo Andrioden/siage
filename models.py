@@ -352,7 +352,7 @@ class Rule(ndb.Model):
         return {
             'id': self.key.id(),
             'name': self.name,
-            'description': self.name
+            'description': self.description
         }
 
 class Game(ndb.Model):
@@ -430,7 +430,8 @@ class Game(ndb.Model):
                 'all_techs': self.all_techs,
                 'location': self.location,
                 'trebuchet_allowed': self.trebuchet_allowed,
-                'player_results': [res.get_data() for res in PlayerResult.query(PlayerResult.game==self.key)]     
+                'player_results': [res.get_data() for res in PlayerResult.query(PlayerResult.game==self.key)],
+                'rule': self.rule.get().get_data()
             })
         return data
 

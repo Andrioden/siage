@@ -1,7 +1,7 @@
 ﻿var siAgeApp = angular.module('SiAgeApp');
 
 siAgeApp.controller('SetupGamesController',
-    function ($rootScope, $scope, Player, SetupGame, $routeParams) {
+    function ($rootScope, $scope, Player, Rule, SetupGame, $routeParams) {
         $scope.SetupGame = { 'players': [] };
         $scope.algorithms = ["AutoBalance", "AutoBalanceSAMR", "Random", "RandomManyTeams",];
         $scope.SetupGame.algorithm = "AutoBalance";
@@ -15,7 +15,17 @@ siAgeApp.controller('SetupGamesController',
             , function (error) {
                 $scope.loading_players = false;
                 $scope.error = $rootScope.getFriendlyErrorText(error);
-            });
+            }
+        );
+
+        Rule.query(
+            function (data) {
+                $scope.rules = data;
+            }
+            , function (error) {
+                $scope.error = $rootScope.getFriendlyErrorText(error);
+            }
+        );
 
         $scope.ToggleSelectAllPlayers = function () {
             var isSynced = true;
@@ -49,6 +59,7 @@ siAgeApp.controller('SetupGamesController',
             $scope.settingUpGame = true;
 
             var trebVoteList = [];
+            var ruleChoiceList = [];
             $scope.SetupGame.players = [];
             for (var i = 0; i < $scope.players.length; i++) {
                 if ($scope.players[i].joining) {
@@ -61,10 +72,12 @@ siAgeApp.controller('SetupGamesController',
                     } else {
                         trebVoteList.push(false);
                     }
+                    ruleChoiceList.push($scope.players[i].rule_choice);
                 };
             }
 
             rollTrebuchet(trebVoteList);
+            rollRuleChoice(ruleChoiceList)
 
             SetupGame.submit($scope.SetupGame).$promise.then(
                 //success
@@ -104,5 +117,12 @@ siAgeApp.controller('SetupGamesController',
             console.log("Rolling trebuchet. Not the same order as original list:");
             console.log("Index " + randomInt + " from (" + trebVoteList + ") resulting in: " + trebVoteList[randomInt]);
         }
+
+        function rollRuleChoice(ruleChoiceList) {
+            console.log(ruleChoiceList)
+            var randomInt = randomIntFromInterval(0, ruleChoiceList.length-1);
+            $scope.rule_choice = ruleChoiceList[randomInt];
+        }
+
     }
 );

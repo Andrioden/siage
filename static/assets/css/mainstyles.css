@@ -258,13 +258,6 @@ input, textarea {
         margin-left: 15px;
     }
 
-textarea {
-    width: 400px;
-    max-width: 400px;
-    height: 150px;
-    line-height: 150%;
-}
-
 select {
     padding: 9px;
     border: solid 1px #E5E5E5;
@@ -438,7 +431,7 @@ input[type=number]::-webkit-outer-spin-button {
     background-color: rgba(0,0,0,.40);
 }
 
-input {
+input, textarea {
     background-color: rgba(140, 140, 140, 0.15);
     color: #ffdcb6;
 }
@@ -545,6 +538,10 @@ select {
     background-color: #8B1A1A;
     border-color: #8B1A1A;
 }
+
+    .button.admin_action_no_pad {
+        padding: 0px 0px; !important
+    }
 
     .button.admin_action:disabled {
         color: #999999;

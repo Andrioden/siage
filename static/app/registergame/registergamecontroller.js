@@ -1,7 +1,7 @@
 ﻿var siAgeApp = angular.module('SiAgeApp');
 
 siAgeApp.controller('RegisterGameController',
-    function ($rootScope, $scope, GameSetting, Player, Game, $timeout) {
+    function ($rootScope, $scope, GameSetting, Player, Rule, Game, $timeout) {
         GameSetting.query().$promise.then(
             function (value) {
                 $scope.error = "";
@@ -30,6 +30,15 @@ siAgeApp.controller('RegisterGameController',
             function (value) {
                 emptyPlayerHelper = [{ 'player_id': "", 'first': true }];
                 $scope.allPlayers = emptyPlayerHelper.concat(value);
+            },
+            function (value) {
+                $scope.error = $rootScope.getFriendlyErrorText(error);
+            }
+        );
+
+        Rule.query().$promise.then(
+            function (value) {
+                $scope.allRules = value;
             },
             function (value) {
                 $scope.error = $rootScope.getFriendlyErrorText(error);

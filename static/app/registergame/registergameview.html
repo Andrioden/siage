@@ -113,6 +113,13 @@
                             <label><input style="width:auto;" type="checkbox" ng-model="game.trebuchet_allowed" /> Trebuchet</label>
                         </td>
                     </tr>
+                    <tr>
+                        <td>Rule</td>
+                        <td>
+                            <select ng-model="game.rule"
+                                    ng-options="rule.id as rule.name for rule in allRules | orderBy:false"></select>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </div>

@@ -22,6 +22,7 @@
     <script src="static/app/services.js"></script>
     <script src="static/app/registergame/registergamecontroller.js"></script>
     <script src="static/app/registerplayer/registerplayercontroller.js"></script>
+    <script src="static/app/registerrule/registerrulecontroller.js"></script>
     <script src="static/app/game/gamecontroller.js"></script>
     <script src="static/app/games/gamescontroller.js"></script>
     <script src="static/app/setupgames/setupgamescontroller.js"></script>
@@ -60,6 +61,7 @@
                     <li><a id="setupgames" href="/setupgames">Setup games</a></li>
                     <li><a id="registergame" href="/registergame" ng-show="user.logged_in && user.player && user.verified">Register game</a></li>
                     <li><a id="registerplayer" href="/registerplayer" ng-show="user.logged_in && user.player && user.verified">Register player</a></li>
+                    <li><a id="registerrule" href="/registerrule" ng-show="user.logged_in && user.player && user.verified">Register rule</a></li>
                 </ul>
             </nav>
         </header>
