@@ -58,6 +58,9 @@ class GamesHandler(webapp2.RequestHandler):
         request_data = json.loads(self.request.body)
 
         # VALIDATING
+        if not request_data['duration_seconds']:
+            error_400(self.response, "VALIDATION_ERROR_NO_DURATION", "Missing input: Duration.")
+            return
         if not self._validate_no_empty_player_results(request_data['playerResults']):
             return
         if not validate_authenticated(self.response):
