@@ -432,7 +432,7 @@ class Game(ndb.Model):
                 'location': self.location,
                 'trebuchet_allowed': self.trebuchet_allowed,
                 'player_results': [res.get_data() for res in PlayerResult.query(PlayerResult.game==self.key)],
-                'rule': self.rule.get().get_data()
+                'rule': self.rule.get().get_data() if self.rule else None
             })
         return data
 
