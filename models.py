@@ -347,6 +347,7 @@ class Player(ndb.Model):
 class Rule(ndb.Model):
     name = ndb.StringProperty(required=True)
     description = ndb.StringProperty(required=True)
+    creator = ndb.KeyProperty(kind=Player, required=True)
 
     def get_data(self):
         return {

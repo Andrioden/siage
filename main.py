@@ -8,7 +8,6 @@ like si-age-league.appspot.com. By serving the index.html.
 import os
 import webapp2
 import jinja2
-from google.appengine.api import users
 
 JINJA_ENVIRONMENT = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)),

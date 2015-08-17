@@ -45,3 +45,8 @@ def validate_logged_in_admin(response):
         return False
     else:
         return True
+
+
+def player_from_user():
+    user = users.get_current_user()
+    return Player.query(Player.userid == user.user_id()).get()

@@ -4,7 +4,7 @@ import webapp2
 import json
 import logging
 from models import Rule, Game
-from utils import validate_authenticated, validate_logged_in_admin
+from utils import validate_authenticated, validate_logged_in_admin, player_from_user
 from google.appengine.ext import ndb
 from api.utils import error_400
 
@@ -25,7 +25,11 @@ class RulesHandler(webapp2.RequestHandler):
 
         # PROCESS REQUEST
 
-        new_rule_key = Rule(name = request_data['name'], description = request_data['description']).put()
+        new_rule_key = Rule(
+            name = request_data['name'],
+            description = request_data['description'],
+            creator = player_from_user().key
+        ).put()
 
         # RETURN RESPONSE
         self.response.headers['Content-Type'] = 'application/json'
