@@ -65,6 +65,9 @@ siAgeApp.config(['$routeProvider', '$locationProvider',
                 templateUrl: 'static/app/admin/adminview.html',
                 controller: 'AdminController'
             })
+            .when('/protocols', {
+                templateUrl: 'static/app/protocols/protocolsview.html'
+            })
             .otherwise({
                 redirectTo: '/league'
             });
