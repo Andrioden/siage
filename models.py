@@ -353,7 +353,8 @@ class Rule(ndb.Model):
         return {
             'id': self.key.id(),
             'name': self.name,
-            'description': self.description
+            'description': self.description,
+            'creator': {'id': self.creator.id(), 'nick': self.creator.get().nick}
         }
 
 class Game(ndb.Model):
