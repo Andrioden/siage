@@ -57,7 +57,7 @@
                 </thead>
                 <tbody>
                     <tr ng-repeat="fit in stats.teammate_fits | orderBy:['-points', '-win_chance', '-wins', '-score_per_min']">
-                        <td>
+                        <td class="no_wrap">
                             <a ng-class="{text_highlighted: '{{user.player}}' == '{{fit.player.nick}}'}" href="/players/{{fit.player.nick}}" title="View player {{fit.player.nick}}">{{fit.player.nick}}</a>
                             <span> + </span>
                             <a ng-class="{text_highlighted: '{{user.player}}' == '{{fit.teammate.nick}}'}" href="/players/{{fit.teammate.nick}}" title="View player {{fit.teammate.nick}}">{{fit.teammate.nick}}</a>
@@ -92,7 +92,7 @@
                 </thead>
                 <tbody>
                     <tr ng-repeat="fit in stats.enemy_fits | orderBy:['-points', '-win_chance', '-wins', '-score_per_min']">
-                        <td>
+                        <td class="no_wrap">
                             <a ng-class="{text_highlighted: '{{user.player}}' == '{{fit.player.nick}}'}" href="/players/{{fit.player.nick}}" title="View player {{fit.player.nick}}">{{fit.player.nick}}</a>
                             <span> beat </span>
                             <a ng-class="{text_highlighted: '{{user.player}}' == '{{fit.enemy.nick}}'}" href="/players/{{fit.enemy.nick}}" title="View player {{fit.enemy.nick}}">{{fit.enemy.nick}}</a>
@@ -127,7 +127,7 @@
                 </thead>
                 <tbody>
                     <tr ng-repeat="fit in stats.civ_fits | orderBy:['-points', '-win_chance', '-wins', '-score_per_min']">
-                        <td>
+                        <td class="no_wrap">
                             <a ng-class="{text_highlighted: '{{user.player}}' == '{{fit.player.nick}}'}" href="/players/{{fit.player.nick}}" title="View player {{fit.player.nick}}">{{fit.player.nick}}</a>
                             <span> as </span>
                             <a href="/civs/{{fit.civ}}" title="View civilization {{civilization.civ}}">{{fit.civ}}</a>
