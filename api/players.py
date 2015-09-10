@@ -10,22 +10,17 @@ class PlayersHandler(webapp2.RequestHandler):
     def get(self):
         """ --------- GET PLAYERLIST --------- """
         data_detail = self.request.get('data_detail', "simple")
-        verified = self.request.get('verified', "")
-        claimed = self.request.get('claimed', "")
+        active_str = self.request.get('active', "")
+        claimed = self.request.get('claimed', "").lower()
 
         # BUILD DATA
-        query = Player.query()
+        player_query = Player.query()
 
-        if verified.lower() in ["true", "false"]:
-            verified_bool = verified.lower() == "true"
-            query = query.filter(Player.verified == verified_bool)
+        if active_str in ["true", "false"]:
+            active = active_str == "true"
+            player_query = player_query.filter(Player.active == active)
 
-        if claimed.lower() == "true":
-            query = query.filter(Player.userid != None) # have to use !=
-        elif claimed.lower() == "false":
-            query = query.filter(Player.userid == None) # have to use ==
-
-        players_data = [player.get_data(data_detail) for player in query]
+        players_data = [player.get_data(data_detail) for player in player_query]
 
         # RETURN RESPONSE
         self.response.headers['Content-Type'] = 'application/json'
@@ -86,6 +81,9 @@ class PlayerHandler(webapp2.RequestHandler):
 
         if request_data.has_key('verified'):
             player.verified = request_data['verified']
+
+        if request_data.has_key('active'):
+            player.active = request_data['active']
 
         player.put()
 

@@ -539,7 +539,7 @@ select {
     border-color: #8B1A1A;
 }
 
-    .button.admin_action_no_pad {
+    .button.no_pad {
         padding: 0px 0px; !important
     }
 

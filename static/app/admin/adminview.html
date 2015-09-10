@@ -1,5 +1,6 @@
 ﻿<div id="main_content">
     <h1>Admin panel</h1>
+
     <div class="right_content">
 
     </div>
@@ -8,14 +9,11 @@
         <div class="admin_function">
             <section class="admin_row">
                 <div class="admin_cell button">
-                    <button class="button admin_action" confirmed-click="Recalc()"
-                            ng-confirm-click="Are you sure you want to recalculate ratings?">
+                    <button class="button admin_action" confirmed-click="Recalc()" ng-confirm-click="Are you sure you want to recalculate ratings?">
                         Recalculate ratings
                     </button>
                 </div>
-                <div class="admin_cell description">
-                    Recalculate rating for all players.
-                </div>
+                <div class="admin_cell description">Recalculate rating for all players.</div>
             </section>
             <section class="admin_response">
                 <img ng-show="recalc_processing" src="static/assets/img/ajax-loader.gif">
@@ -27,27 +25,23 @@
         <div class="admin_function">
             <section class="admin_row">
                 <div class="admin_cell button">
-                    <button class="button admin_action" confirmed-click="CleanDB()"
-                            ng-confirm-click="Are you sure you want clean the database?">
-                        Clean database
+                    <button class="button admin_action" confirmed-click="FixDB()" ng-confirm-click="Are you sure you want clean the database?">
+                        Fix database
                     </button>
                 </div>
-                <div class="admin_cell description">
-                    Clean the database, removing deleted fields and values.
-                </div>
+                <div class="admin_cell description">Fix the database, this can be any python job written to delete, update, change, add or whatever.</div>
             </section>
             <section class="admin_response">
-                <img ng-show="cleandb_processing" src="static/assets/img/ajax-loader.gif">
-                <span ng-show="cleandb_response" class="success">{{cleandb_response}}</span>
-                <span ng-show="cleandb_error" class="error">{{cleandb_error}}</span>
+                <img ng-show="fixdb_processing" src="static/assets/img/ajax-loader.gif">
+                <span ng-show="fixdb_response" class="success">{{fixdb_response}}</span>
+                <span ng-show="fixdb_error" class="error">{{fixdb_error}}</span>
             </section>
         </div>
 
         <div class="admin_function">
             <section class="admin_row">
                 <div class="admin_cell button">
-                    <button class="button admin_action" confirmed-click="ClearStats()"
-                            ng-confirm-click="Are you sure you want clear all stats?">
+                    <button class="button admin_action" confirmed-click="ClearStats()" ng-confirm-click="Are you sure you want clear all stats?">
                         Clear stats
                     </button>
                 </div>
@@ -65,8 +59,7 @@
         <div class="admin_function">
             <section class="admin_row">
                 <div class="admin_cell button">
-                    <button class="button admin_action" confirmed-click="AdjustRating()"
-                            ng-confirm-click="Are you sure you want to adjust rating?">
+                    <button class="button admin_action" confirmed-click="AdjustRating()" ng-confirm-click="Are you sure you want to adjust rating?">
                         Adjust rating
                     </button>
                 </div>
@@ -74,6 +67,7 @@
                     <option ng-repeat="player in players | orderBy:['nick']" value="{{player.id}}">{{player.nick}}</option>
                 </select>
                 <input type="number" ng-model="adjust_rating_values.new_rating_adjustment">
+
                 <div class="admin_cell description" title="Keep in mind a new value is set, this is not a value that is added to the existing adjustment. Meaning if the player had -100, and -75 is input here. The new value is -75.">
                     Set an adjusted player rating value, and redistribute it to other players.
                 </div>
@@ -103,23 +97,26 @@
         </div>
 
         <div class="box margin_top">
-            <h4>Verify player claims</h4>            
-            <img ng-show="loading_unverified_players" src="static/assets/img/ajax-loader.gif">
-            <img ng-show="verifyplayer_processing" src="static/assets/img/ajax-loader.gif">
-            <span ng-show="verifyplayer_response" class="success">{{verifyplayer_response}}</span>
-            <span ng-show="verifyplayer_error" class="error">{{verifyplayer_error}}</span>
+            <h4>
+                <span>Player admin actions</span>
+                <img ng-show="loading_players || updating_player_processing" src="static/assets/img/ajax-loader.gif">
+            </h4>
             <table class="list_table">
-                <tr ng-repeat="player in unverified_players">
+                <tr ng-repeat="player in players">
                     <td>{{player.nick}}</td>
-                    <td><a ng-click="VerifyClaim(player)" href="">Verify</a></td>
-                    <td><a ng-click="RejectClaim(player)" href="">Reject</a></td>
-                </tr>
-                <tr ng-show="unverified_players.length == 0">
-                    <td>No unverified players</td>
-                    <td></td>
-                    <td></td>
+                    <td>
+                        <button ng-show="player.active" ng-disabled="updating_player_processing" class="button admin_action no_pad" ng-click="setPlayerActiveState(player, false)">Set inactive</button>
+                        <button ng-show="!player.active" ng-disabled="updating_player_processing" class="button admin_action no_pad" ng-click="setPlayerActiveState(player, true)">Set active</button>
+                    </td>
+                    <td>
+                        <button ng-show="!player.verified && player.claimed" ng-disabled="updating_player_processing" class="button admin_action no_pad" ng-click="verifyClaim(player)">Verify</button>
+                    </td>
+                    <td>
+                        <button ng-show="!player.verified && player.claimed" ng-disabled="updating_player_processing" class="button admin_action no_pad" ng-click="rejectClaim(player)">Reject</button>
+                    </td>
                 </tr>
             </table>
+            <span ng-show="updating_player_error" class="error">{{updating_player_error}}</span>
         </div>
     </div>
 </div>

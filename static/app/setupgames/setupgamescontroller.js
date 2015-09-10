@@ -7,7 +7,7 @@ siAgeApp.controller('SetupGamesController',
         $scope.SetupGame.algorithm = "AutoBalance";
 
         $scope.loading_players = true;
-        Player.query(
+        Player.query({active: true},
             function (data) {
                 $scope.players = data;
                 $scope.loading_players = false;

@@ -39,7 +39,11 @@
             <tbody>
                 <tr ng-repeat="player in players | orderBy:['-rating','nick'] | orderEmpty: 'played': 'toBottom'">
                     <td class="mini">{{$index + 1}}.</td>
-                    <td><a ng-class="{text_highlighted: '{{user.player}}' == '{{player.nick}}'}" href="/players/{{player.nick}}" title="View profile">{{player.nick}}</a></td>
+                    <td>
+                        <a ng-class="{text_highlighted: '{{user.player}}' == '{{player.nick}}'}" href="/players/{{player.nick}}" title="View profile">
+                            {{player.nick}} <span ng-show="!player.active">(i)</span>
+                        </a>
+                    </td>
                     <td>{{player.played}}</td>
                     <td ng-show="player.win_chance">{{player.win_chance}}%</td>
                     <td ng-show="!player.win_chance">0%</td>

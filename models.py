@@ -13,6 +13,7 @@ class Player(ndb.Model):
     userid = ndb.StringProperty(default=None)
     verified = ndb.BooleanProperty(default=False)
     rating_adjustment = ndb.IntegerProperty(default=0)
+    active = ndb.BooleanProperty(default=True)
     stats_average_score = ndb.IntegerProperty(default=None)
     stats_best_score = ndb.IntegerProperty(default=None)
     stats_best_score_game = ndb.KeyProperty(kind='Game', default=None)
@@ -110,6 +111,7 @@ class Player(ndb.Model):
             'win_chance': None if played == 0 else int(wins * 100.0 / played),
             'claimed': True if self.userid else False,
             'verified': True if self.verified == True else False,
+            'active': self.active,
             'rating_change_prev_round': self._get_rating_change_previous_round() # Only used for league, might need to further limit when this loads
         }
         

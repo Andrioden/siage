@@ -7,7 +7,7 @@ siAgeApp.controller('LeagueController',
         $scope.show_full_players_data = false;
 
         $scope.loading_players = true;
-        Player.query(
+        Player.query({active: true},
             function (data) {
                 $scope.players = data;
                 $scope.loading_players = false;

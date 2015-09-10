@@ -21,7 +21,7 @@ class ReCalcRatingHandler(webapp2.RequestHandler):
         self.response.out.write(json.dumps({'response': "Ratings recalculated"}))
 
 
-class CleanDBHandler(webapp2.RequestHandler):
+class FixDBHandler(webapp2.RequestHandler):
     def post(self):
         """ This admin function will contain all historic and current clean up method.
         Please uncomment them when they are run on prod
@@ -53,6 +53,10 @@ class CleanDBHandler(webapp2.RequestHandler):
         # for game in Game.query(Game.victory == "Standad"):
         #     game.victory = "Standard"
         #     game.put()
+        logging.info("----- 10.09.2015 - Player: Set all players to active ------")
+        for player in Player.query():
+            player.active = True
+            player.put()
 
         self.response.headers['Content-Type'] = 'application/json'
         self.response.out.write(json.dumps({'response': "The database has been cleaned"}))
@@ -101,7 +105,7 @@ class ResetRatingAdjustment(webapp2.RequestHandler):
 
 app = webapp2.WSGIApplication([
     (r'/api/actions/admin/recalcrating/', ReCalcRatingHandler),
-    (r'/api/actions/admin/cleandb/', CleanDBHandler),
+    (r'/api/actions/admin/fixdb/', FixDBHandler),
     (r'/api/actions/admin/clearstats/', ClearStatsHandler),
     (r'/api/actions/admin/adjustrating/', AdjustRatingHandler),
     (r'/api/actions/admin/resetratingadjustment/', ResetRatingAdjustment),

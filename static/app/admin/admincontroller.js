@@ -3,17 +3,21 @@
 siAgeApp.controller('AdminController',
     function ($rootScope, $scope, Admin, Player, User, $timeout) {
 
-        $scope.loading_unverified_players = true;
-        $scope.adjust_rating_values = {};
+        $scope.loading_players = true;
 
         Player.query(
             function (data) {
                 $scope.players = data;
+                $scope.loading_players = false;
             }
             ,function(error){
                 $scope.error = $rootScope.getFriendlyErrorText(error);
+                $scope.loading_players = false;
             }
         );
+
+        $scope.loading_unverified_players = true;
+        $scope.adjust_rating_values = {};
 
         Player.query({ verified: false, claimed: true }).$promise.then(
             function (data) {
@@ -26,56 +30,6 @@ siAgeApp.controller('AdminController',
                 $scope.error = $rootScope.getFriendlyErrorText(error);
             }
         );
-
-        $scope.VerifyClaim = function (player) {
-            $scope.verifyplayer_processing = true;
-            $scope.verifyplayer_response = "";
-            $scope.verifyplayer_error = "";
-
-            Player.update({ player_id: player.nick }, { verified: true}).$promise.then(
-                //success
-                function (data) {
-                    $scope.verifyplayer_processing = false;
-                    if(data.verified){
-                        $scope.verifyplayer_response = "Player claim for " + data.nick + " verified";
-                        removePlayerFromUnverifiedList(player);
-                    }
-                    else {
-                        $scope.verifyplayer_error = "Failed to verify player claim for " + data.nick;
-                    }
-                },
-                //error
-                function (error) {
-                    $scope.verifyplayer_processing = false;
-                    $scope.verifyplayer_error = $rootScope.getFriendlyErrorText(error);
-                }
-              );
-        };
-
-        $scope.RejectClaim = function (player) {
-            $scope.verifyplayer_processing = true;
-            $scope.verifyplayer_response = "";
-            $scope.verifyplayer_error = "";
-
-            Player.update({ player_id: player.nick }, { userid: null }).$promise.then(
-                //success
-                function (data) {
-                    $scope.verifyplayer_processing = false;
-                    if (!data.claimed) {
-                        $scope.verifyplayer_response = "Player claim for " + data.nick + " successfully rejected";
-                        removePlayerFromUnverifiedList(player);
-                    }
-                    else {
-                        $scope.verifyplayer_error = "Failed to reject player claim for " + data.nick;
-                    }
-                },
-                //error
-                function (error) {
-                    $scope.verifyplayer_processing = false;
-                    $scope.verifyplayer_error = $rootScope.getFriendlyErrorText(error);
-                }
-              );
-        };
 
         $scope.Recalc = function () {
             $scope.recalc_processing = true;
@@ -98,23 +52,23 @@ siAgeApp.controller('AdminController',
             );
         };
 
-        $scope.CleanDB = function () {
-            $scope.cleandb_processing = true;
-            $scope.cleandb_response = "";
-            $scope.cleandb_error = "";
-            Admin.cleandb().$promise.then(
+        $scope.FixDB = function () {
+            $scope.fixdb_processing = true;
+            $scope.fixdb_response = "";
+            $scope.fixdb_error = "";
+            Admin.fixdb().$promise.then(
                 //success
                 function (data) {
-                    $scope.cleandb_response = data.response;
-                    $scope.cleandb_processing = false;
+                    $scope.fixdb_response = data.response;
+                    $scope.fixdb_processing = false;
                     $timeout(function () {
-                        $scope.cleandb_response = "";
+                        $scope.fixdb_response = "";
                     }, 5000);
                 },
                 //error
                 function (error) {
-                    $scope.cleandb_processing = false;
-                    $scope.cleandb_error = $rootScope.getFriendlyErrorText(error);
+                    $scope.fixdb_processing = false;
+                    $scope.fixdb_error = $rootScope.getFriendlyErrorText(error);
                 }
             );
         };
@@ -161,6 +115,14 @@ siAgeApp.controller('AdminController',
             );
         }
 
+        $scope.setPlayerRatingAdjustment = function() {
+            console.log($scope.adjust_rating_values);
+            for (var i=0; i<$scope.players.length; i++ ) {
+                if ($scope.players[i].id == $scope.adjust_rating_values.player_id)
+                    $scope.adjust_rating_values.new_rating_adjustment = $scope.players[i].rating_adjustment;
+            }
+        }
+
         $scope.ResetRatingAdjustment = function () {
             $scope.resetratingadjustment_processing = true;
             $scope.resetratingadjustment_response = "";
@@ -182,12 +144,34 @@ siAgeApp.controller('AdminController',
             );
         }
 
-        $scope.setPlayerRatingAdjustment = function() {
-            console.log($scope.adjust_rating_values);
-            for (var i=0; i<$scope.players.length; i++ ) {
-                if ($scope.players[i].id == $scope.adjust_rating_values.player_id)
-                    $scope.adjust_rating_values.new_rating_adjustment = $scope.players[i].rating_adjustment;
-            }
+        $scope.setPlayerActiveState = function(player, state) {
+            updatePlayer(player, {active: state});
+        }
+
+        $scope.verifyClaim = function (player) {
+            updatePlayer(player, {verified: true});
+        };
+
+        $scope.rejectClaim = function (player) {
+            updatePlayer(player, {userid: null, claimed: false});
+        };
+
+        $scope.updating_player_processing = false;
+
+        function updatePlayer(player, updateValues) {
+            $scope.updating_player_processing = true;
+            Player.update({ player_id: player.nick }, updateValues).$promise.then(
+                //success
+                function (data) {
+                    angular.extend(player, updateValues);
+                    $scope.updating_player_processing = false;
+                },
+                //error
+                function (error) {
+                    $scope.updating_player_error = $rootScope.getFriendlyErrorText(error);
+                    $scope.updating_player_processing = false;
+                }
+            );
         }
         
         function removePlayerFromUnverifiedList(player) {

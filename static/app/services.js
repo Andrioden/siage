@@ -59,7 +59,7 @@ siAgeApp
     .factory('Admin', function ($resource) {
         return $resource('/api/actions/admin/:action/', {}, {
             recalcrating: { method: 'POST', params: { action: 'recalcrating' }, isArray: false },
-            cleandb: { method: 'POST', params: { action: 'cleandb' }, isArray: false },
+            fixdb: { method: 'POST', params: { action: 'fixdb' }, isArray: false },
             clearstats: { method: 'POST', params: { action: 'clearstats' }, isArray: false },
             adjustrating: { method: 'POST', params: { action: 'adjustrating' } },
             resetratingadjustment: { method: 'POST', params: { action: 'resetratingadjustment' } }
