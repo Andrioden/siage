@@ -372,7 +372,7 @@ class Game(ndb.Model):
     reveal_map = ndb.StringProperty(required=False, choices=['Normal', 'Explored', 'All Visible'])
     starting_age = ndb.StringProperty(required=False, choices=['Standard','Dark Age', 'Feudual Age', 'Castle Age', 'Imperial Age', 'Post-Imperial Age'])
     treaty_length = ndb.IntegerProperty(required=False, choices=[5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 90])
-    victory = ndb.StringProperty(required=False, choices=['Standad', 'Conquest', 'Time Limit', 'Score', 'Last Man Standing'])
+    victory = ndb.StringProperty(required=False, choices=['Standard', 'Standad', 'Conquest', 'Time Limit', 'Score', 'Last Man Standing'])
     team_together = ndb.BooleanProperty(required=False)
     all_techs = ndb.BooleanProperty(required=False)
     # Settings from Objective screen ingame
