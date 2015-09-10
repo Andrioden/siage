@@ -49,10 +49,10 @@ class CleanDBHandler(webapp2.RequestHandler):
         #     self._delete_property(player, 'stats_civ_most_losses_name')
         #     self._delete_property(player, 'stats_civ_most_losses_count')
         #     player.put()
-        logging.info("----- 10.09.2015 - Game: Renamed victory Standad to Standard  ------")
-        for game in Game.query(Game.victory == "Standad"):
-            game.victory = "Standard"
-            game.put()
+        # logging.info("----- 10.09.2015 - Game: Renamed victory Standad to Standard  ------")
+        # for game in Game.query(Game.victory == "Standad"):
+        #     game.victory = "Standard"
+        #     game.put()
 
         self.response.headers['Content-Type'] = 'application/json'
         self.response.out.write(json.dumps({'response': "The database has been cleaned"}))
