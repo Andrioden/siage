@@ -53,10 +53,10 @@ class FixDBHandler(webapp2.RequestHandler):
         # for game in Game.query(Game.victory == "Standad"):
         #     game.victory = "Standard"
         #     game.put()
-        logging.info("----- 10.09.2015 - Player: Set all players to active ------")
-        for player in Player.query():
-            player.active = True
-            player.put()
+        # logging.info("----- 10.09.2015 - Player: Set all players to active ------")
+        # for player in Player.query():
+        #     player.active = True
+        #     player.put()
 
         self.response.headers['Content-Type'] = 'application/json'
         self.response.out.write(json.dumps({'response': "The database has been cleaned"}))
