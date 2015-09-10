@@ -65,8 +65,6 @@ siAgeApp.controller('GamesController',
                 var string = JSON.stringify(item).toLowerCase();
                 var words = $scope.gameSearchQuery.searchString.toLowerCase();
 
-                console.log(words);
-
                 if (words) {
                     var filterBy = words.split(/\s+/);
                     if (!filterBy.length) {
