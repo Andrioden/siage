@@ -340,7 +340,7 @@ class Player(ndb.Model):
         self.stats_civ_fit = civ_fit_list
 
     def clear_stats(self):
-        for variable_name in self.__dict__['_values'].keys(): # __dict__['_values'] contains all class object variables
+        for variable_name in self.__dict__['_values'].keys():  # __dict__['_values'] contains all class object variables
             if 'stats_' in variable_name:
                 setattr(self, variable_name, None)
         self.put()
@@ -358,6 +358,7 @@ class Rule(ndb.Model):
             'description': self.description,
             'creator': {'id': self.creator.id(), 'nick': self.creator.get().nick}
         }
+
 
 class Game(ndb.Model):
     rule = ndb.KeyProperty(kind=Rule, default=None)

@@ -83,6 +83,9 @@ class ClearStatsHandler(webapp2.RequestHandler):
 class AdjustRatingHandler(webapp2.RequestHandler):
     def post(self):
 
+        if not validate_logged_in_admin(self.response):
+            return
+
         request_data = json.loads(self.request.body)
         player_id = request_data['player_id']
         new_rating_adjustment = request_data['new_rating_adjustment']
@@ -93,8 +96,12 @@ class AdjustRatingHandler(webapp2.RequestHandler):
         self.response.headers['Content-Type'] = 'application/json'
         self.response.out.write(json.dumps({'response': "%s now has an rating adjustment at %s. Remember to recalculate ratings if player have been part of games." % (player.nick, new_rating_adjustment)}))
 
+
 class ResetRatingAdjustment(webapp2.RequestHandler):
     def post(self):
+
+        if not validate_logged_in_admin(self.response):
+            return
 
         for player in Player.query().fetch():
             player.rating_adjustment = 0
