@@ -5,7 +5,7 @@ from config import PLAYER_RATING_START_VALUE
 import logging
 import operator
 
-CIVILIZATIONS = ['Aztec', 'Britons', 'Byzantines', 'Celts', 'Chinese', 'Franks', 'Goths', 'Huns', 'Incas', 'Indians', 'Italians', 'Japanese', 'Koreans', 'Magyars', 'Mayans', 'Mongols', 'Persians', 'Saracens', 'Slavs', 'Spanish', 'Teutons', 'Turks', 'Vikings']
+CIVILIZATIONS = ['Aztec', 'Britons', 'Byzantines', 'Celts', 'Chinese', 'Franks', 'Goths', 'Huns', 'Incas', 'Indians', 'Italians', 'Japanese', 'Koreans', 'Magyars', 'Mayans', 'Mongols', 'Persians', 'Saracens', 'Slavs', 'Spanish', 'Teutons', 'Turks', 'Vikings', 'Berbers', 'Ethiopians', 'Malians', 'Portuguese']
 
 
 class Player(ndb.Model):
@@ -366,7 +366,7 @@ class Game(ndb.Model):
     date = ndb.DateTimeProperty(required=False)
     duration_seconds = ndb.IntegerProperty(required=False)
     # Settings from lobby Game Settings
-    game_type = ndb.StringProperty(required=False, choices=['Random Map', 'Turbo Random Map', 'Regicide', 'Death Match', 'Scenario', 'King of the Hill', 'Wonder Race', 'Defend the Wonder', 'Capture the Relic'])
+    game_type = ndb.StringProperty(required=False, choices=['Random Map', 'Turbo Random Map', 'Regicide', 'Death Match', 'Scenario', 'King of the Hill', 'Wonder Race', 'Defend the Wonder', 'Capture the Relic', 'Sudden Death'])
     size = ndb.StringProperty(required=False, choices=['Tiny (2 player)', 'Small (3 player)', 'Medium (4 player)', 'Normal (6 player)', 'Large (8 player)', 'Giant', 'LudiKRIS'])
     difficulty = ndb.StringProperty(required=False, choices=['Easiest', 'Standard', 'Moderate', 'Hard', 'Hardest'])
     resources = ndb.StringProperty(required=False, choices=['Standard', 'Low', 'Medium', 'High'])
@@ -379,7 +379,7 @@ class Game(ndb.Model):
     team_together = ndb.BooleanProperty(required=False)
     all_techs = ndb.BooleanProperty(required=False)
     # Settings from Objective screen ingame
-    location = ndb.StringProperty(required=False, choices=['Arabia', 'Archipelago', 'Arena', 'Baltic', 'Black Forest', 'Coastal', 'Continental', 'Crater Laker', 'Fortress', 'Ghost Lake', 'Gold Rush', 'Highland', 'Islands', 'Mediterranean', 'Migration', 'Mongolia', 'Nomad', 'Oasis', 'Rivers', 'Salt Marsh', 'Scandinavia', 'Team Islands', 'Yucatan', 'Acropolis', 'Budapest', 'Cenotes', 'City of Lakes', 'Golden Pit', 'Hideout', 'Hill Fort', 'Lombardia', 'Steppe', 'Valley', 'MegaRandom', 'Hamburger'])
+    location = ndb.StringProperty(required=False, choices=['Arabia', 'Archipelago', 'Arena', 'Baltic', 'Black Forest', 'Coastal', 'Continental', 'Crater Laker', 'Fortress', 'Ghost Lake', 'Gold Rush', 'Highland', 'Islands', 'Mediterranean', 'Migration', 'Mongolia', 'Nomad', 'Oasis', 'Rivers', 'Salt Marsh', 'Scandinavia', 'Team Islands', 'Yucatan', 'Acropolis', 'Budapest', 'Cenotes', 'City of Lakes', 'Golden Pit', 'Hideout', 'Hill Fort', 'Lombardia', 'Steppe', 'Valley', 'MegaRandom', 'Hamburger', 'Canyons', 'Enemy Archipelago', 'Enemy Islands', 'Far Out', 'Front Line', 'Inner Circle', 'Motherland', 'Open Plains', 'Ring of Water', 'Snakepit', 'The Eye'])
     # Special settings
     trebuchet_allowed = ndb.BooleanProperty(required=False)
     # Values that are not neccesarry to store but stored to avoid having to recompute values every time the value is needed
