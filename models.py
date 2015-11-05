@@ -462,7 +462,6 @@ class PlayerResult(ndb.Model):
     game = ndb.KeyProperty(kind=Game, required=True)
     game_date = ndb.DateTimeProperty(required=False) # This is doublestorage of info ues, but its to simplify queries
     is_winner = ndb.BooleanProperty(default=False)
-    is_host = ndb.BooleanProperty(default=False)
     score = ndb.IntegerProperty(required=True)
     team = ndb.IntegerProperty(choices=[1,2,3,4])
     civilization = ndb.StringProperty(required=True, choices=CIVILIZATIONS)
@@ -496,7 +495,6 @@ class PlayerResult(ndb.Model):
             'player': {'id': player.key.id(), 'nick': player.nick},
             'game': self.game.id(),
             'is_winner': self.is_winner,
-            'is_host': self.is_host,
             'score': self.score,
             'team': self.team,
             'civilization': self.civilization,

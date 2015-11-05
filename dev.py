@@ -66,7 +66,6 @@ def add_test_data_randomized_game(game_date):
             game = game_key,
             game_date = game_date,
             is_winner = True if (i < total_players_this_game / 2) else False,
-            is_host = True if i == 0 else False,
             score = random.randint(2000,40000),
             team = 1 if (i < total_players_this_game / 2) else 2,
             civilization = random.choice(list(CIVILIZATIONS)),

@@ -51,10 +51,6 @@ siAgeApp.controller('RegisterGameController',
                 $scope.error = "Select a winner!";
                 return;
             }
-            else if (!hasHost()) {
-                $scope.error = "Select a host!!";
-                return;
-            }
             cleanPlayerResults();
             $scope.submitting = true;
             $scope.game.duration_seconds = $scope.game.duration_minutes * 60;
@@ -100,14 +96,6 @@ siAgeApp.controller('RegisterGameController',
                     if ($scope.game.playerResults[i].player_id == $scope.allPlayers[j].id) {
                         $scope.allPlayers[j].isinuse = true;
                     }
-                }
-            }
-        };
-
-        $scope.removeHostFromOtherPlayerResults = function (playerResult) {
-            for (i = 0; i < $scope.game.playerResults.length; i++) {
-                if ($scope.game.playerResults[i] != playerResult) {
-                    $scope.game.playerResults[i].is_host = false;
                 }
             }
         };
@@ -241,12 +229,6 @@ siAgeApp.controller('RegisterGameController',
             return false;
         }
 
-        function hasHost() {
-            for (i = 0; i < $scope.game.playerResults.length; i++) {
-                if ($scope.game.playerResults[i].is_host) return true;
-            }
-            return false;
-        }
     })
 ;
 
