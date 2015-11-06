@@ -1,7 +1,7 @@
 ﻿var siAgeApp = angular.module('SiAgeApp');
 
 siAgeApp.controller('PlayerController',
-    function ($rootScope, $scope, Player, User, Game, $routeParams, $location) {
+    function ($rootScope, $scope, Player, User, Game, Rule, PlayerAction, $routeParams, $location, $timeout) {
         $scope.user = User.get();
 
         $scope.loading_player = true;
@@ -9,7 +9,7 @@ siAgeApp.controller('PlayerController',
             function (data) {
                 $scope.loading_player = false;
                 $scope.player = data;
-                $scope.load_games_for_player();
+                loadGames(data.id);
             },
             function (error) {
                 $scope.loading_player = false;
@@ -17,22 +17,71 @@ siAgeApp.controller('PlayerController',
             }
     	);
 
-        $scope.load_games_for_player = function () {
-            Game.query({ player_id: $scope.player.id },
+        Rule.query(
             function (data) {
-                $scope.games = data;
-                $scope.loading_games = false;
-                drawRatingGraph(data, $scope.player.rating_adjustment);
+                $scope.rules = data;
             }
             , function (error) {
-                $scope.loading_games = false;
                 $scope.error = $rootScope.getFriendlyErrorText(error);
-            });
-        };
+            }
+        );
+
+        $scope.updateSettingTrebuchet = function() {
+            $scope.player_setting_trebuchet_response = "";
+            PlayerAction.updatePlayerSettingDefaultTrebuchet({choice: $scope.player.settings.default_trebuchet_allowed}).$promise.then(
+                //success
+                function (data) {
+                    $scope.player_setting_trebuchet_response = data.response;
+                    $timeout(function () {
+                        $scope.player_setting_trebuchet_response = "";
+                    }, 5000);
+                },
+                //error
+                function (error) {
+                    $scope.settingUpGame = false;
+                    $scope.error = $rootScope.getFriendlyErrorText(error);
+                }
+            );
+        }
+
+        $scope.updateSettingRule = function() {
+            $scope.player_setting_rule_response = "";
+            PlayerAction.updatePlayerSettingDefaultRule({choice: $scope.player.settings.default_rule}).$promise.then(
+                //success
+                function (data) {
+                    $scope.player_setting_rule_response = data.response;
+                    $timeout(function () {
+                        $scope.player_setting_rule_response = "";
+                    }, 5000);
+                },
+                //error
+                function (error) {
+                    $scope.settingUpGame = false;
+                    $scope.error = $rootScope.getFriendlyErrorText(error);
+                }
+            );
+        }
 
         $scope.navigate = function (route) {
             $location.path(route);
         };
+
+        // PRIVATE METHODS
+
+        function loadGames(playerId) {
+            Game.query({ player_id: playerId },
+                function (data) {
+                    $scope.games = data;
+                    $scope.loading_games = false;
+                    drawRatingGraph(data, $scope.player.rating_adjustment);
+                }
+                , function (error) {
+                    $scope.loading_games = false;
+                    $scope.error = $rootScope.getFriendlyErrorText(error);
+                }
+            );
+        }
+
     }
 );
 

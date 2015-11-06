@@ -56,7 +56,7 @@ siAgeApp
         });
     })
 
-    .factory('Admin', function ($resource) {
+    .factory('AdminAction', function ($resource) {
         return $resource('/api/actions/admin/:action/', {}, {
             recalcrating: { method: 'POST', params: { action: 'recalcrating' }, isArray: false },
             fixdb: { method: 'POST', params: { action: 'fixdb' }, isArray: false },
@@ -66,10 +66,10 @@ siAgeApp
         });        
     })
 
-    .factory('SetupGame', function ($resource) {
-        return $resource('/api/actions/setupgame/', {}, {
-            submit: { method: 'POST' }
+    .factory('PlayerAction', function ($resource) {
+        return $resource('/api/actions/:action/', {}, {
+            setupGame: { method: 'POST', params: { action: 'setupgame' } },
+            updatePlayerSettingDefaultTrebuchet: { method: 'POST', params: { action: 'updatePlayerSettingDefaultTrebuchetChoice' } },
+            updatePlayerSettingDefaultRule: { method: 'POST', params: { action: 'updatePlayerSettingDefaultRuleChoice' } }
         });
-
-    });
-
+    })

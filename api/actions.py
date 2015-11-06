@@ -4,10 +4,10 @@ import webapp2
 import json
 import logging
 from google.appengine.ext import ndb
-from models import Player
+from models import Player, Rule
 import math, random, copy
 from google.appengine.api import users
-from utils import error_400
+from utils import error_400, current_user_player
 
 class SetupGameHandler(webapp2.RequestHandler):
     def post(self):
@@ -163,8 +163,37 @@ class ClaimPlayerHandler(webapp2.RequestHandler):
                     return webapp2.redirect("/players/" + player.nick)
             else:
                 error_400(self.response, "NOT_LOGGED_INN", "The visiting user is not logged inn.")
-        
+
+
+class UpdatePlayerSettingTrebuchetDefaultChoiceHandler(webapp2.RequestHandler):
+    def post(self):
+        request_data = json.loads(self.request.body)
+        player = current_user_player()
+
+        player.setting_default_trebuchet_allowed = request_data['choice']
+        player.put()
+
+        self.response.headers['Content-Type'] = 'application/json'
+        self.response.out.write(json.dumps({'response': "Updated setting"}))
+
+
+class UpdatePlayerSettingRuleDefaultChoiceHandler(webapp2.RequestHandler):
+    def post(self):
+        request_data = json.loads(self.request.body)
+        player = current_user_player()
+
+        if request_data['choice']:
+            player.setting_default_rule = ndb.Key(Rule, int(request_data['choice']))
+        else:
+            player.setting_default_rule = None
+        player.put()
+
+        self.response.headers['Content-Type'] = 'application/json'
+        self.response.out.write(json.dumps({'response': "Updated setting"}))
+
 app = webapp2.WSGIApplication([
     (r'/api/actions/setupgame/', SetupGameHandler),
     (r'/api/actions/claimplayer/(\d+)', ClaimPlayerHandler),
+    (r'/api/actions/updatePlayerSettingDefaultTrebuchetChoice/', UpdatePlayerSettingTrebuchetDefaultChoiceHandler),
+    (r'/api/actions/updatePlayerSettingDefaultRuleChoice/', UpdatePlayerSettingRuleDefaultChoiceHandler),
 ], debug=True)

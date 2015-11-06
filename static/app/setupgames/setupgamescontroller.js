@@ -1,10 +1,10 @@
 ﻿var siAgeApp = angular.module('SiAgeApp');
 
 siAgeApp.controller('SetupGamesController',
-    function ($rootScope, $scope, Player, Rule, SetupGame, $routeParams) {
+    function ($rootScope, $scope, Player, Rule, PlayerAction, $routeParams, $timeout) {
         $scope.SetupGame = { 'players': [] };
         $scope.algorithms = ["AutoBalance", "AutoBalanceSAMR", "Random", "RandomManyTeams",];
-        $scope.SetupGame.algorithm = "AutoBalance";
+        $scope.SetupGame.algorithm = "AutoBalanceSAMR";
 
         $scope.loading_players = true;
         Player.query({active: true},
@@ -61,31 +61,33 @@ siAgeApp.controller('SetupGamesController',
             var trebVoteList = [];
             var ruleChoiceList = [];
             $scope.SetupGame.players = [];
+
             for (var i = 0; i < $scope.players.length; i++) {
                 if ($scope.players[i].joining) {
                     $scope.SetupGame.players.push({
                         'id': $scope.players[i].id,
                         'rating': $scope.players[i].rating
                     });
-                    if ($scope.players[i].trebuchet_vote) {
-                        trebVoteList.push(true);
-                    } else {
-                        trebVoteList.push(false);
-                    }
-                    ruleChoiceList.push($scope.players[i].rule_choice);
+                    trebVoteList.push($scope.players[i].settings.default_trebuchet_allowed);
+                    ruleChoiceList.push($scope.players[i].settings.default_rule);
                 };
             }
 
             rollTrebuchet(trebVoteList);
             rollRuleChoice(ruleChoiceList)
 
-            SetupGame.submit($scope.SetupGame).$promise.then(
+            PlayerAction.setupGame($scope.SetupGame).$promise.then(
                 //success
                 function (data) {
                     $scope.error = "";
                     $scope.games = data.games;
                     $scope.total_rating_dif = data.total_rating_dif;
                     $scope.settingUpGame = false;
+                    // Scroll down, but give angularjs some time to draw the new games at the bottom.
+                    $timeout(function () {
+                        scrollToBottomOfPage();
+                    }, 200);
+
                 },
                 //error
                 function (error) {
@@ -97,7 +99,7 @@ siAgeApp.controller('SetupGamesController',
 
         function hasEnoughPlayers() {
             var count = 0;
-            for (i = 0; i < $scope.players.length; i++) {
+            for (var i = 0; i < $scope.players.length; i++) {
                 if ($scope.players[i].joining) {
                     count++;
                 };
@@ -121,7 +123,20 @@ siAgeApp.controller('SetupGamesController',
         function rollRuleChoice(ruleChoiceList) {
             console.log(ruleChoiceList)
             var randomInt = randomIntFromInterval(0, ruleChoiceList.length-1);
-            $scope.rule_choice = ruleChoiceList[randomInt];
+            var ruleChoiceId = ruleChoiceList[randomInt];
+            if (ruleChoiceId == null) $scope.rule_choice = "No Rule";
+            else $scope.rule_choice = getRuleNameById(ruleChoiceId);
+        }
+
+        function getRuleNameById(ruleId) {
+            for (var i = 0; i < $scope.rules.length; i++) {
+                if ($scope.rules[i].id == ruleId) return $scope.rules[i].name;
+            }
+            return "RuleNotFound: " + ruleId;
+        }
+
+        function scrollToBottomOfPage() {
+            window.scrollTo(0,document.body.scrollHeight);
         }
 
     }

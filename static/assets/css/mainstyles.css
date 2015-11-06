@@ -571,3 +571,16 @@ select {
     height: 150px;
     margin-bottom: 30px;
  }
+
+ .small_select {
+    padding: 0;
+    margin: 0;
+    width: auto;
+ }
+
+
+ /******************************* SETUP GAME (may not be all god damn...)*******************************/
+
+ #gamesWrapper {
+    max-width: 600px;
+ }

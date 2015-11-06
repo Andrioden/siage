@@ -51,6 +51,8 @@ class Player(ndb.Model):
     }
     """
     stats_civ_fit = ndb.PickleProperty(default=None)
+    setting_default_trebuchet_allowed = ndb.BooleanProperty(default=False)
+    setting_default_rule = ndb.KeyProperty(kind='Rule', default=None)
 
     def rating(self):
         """ To avoid hitting the db unneccessary the rating value is stored in memory.
@@ -112,7 +114,11 @@ class Player(ndb.Model):
             'claimed': True if self.userid else False,
             'verified': True if self.verified == True else False,
             'active': self.active,
-            'rating_change_prev_round': self._get_rating_change_previous_round() # Only used for league, might need to further limit when this loads
+            'rating_change_prev_round': self._get_rating_change_previous_round(), # Only used for league, might need to further limit when this loads
+            'settings': {
+                'default_trebuchet_allowed': self.setting_default_trebuchet_allowed,
+                'default_rule': self.setting_default_rule.id() if self.setting_default_rule else None
+            }
         }
         
     def _get_rating_change_previous_round(self):

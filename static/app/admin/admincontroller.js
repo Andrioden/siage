@@ -1,7 +1,7 @@
 ﻿var siAgeApp = angular.module('SiAgeApp');
 
 siAgeApp.controller('AdminController',
-    function ($rootScope, $scope, Admin, Player, User, $timeout) {
+    function ($rootScope, $scope, AdminAction, Player, User, $timeout) {
 
         $scope.loading_players = true;
 
@@ -35,7 +35,7 @@ siAgeApp.controller('AdminController',
             $scope.recalc_processing = true;
             $scope.recalc_response = "";
             $scope.recalc_error = "";
-            Admin.recalcrating().$promise.then(
+            AdminAction.recalcrating().$promise.then(
                 //success
                 function (data) {
                     $scope.recalc_response = data.response;
@@ -56,7 +56,7 @@ siAgeApp.controller('AdminController',
             $scope.fixdb_processing = true;
             $scope.fixdb_response = "";
             $scope.fixdb_error = "";
-            Admin.fixdb().$promise.then(
+            AdminAction.fixdb().$promise.then(
                 //success
                 function (data) {
                     $scope.fixdb_response = data.response;
@@ -77,7 +77,7 @@ siAgeApp.controller('AdminController',
             $scope.clearstats_processing = true;
             $scope.clearstats_response = "";
             $scope.clearstats_error = "";
-            Admin.clearstats().$promise.then(
+            AdminAction.clearstats().$promise.then(
                 //success
                 function (data) {
                     $scope.clearstats_response = data.response;
@@ -98,7 +98,7 @@ siAgeApp.controller('AdminController',
             $scope.adjustrating_processing = true;
             $scope.adjustrating_response = "";
             $scope.adjustrating_error = "";
-            Admin.adjustrating($scope.adjust_rating_values).$promise.then(
+            AdminAction.adjustrating($scope.adjust_rating_values).$promise.then(
                 //success
                 function (data) {
                     $scope.adjustrating_response = data.response;
@@ -127,7 +127,7 @@ siAgeApp.controller('AdminController',
             $scope.resetratingadjustment_processing = true;
             $scope.resetratingadjustment_response = "";
             $scope.resetratingadjustment_error = "";
-            Admin.resetratingadjustment().$promise.then(
+            AdminAction.resetratingadjustment().$promise.then(
                 //success
                 function (data) {
                     $scope.resetratingadjustment_response = data.response;
