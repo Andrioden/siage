@@ -32,7 +32,7 @@
                             <a ng-class="{text_highlighted: '{{user.player}}' == '{{player_fit.player.nick}}'}" href="/players/{{player_fit.player.nick}}">{{player_fit.player.nick}}</a><span ng-show="!$last">,</span>
                         </span>
                     </td>
-                    <td>
+                    <td ng-show="civ.stats">
                         <a ng-class="{text_highlighted: '{{user.player}}' == '{{civ.stats.worst_player.player.nick}}'}" href="/players/{{civ.stats.worst_player.player.nick}}">{{civ.stats.worst_player.player.nick}}</a>
                     </td>
                 </tr>

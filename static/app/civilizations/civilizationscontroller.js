@@ -23,6 +23,8 @@ siAgeApp.controller('CivilizationsController',
 
         $scope.setBestAndWorstPlayersForCivs = function () {
             for (i = 0; i < $scope.civilizations.length; i++) {
+                if (!$scope.civilizations[i].stats) continue;
+
                 var player_fits = $scope.civilizations[i].stats.player_fit;
                 player_fits.sort(comparePointsForPlayers);
                 $scope.civilizations[i].stats.best_players = player_fits.slice(0, 3);
