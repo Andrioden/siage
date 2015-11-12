@@ -33,6 +33,24 @@ class TestSequenceFunctions(unittest.TestCase):
         new_ratings = rc.calc_and_get_new_rating_dict()
         print new_ratings
 
+    def test_rating_2v2v2v2_example_from_prod(self):
+        """
+        I tought this was an bugged case because Andriod with 46k score lost more rating than Shrubber with 13k.
+        But it is not, the algorithm punishes Andriod + Moderate Bot team more because they had higher total team rating.
+        """
+        rc = RatingCalculator()
+        rc.player_results.append(RatingPlayerResult("Ballisticfire", True, 28427, 1, 1014))
+        rc.player_results.append(RatingPlayerResult("Freddiefearless", True, 24741, 1, 988))
+        rc.player_results.append(RatingPlayerResult("Andriod", False, 45699, 2, 1306))
+        rc.player_results.append(RatingPlayerResult("Moderate Bot", False, 6153, 2, 987))
+        rc.player_results.append(RatingPlayerResult("Shrubber", False, 13520, 3, 1059))
+        rc.player_results.append(RatingPlayerResult("Lovefrombehind", False, 3643, 3, 870))
+        rc.player_results.append(RatingPlayerResult("Slangehiet", False, 22635, 4, 961))
+        rc.player_results.append(RatingPlayerResult("Harsem", False, 12127, 4, 1041))
+
+        new_ratings = rc.calc_and_get_new_rating_dict()
+        print new_ratings
+
     def test_rating_FFA(self):
         rc = RatingCalculator()
         rc.player_results.append(RatingPlayerResult(101, True, 47840, 1, 1018))
