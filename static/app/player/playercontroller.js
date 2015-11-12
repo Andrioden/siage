@@ -90,6 +90,7 @@ google.load('visualization', '1', { packages: ['corechart', 'line'] });
 
 function drawRatingGraph(player_results, rating_adjustment) {
     var chartData = prepareChartData(player_results, rating_adjustment);
+    var lowestValue = getLowestRatingValue(chartData);
 
     var data = new google.visualization.DataTable();
     data.addColumn('string', 'Date');
@@ -107,6 +108,7 @@ function drawRatingGraph(player_results, rating_adjustment) {
         vAxis: {
             title: '',
             logScale: false,
+            baseline: lowestValue - 10,
             textPosition: 'none',
             baselineColor: 'none',
             gridlines: {
@@ -121,7 +123,8 @@ function drawRatingGraph(player_results, rating_adjustment) {
         legend: { position: 'none' },
         animation: {
             duration: 1000,
-            startup: 'true'
+            easing: 'linear',
+            startup: true
         }
 
     };
@@ -158,4 +161,20 @@ function prepareChartData(player_results, rating_adjustment) {
     chartData.reverse();
 
     return chartData;
+}
+
+function getLowestRatingValue(chartData) {
+    var lowestValue = chartData[0][1];
+    var maxValue = chartData[0][1];
+
+    for (i = 0; i < chartData.length; i++) {
+        if(chartData[i][1] < lowestValue){
+            lowestValue = chartData[i][1]
+        }
+        if(chartData[i][1] > maxValue){
+            maxValue = chartData[i][1]
+        }
+    }
+
+    return lowestValue;
 }

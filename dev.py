@@ -30,6 +30,7 @@ def add_test_data_games(number_of_games):
     for i in range(number_of_games):
         add_test_data_randomized_game(datetime.now() - timedelta(days=number_of_games-i))
     recalculate_ratings()
+    print "Creating games data DONE"
 
 
 def add_test_data_randomized_game(game_date):
