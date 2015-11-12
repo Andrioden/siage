@@ -165,14 +165,10 @@ function prepareChartData(player_results, rating_adjustment) {
 
 function getLowestRatingValue(chartData) {
     var lowestValue = chartData[0][1];
-    var maxValue = chartData[0][1];
 
     for (i = 0; i < chartData.length; i++) {
         if(chartData[i][1] < lowestValue){
             lowestValue = chartData[i][1]
-        }
-        if(chartData[i][1] > maxValue){
-            maxValue = chartData[i][1]
         }
     }
 
