@@ -420,7 +420,6 @@ class Game(ndb.Model):
                 'id': self.key.id(),
                 'title': "%s %s" % (self.game_type, self.location),
                 'team_format': self.game_format(),
-                'date': self.date.strftime("%Y-%m-%d"),
                 'date_epoch': int((self.date - datetime(1970,1,1)).total_seconds()),
                 'game_type': self.game_type,
             })
