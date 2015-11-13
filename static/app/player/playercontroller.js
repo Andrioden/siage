@@ -86,6 +86,9 @@ siAgeApp.controller('PlayerController',
 );
 
 
+
+
+
 google.load('visualization', '1', { packages: ['corechart', 'line'] });
 
 function drawRatingGraph(player_results, rating_adjustment) {
@@ -149,7 +152,7 @@ function prepareChartData(player_results, rating_adjustment) {
 
     for (i = 0; i < player_results.length; i++) {
         var temp = [
-            player_results[i].date,
+            new Date(player_results[i].date_epoch * 1000).ddmmyyyy(),
             parseInt(player_results[i].stats_rating),
             '/games/' + player_results[i].id
         ];
