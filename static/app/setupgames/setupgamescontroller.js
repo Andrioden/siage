@@ -2,7 +2,7 @@
 
 siAgeApp.controller('SetupGamesController',
     function ($rootScope, $scope, Player, Rule, PlayerAction, $routeParams, $timeout) {
-        $scope.SetupGame = { 'players': [] };
+        $scope.SetupGame = { 'players': [], 'max_game_rating_dif': 125, 'attempts': 500 };
         $scope.algorithms = ["AutoBalance", "AutoBalanceSAMR", "Random", "RandomManyTeams",];
         $scope.SetupGame.algorithm = "AutoBalanceSAMR";
 
@@ -75,6 +75,9 @@ siAgeApp.controller('SetupGamesController',
 
             rollTrebuchet(trebVoteList);
             rollRuleChoice(ruleChoiceList)
+
+            $scope.games = undefined;
+            $scope.total_rating_dif = undefined;
 
             PlayerAction.setupGame($scope.SetupGame).$promise.then(
                 //success

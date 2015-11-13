@@ -1,58 +1,65 @@
 ﻿<div id="main_content">
     <h1>Generate game setups</h1>
+
     <div class="left_content">
         <form name="gameSetupForm" ng-submit="setupGame()">
-            <h4>Teams</h4>
             <select ng-model="SetupGame.algorithm" class="wide" ng-options="alg as alg for alg in algorithms"></select>
             <input ng-if="SetupGame.algorithm != 'RandomManyTeams'" ng-model="SetupGame.team_setup" placeholder="Example: 2v2v3">
-            <br />
-            <br />
+            <br/>
+            <br/>
             <span ng-if="SetupGame.algorithm == 'AutoBalance'">Autobalance - set up the teams so they have the lowest rating difference.</span>
             <span ng-if="SetupGame.algorithm == 'AutoBalanceSAMR'">AutoBalance Score Adjusted Mini Random - like AutoBalance also tries to set up teams for the lowest rating difference, just that this algorithm also have a very small rating adjustment according to player score and adds a very small randomness to make it less predictive.</span>
             <span ng-if="SetupGame.algorithm == 'Random'">Random - places all players into random teams. Defaults to two teams unless the team setup (XvXvX) is given.</span>
             <span ng-if="SetupGame.algorithm == 'RandomManyTeams'">RandomManyTeams - randoms all players into a random amount of teams. The randomness is restricted by not letting a team get more than 1 player advantage over other teams.</span>
-            <br />
-            <br />
+            <br/>
+            <div ng-if="['AutoBalance', 'AutoBalanceSAMR'].indexOf(SetupGame.algorithm) != -1">
+                <label>Max rating difference per game: </label>
+                <input type="number" ng-if="SetupGame.algorithm != 'RandomManyTeams'" ng-model="SetupGame.max_game_rating_dif">
+                <br/>
+                <label>Max successful attempts below max difference: </label>
+                <input type="number" ng-if="SetupGame.algorithm != 'RandomManyTeams'" ng-model="SetupGame.attempts">
+                <br/>
+            </div>
+            <br/>
             <table class="info_table">
                 <tbody>
-                    <tr ng-show="loading_players">
-                        <td>
-                            <img src="static/assets/img/ajax-loader.gif">
-                        </td>
-                    </tr>
-                    <tr>
-                        <td><h4>Players <a href="" style="font-weight: normal;" ng-click="ToggleSelectAllPlayers()">(All)</a></h4></td>
-                        <td><h4>Trebuchet vote</h4></td>
-                        <td><h4>Rule choice</h4></td>
-                        <td><h4>Adjust rating</h4></td>
-                    </tr>
-                    <tr ng-repeat="player in players | orderBy:['-rating','nick']">
-                        <td>
-                            <label>
-                                <input class="checkbox" type="checkbox" ng-model="player.joining" />
-                                {{player.nick}}
-                            </label>
-                        </td>
-                        <td>
-                            <input class="checkbox" type="checkbox" ng-model="player.settings.default_trebuchet_allowed" ng-show="player.joining"  />
-                        </td>
-                        <td>
-                            <select ng-model="player.settings.default_rule" ng-options="rule.id as rule.name for rule in rules" ng-show="player.joining">
-                                <option value=""></option>
-                            </select>
-                        </td>
-                        <td>
-                            <input type="number" value="{{player.rating}}" ng-model="player.rating" ng-show="player.joining">
-                        </td>
-                    </tr>
+                <tr ng-show="loading_players">
+                    <td>
+                        <img src="static/assets/img/ajax-loader.gif">
+                    </td>
+                </tr>
+                <tr>
+                    <td><h4>Players <a href="" style="font-weight: normal;" ng-click="ToggleSelectAllPlayers()">(All)</a></h4></td>
+                    <td><h4>Trebuchet vote</h4></td>
+                    <td><h4>Rule choice</h4></td>
+                    <td><h4>Adjust rating</h4></td>
+                </tr>
+                <tr ng-repeat="player in players | orderBy:['-rating','nick']">
+                    <td>
+                        <label>
+                            <input class="checkbox" type="checkbox" ng-model="player.joining"/>
+                            {{player.nick}}
+                        </label>
+                    </td>
+                    <td>
+                        <input class="checkbox" type="checkbox" ng-model="player.settings.default_trebuchet_allowed" ng-show="player.joining"/>
+                    </td>
+                    <td>
+                        <select ng-model="player.settings.default_rule" ng-options="rule.id as rule.name for rule in rules" ng-show="player.joining">
+                            <option value=""></option>
+                        </select>
+                    </td>
+                    <td>
+                        <input type="number" value="{{player.rating}}" ng-model="player.rating" ng-show="player.joining">
+                    </td>
+                </tr>
                 </tbody>
             </table>
-            <br />
-            <br />
+            <br/>
             <table class="buttoncontainer">
                 <tr>
                     <td>
-                        <input class="button submit" type="submit" value="Setup games" ng-disabled="settingUpGame" />
+                        <input class="button submit" type="submit" value="Setup games" ng-disabled="settingUpGame"/>
                     </td>
                     <td class="message">
                         <span class="success">{{success}}</span>
@@ -61,12 +68,11 @@
                 </tr>
             </table>
         </form>
-
-        <br />
+        <br/>
         <div ng-show="settingUpGame">
             <img src="static/assets/img/ajax-loader.gif">
         </div>
-        <div id="gamesWrapper" ng-show="!settingUpGame" ng-animate-children >
+        <div id="gamesWrapper" ng-show="!settingUpGame" ng-animate-children>
             <div ng-show="games.length > 0" class="box margin_top" ng-repeat="game in games">
                 <h4>Game {{$index + 1}} <span style="float: right; font-weight: normal;">Rating dif: {{game.rating_dif}}</span></h4>
                 <table ng-repeat="team in game.teams" class="list_table">
@@ -93,7 +99,7 @@
             </div>
             <div class="box margin_top" ng-show="total_rating_dif != null && games.length > 0">
                 Total rating difference across all games: {{total_rating_dif}}
-                <br />
+                <br/>
                 Trebuchet: {{trebuchet_allowed | yesNo}}
                 <br>
                 Rule: {{rule_choice}}
@@ -105,9 +111,9 @@
 
 <style>
     #nav_bar li a#setupgames {
-        background-color: rgba(140, 140, 140, 0.35);
-        -webkit-box-shadow: 6px 4px 38px -8px rgba(0, 0, 0, 0.47);
-        -moz-box-shadow: 6px 4px 38px -8px rgba(0, 0, 0, 0.47);
-        box-shadow: 6px 4px 38px -8px rgba(0, 0, 0, 0.47);
+    background-color: rgba(140, 140, 140, 0.35);
+    -webkit-box-shadow: 6px 4px 38px -8px rgba(0, 0, 0, 0.47);
+    -moz-box-shadow: 6px 4px 38px -8px rgba(0, 0, 0, 0.47);
+    box-shadow: 6px 4px 38px -8px rgba(0, 0, 0, 0.47);
     }
 </style>
