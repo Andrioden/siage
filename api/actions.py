@@ -8,6 +8,8 @@ from models import Player, Rule
 import math, random, copy
 from google.appengine.api import users
 from utils import error_400, current_user_player
+from config import MAX_SETUP_GAME_ATTEMPTS
+
 
 class SetupGameHandler(webapp2.RequestHandler):
     def post(self):
@@ -15,6 +17,8 @@ class SetupGameHandler(webapp2.RequestHandler):
         request_data = json.loads(self.request.body)
         algorithm = request_data['algorithm']
         player_inputs = request_data['players']
+        max_game_rating_dif = request_data['max_game_rating_dif']
+        attempts = min(request_data.get("attempts", 100), MAX_SETUP_GAME_ATTEMPTS)
 
         team_setup = "XvX"
         if "team_setup" in request_data:
@@ -36,15 +40,19 @@ class SetupGameHandler(webapp2.RequestHandler):
         elif algorithm == "Random":
             setup_data = self._random_setup(players, team_setup)
         elif algorithm == "AutoBalance":
-            setup_data = self._random_setup_best_attempt(players, 50, team_setup)
+            setup_data = self._random_setup_best_attempt(players, attempts, team_setup, max_game_rating_dif)
         elif algorithm == "AutoBalanceSAMR":
-            setup_data = self._random_setup_best_attempt_score_and_minirandomized_rating(players, 25, team_setup)
+            setup_data = self._random_setup_best_attempt_score_and_minirandomized_rating(players, attempts, team_setup, max_game_rating_dif)
+
+        if setup_data is None:
+            error_400(self.response, "ERROR_NO_SETUP_FOUND", "No setup found with the given settings within %s attempts. Please change settings." % MAX_SETUP_GAME_ATTEMPTS)
+            return
 
         # RETURN RESPONSE
         self.response.headers['Content-Type'] = 'application/json'
         self.response.out.write(json.dumps(setup_data))
 
-    def _random_setup_best_attempt_score_and_minirandomized_rating(self, players, attempts, team_setup):
+    def _random_setup_best_attempt_score_and_minirandomized_rating(self, players, attempts, team_setup, max_game_rating_dif):
         setup_avg_score_per_min = sum([player['score_per_min'] for player in players])
 
         for player in players:
@@ -54,19 +62,29 @@ class SetupGameHandler(webapp2.RequestHandler):
             skill_guess += score_skill_change
             player['rating'] = int(skill_guess)
 
-        return self._random_setup_best_attempt(players, attempts, team_setup)
+        return self._random_setup_best_attempt(players, attempts, team_setup, max_game_rating_dif)
 
-    def _random_setup_best_attempt(self, players, attempts, team_setup):
+    def _random_setup_best_attempt(self, players, attempts, team_setup, max_game_rating_dif):
         best_setup = None
-        for _ in range(attempts):
-            potential_setup = self._random_setup(players, team_setup)
+        attempts_done = 0
+        attempts_left = attempts
+        while attempts_left >= 0:
+            attempts_done += 1
+            if attempts_done > MAX_SETUP_GAME_ATTEMPTS:
+                break
+
+            potential_setup = self._random_setup(players, team_setup, max_game_rating_dif)
+            if potential_setup is None:
+                continue
+
             if best_setup is None:
                 best_setup = potential_setup
             elif potential_setup['total_rating_dif'] < best_setup['total_rating_dif']:
                 best_setup = potential_setup
+            attempts_left -= 1
         return best_setup
 
-    def _random_setup(self, players_in, team_setup):
+    def _random_setup(self, players_in, team_setup, max_game_rating_dif=9999):
         players = copy.deepcopy(players_in)
         # 1. Create the amount of games needed for the amount of players
         game_count = int(math.ceil(len(players) * 1.0 / 8))
@@ -89,8 +107,12 @@ class SetupGameHandler(webapp2.RequestHandler):
                 game = self._random_team_split_for_game(game_players)
             else:
                 game = self._random_team_split_for_game_using_predefined_setup(game_players, team_setup)
-            total_rating_dif += game['rating_dif']
-            games.append(game)
+
+            if game['rating_dif'] > max_game_rating_dif:
+                return None
+            else:
+                total_rating_dif += game['rating_dif']
+                games.append(game)
 
         return {'total_rating_dif': total_rating_dif, 'games': games}
 
@@ -144,6 +166,7 @@ class SetupGameHandler(webapp2.RequestHandler):
             return False
         else:
             return True
+
 
 class ClaimPlayerHandler(webapp2.RequestHandler):
     def get(self, player_id):
