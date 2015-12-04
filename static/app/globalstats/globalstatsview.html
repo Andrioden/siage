@@ -56,7 +56,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="fit in stats.teammate_fits | orderBy:['-points', '-win_chance', '-wins', '-score_per_min']">
+                    <tr class="animated_list_item" ng-repeat="fit in stats.teammate_fits | orderBy:['-points', '-win_chance', '-wins', '-score_per_min']">
                         <td class="no_wrap">
                             <a ng-class="{text_highlighted: '{{user.player}}' == '{{fit.player.nick}}'}" href="/players/{{fit.player.nick}}" title="View player {{fit.player.nick}}">{{fit.player.nick}}</a>
                             <span> + </span>
@@ -91,7 +91,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="fit in stats.enemy_fits | orderBy:['-points', '-win_chance', '-wins', '-score_per_min']">
+                    <tr class="animated_list_item" ng-repeat="fit in stats.enemy_fits | orderBy:['-points', '-win_chance', '-wins', '-score_per_min']">
                         <td class="no_wrap">
                             <a ng-class="{text_highlighted: '{{user.player}}' == '{{fit.player.nick}}'}" href="/players/{{fit.player.nick}}" title="View player {{fit.player.nick}}">{{fit.player.nick}}</a>
                             <span> beat </span>
@@ -126,7 +126,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="fit in stats.civ_fits | orderBy:['-points', '-win_chance', '-wins', '-score_per_min']">
+                    <tr class="animated_list_item" ng-repeat="fit in stats.civ_fits | orderBy:['-points', '-win_chance', '-wins', '-score_per_min']">
                         <td class="no_wrap">
                             <a ng-class="{text_highlighted: '{{user.player}}' == '{{fit.player.nick}}'}" href="/players/{{fit.player.nick}}" title="View player {{fit.player.nick}}">{{fit.player.nick}}</a>
                             <span> as </span>

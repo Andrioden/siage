@@ -1,20 +1,35 @@
 ﻿.setup_game_player_anim.ng-enter {
-  /* standard transition code */
   -webkit-transition: 1s linear all;
   transition: 1s linear all;
   opacity:0;
 }
 .setup_game_player_anim.ng-enter-stagger {
-  /* this will have a 100ms delay between each successive leave animation */
   -webkit-transition-delay: 5s;
   transition-delay: 5s;
 
-  /* in case the stagger doesn't work then these two values
-   must be set to 0 to avoid an accidental CSS inheritance */
   -webkit-transition-duration: 0s;
   transition-duration: 0s;
 }
 .setup_game_player_anim.ng-enter.ng-enter-active {
-  /* standard transition styles */
   opacity:1;
+}
+
+.animated_list_item.ng-enter,
+.players.ng-leave {
+    transition: opacity .1s;
+}
+
+.animated_list_item.ng-enter,
+.animated_list_item.ng-leave-active{
+    opacity: 0;
+}
+
+.animated_list_item.ng-enter-active {
+    opacity: 1;
+}
+
+.ng-enter-stagger,
+.ng-leave-stagger {
+    transition-delay: .02s;
+    transition-duration: 0;
 }

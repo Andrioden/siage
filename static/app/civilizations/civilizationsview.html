@@ -20,7 +20,7 @@
                 <tr ng-show="loading_civilizations">
                     <td><img src="static/assets/img/ajax-loader.gif"></td>
                 </tr>
-                <tr ng-repeat="civ in civilizations | orderBy:['-stats.points','-stats.win_chance', '-stats.played', '-stats.average_score_per_min'] | orderEmpty: 'stats': 'toBottom'">
+                <tr class="animated_list_item" ng-repeat="civ in civilizations | orderBy:['-stats.points','-stats.win_chance', '-stats.played', '-stats.average_score_per_min'] | orderEmpty: 'stats': 'toBottom'">
                     <td class="mini">{{$index + 1}}.</td>
                     <td><a href="/civs/{{civ.name}}" title="View civilization">{{civ.name}}</a></td>
                     <td ng-show="civ.stats">{{civ.stats.played}}</td>

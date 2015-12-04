@@ -34,25 +34,25 @@
                     <td><h4>Rule choice</h4></td>
                     <td><h4>Adjust rating</h4></td>
                 </tr>
-                <tr ng-repeat="player in players | orderBy:['-rating','nick']">
-                    <td>
-                        <label>
-                            <input class="checkbox" type="checkbox" ng-model="player.joining"/>
-                            {{player.nick}}
-                        </label>
-                    </td>
-                    <td>
-                        <input class="checkbox" type="checkbox" ng-model="player.settings.default_trebuchet_allowed" ng-show="player.joining"/>
-                    </td>
-                    <td>
-                        <select ng-model="player.settings.default_rule" ng-options="rule.id as rule.name for rule in rules" ng-show="player.joining">
-                            <option value=""></option>
-                        </select>
-                    </td>
-                    <td>
-                        <input type="number" value="{{player.rating}}" ng-model="player.rating" ng-show="player.joining">
-                    </td>
-                </tr>
+                    <tr class="animated_list_item" ng-repeat="player in players | orderBy:['-rating','nick']">
+                        <td>
+                            <label>
+                                <input class="checkbox" type="checkbox" ng-model="player.joining" />
+                                {{player.nick}}
+                            </label>
+                        </td>
+                        <td>
+                            <input class="checkbox" type="checkbox" ng-model="player.settings.default_trebuchet_allowed" ng-show="player.joining" />
+                        </td>
+                        <td>
+                            <select ng-model="player.settings.default_rule" ng-options="rule.id as rule.name for rule in rules" ng-show="player.joining">
+                                <option value=""></option>
+                            </select>
+                        </td>
+                        <td>
+                            <input type="number" value="{{player.rating}}" ng-model="player.rating" ng-show="player.joining">
+                        </td>
+                    </tr>
                 </tbody>
             </table>
             <br/>

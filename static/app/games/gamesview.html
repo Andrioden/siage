@@ -10,7 +10,7 @@
                 <tr ng-show="loading_games">
                     <td><img src="static/assets/img/ajax-loader.gif"></td>
                 </tr>
-                <tr ng-repeat="game in filteredGames = (games | filter: gameSearchQuery : matchEveryWord()  | orderBy: 'date_epoch' : true)">
+                <tr class="animated_list_item" ng-repeat="game in filteredGames = (games | filter: gameSearchQuery : matchEveryWord()  | orderBy: 'date_epoch' : true)">
                     <td><a href="/games/{{game.id}}" title="View game">{{game.searchString}}</a></td>
                 </tr>
             </tbody>
