@@ -63,7 +63,7 @@ def add_test_data_randomized_game(game_date):
     total_players_this_game = random.randint(2,8)
     for i in range(total_players_this_game):
         PlayerResult(
-            player = players[i].key,
+            player = players[i].key, # Might get index out of range, thats because of cache issues. Need to re rerun add_test_data_randomized_game()
             game = game_key,
             game_date = game_date,
             is_winner = True if (i < total_players_this_game / 2) else False,

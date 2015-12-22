@@ -7,6 +7,7 @@ from rating import recalculate_ratings
 from models import *
 from api.utils import validate_logged_in_admin
 import logging
+from utils import *
 
 
 class ReCalcRatingHandler(webapp2.RequestHandler):
@@ -110,10 +111,75 @@ class ResetRatingAdjustment(webapp2.RequestHandler):
         self.response.headers['Content-Type'] = 'application/json'
         self.response.out.write(json.dumps({'response': "Rating adjustment reset. Remember to recalculate ratings if player have been part of games."}))
 
+
+class DataImportPythonScript(webapp2.RequestHandler):
+    def get(self):
+
+        if not validate_logged_in_admin(self.response):
+            return
+
+        self.response.out.write("# FULL PYTHON SCRIPT: <br/>")
+        self.response.out.write("<br/>")
+        self.response.out.write("# IMPORTS: <br/>")
+        self.response.out.write("from models import * <br/>")
+        self.response.out.write("from datetime import datetime <br/>")
+        self.response.out.write("from google.appengine.ext import ndb <br/>")
+        self.response.out.write("<br/>")
+        self.response.out.write("# CLEAR DB: <br/>")
+        self.response.out.write("ndb.delete_multi(Player.query().fetch(keys_only=True)) <br/>")
+        self.response.out.write("ndb.delete_multi(Rule.query().fetch(keys_only=True)) <br/>")
+        self.response.out.write("ndb.delete_multi(Game.query().fetch(keys_only=True)) <br/>")
+        self.response.out.write("ndb.delete_multi(PlayerResult.query().fetch(keys_only=True)) <br/>")
+        self.response.out.write("<br/>")
+        self.response.out.write("# PLAYERS: <br/>")
+        for player in Player.query().fetch():
+            self.response.out.write(self._get_data_dump_string_of_object(player) + "<br><br>")
+        self.response.out.write("<br/>")
+        self.response.out.write("# RULES: <br/>")
+        for rule in Rule.query().fetch():
+            self.response.out.write(self._get_data_dump_string_of_object(rule) + "<br><br>")
+        self.response.out.write("<br/>")
+        self.response.out.write("# GAMES: <br/>")
+        for game in Game.query().fetch():
+            self.response.out.write(self._get_data_dump_string_of_object(game) + "<br><br>")
+        self.response.out.write("<br/>")
+        self.response.out.write("# PlayerResults: <br/>")
+        for player_result in PlayerResult.query().fetch():
+            self.response.out.write(self._get_data_dump_string_of_object(player_result) + "<br><br>")
+
+        # Uncomment below to download as file, not really practical but keeping code
+        #self.response.headers['Content-Type'] = 'text/csv'
+        #self.response.headers['Content-Disposition'] = "attachment; filename=siage_import_script.py"
+
+
+    def _get_data_dump_string_of_object(self, obj):
+        data_string = "%s(id=%s, " % (type(obj).__name__, obj.key.id())
+        for variable_name in obj.__dict__['_values'].keys():  # __dict__['_values'] contains all class object variables
+            variable_value = getattr(obj, variable_name)
+            if variable_value is None:
+                data_string += "%s=None, " % variable_name
+            elif type(variable_value) is list:
+                pass
+            elif type(variable_value) in (int, long, bool, float):
+                data_string += "%s=%s, " % (variable_name, variable_value)
+            elif type(variable_value) is unicode:
+                data_string += "%s='%s', " % (variable_name, variable_value)
+            elif type(variable_value) is datetime:
+                data_string += "%s=datetime.fromtimestamp(%s), " % (variable_name, date_to_epoch(variable_value))
+            elif type(variable_value) is ndb.Key:
+                data_string += "%s=ndb.Key(%s, %s), " % (variable_name, variable_value.kind(), variable_value.id())
+            else:
+                raise Exception("Type not handled: " + type(variable_value).__name__)
+
+        data_string = data_string[:-2]
+        data_string += ").put()"
+        return data_string
+
 app = webapp2.WSGIApplication([
     (r'/api/actions/admin/recalcrating/', ReCalcRatingHandler),
     (r'/api/actions/admin/fixdb/', FixDBHandler),
     (r'/api/actions/admin/clearstats/', ClearStatsHandler),
     (r'/api/actions/admin/adjustrating/', AdjustRatingHandler),
     (r'/api/actions/admin/resetratingadjustment/', ResetRatingAdjustment),
+    (r'/api/actions/admin/dataimportpythonscript/', DataImportPythonScript),
 ], debug=True)

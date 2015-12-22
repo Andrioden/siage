@@ -352,6 +352,8 @@ class Player(ndb.Model):
         self.put()
 
 
+
+
 class Rule(ndb.Model):
     name = ndb.StringProperty(required=True)
     description = ndb.StringProperty(required=True)
@@ -420,7 +422,7 @@ class Game(ndb.Model):
                 'id': self.key.id(),
                 'title': "%s %s" % (self.game_type, self.location),
                 'team_format': self.game_format(),
-                'date_epoch': int((self.date - datetime(1970,1,1)).total_seconds()),
+                'date_epoch': _date_to_epoch(self.date),
                 'game_type': self.game_type,
             })
             
@@ -593,6 +595,11 @@ class CivilizationStats(ndb.Model):
 def _fit_points(wins, played):
     return (wins * 2) - played
 
+
+def _date_to_epoch(date_value):
+    """ Duplicate of utils method, but added here because of potential circular reference between models.py and utils.py
+    """
+    return int((date_value - datetime(1970,1,1)).total_seconds())
 
 # class GlobalStats(ndb.Model):
 #     worst_couple_player1 = ndb.KeyProperty(kind=Player)

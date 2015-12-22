@@ -1,6 +1,7 @@
 import json
 from google.appengine.api import users
 from models import Player
+from datetime import datetime
 
 
 def error_400(response, code, message):
@@ -50,3 +51,7 @@ def validate_logged_in_admin(response):
 def current_user_player():
     user = users.get_current_user()
     return Player.query(Player.userid == user.user_id()).get()
+
+
+def date_to_epoch(date_value):
+    return int((date_value - datetime(1970,1,1)).total_seconds())
