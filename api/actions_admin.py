@@ -155,15 +155,18 @@ class DataImportPythonScript(webapp2.RequestHandler):
     def _get_data_dump_string_of_object(self, obj):
         data_string = "%s(id=%s, " % (type(obj).__name__, obj.key.id())
         for variable_name in obj.__dict__['_values'].keys():  # __dict__['_values'] contains all class object variables
-            variable_value = getattr(obj, variable_name)
-            if variable_value is None:
+            variable_value = getattr(obj, variable_name, None)
+            if variable_name == "is_host":
+                continue
+            elif variable_value is None:
                 data_string += "%s=None, " % variable_name
             elif type(variable_value) is list:
-                pass
+                continue
             elif type(variable_value) in (int, long, bool, float):
                 data_string += "%s=%s, " % (variable_name, variable_value)
             elif type(variable_value) is unicode:
-                data_string += "%s='%s', " % (variable_name, variable_value)
+                escaped_value = variable_value.replace("\'", "\\'").replace("\"", "\\\"")
+                data_string += "%s='%s', " % (variable_name, escaped_value)
             elif type(variable_value) is datetime:
                 data_string += "%s=datetime.fromtimestamp(%s), " % (variable_name, date_to_epoch(variable_value))
             elif type(variable_value) is ndb.Key:
