@@ -27,6 +27,7 @@
                 <td>Win%</td>
                 <td>Rating</td>
                 <td ng-show="show_full_players_data" title="Rating adjustment">RA</td>
+                <td ng-show="show_full_players_data" title="Rating decay">RD</td>
                 <td ng-show="show_full_players_data" title="Score per minute">S/M</td>
                 <td ng-show="show_full_players_data">&lt;3 teammate</td>
                 <td ng-show="show_full_players_data">Best vs</td>
@@ -54,6 +55,7 @@
                     </td>
                     <td ng-show="player.played == 0">Unrated</td>
                     <td ng-show="show_full_players_data">{{player.rating_adjustment}}</td>
+                    <td ng-show="show_full_players_data">{{player.rating_decay}}</td>
                     <td ng-show="show_full_players_data">{{player.stats.average_score_per_min}}</td>
                     <td ng-show="show_full_players_data">{{player.stats.top_teammate_fit}}</td>
                     <td ng-show="show_full_players_data">{{player.stats.top_enemy_fit}}</td>

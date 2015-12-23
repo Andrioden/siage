@@ -73,7 +73,8 @@ siAgeApp.controller('PlayerController',
                 function (data) {
                     $scope.games = data;
                     $scope.loading_games = false;
-                    drawRatingGraph(data, $scope.player.rating_adjustment);
+                    var rating_offset = $scope.player.rating_adjustment + $scope.player.rating_decay;
+                    drawRatingGraph(data, rating_offset);
                 }
                 , function (error) {
                     $scope.loading_games = false;
@@ -91,8 +92,8 @@ siAgeApp.controller('PlayerController',
 
 google.load('visualization', '1', { packages: ['corechart', 'line'] });
 
-function drawRatingGraph(player_results, rating_adjustment) {
-    var chartData = prepareChartData(player_results, rating_adjustment);
+function drawRatingGraph(player_results, rating_offset) {
+    var chartData = prepareChartData(player_results, rating_offset);
     var lowestValue = getLowestRatingValue(chartData);
 
     var data = new google.visualization.DataTable();
@@ -147,7 +148,7 @@ function drawRatingGraph(player_results, rating_adjustment) {
     google.visualization.events.addListener(chart, 'select', handler);
 }
 
-function prepareChartData(player_results, rating_adjustment) {
+function prepareChartData(player_results, rating_offset) {
     var chartData = [];
 
     for (i = 0; i < player_results.length; i++) {
@@ -160,7 +161,7 @@ function prepareChartData(player_results, rating_adjustment) {
         chartData.push(temp);
     }
 
-    chartData.push(['Joined', 1000 + rating_adjustment, '']);
+    chartData.push(['Joined', 1000 + rating_offset, '']);
     chartData.reverse();
 
     return chartData;

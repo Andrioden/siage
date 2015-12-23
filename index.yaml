@@ -28,6 +28,11 @@ indexes:
 
 - kind: PlayerResult
   properties:
+  - name: game_date
+  - name: player
+
+- kind: PlayerResult
+  properties:
   - name: player
   - name: game_date
 

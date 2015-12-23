@@ -48,9 +48,6 @@ class GlobalStatsHandler(webapp2.RequestHandler):
                 longest_losing_streak_number = player.stats_longest_losing_streak
                 longest_losing_streak_player = player
 
-        highest_rating_result = PlayerResult.query().order(-PlayerResult.stats_rating).get()
-        lowest_rating_result = PlayerResult.query().order(PlayerResult.stats_rating).get()
-
         longest_game = Game.query().order(-Game.duration_seconds).get()
         shortest_game = Game.query().order(Game.duration_seconds).get()
 
@@ -70,20 +67,6 @@ class GlobalStatsHandler(webapp2.RequestHandler):
                 'player': {
                     'id': longest_losing_streak_player.key.id(),
                     'nick': longest_losing_streak_player.nick
-                }
-            },
-            'highest_rating_achieved': {
-                'number': highest_rating_result.stats_rating,
-                'player': {
-                    'id': highest_rating_result.player.id(),
-                    'nick': highest_rating_result.player.get().nick
-                }
-            },
-            'lowest_rating_achieved': {
-                'number': lowest_rating_result.stats_rating,
-                'player': {
-                    'id': lowest_rating_result.player.id(),
-                    'nick': lowest_rating_result.player.get().nick
                 }
             },
             'longest_game': {

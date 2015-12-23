@@ -13,6 +13,7 @@ class Player(ndb.Model):
     userid = ndb.StringProperty(default=None)
     verified = ndb.BooleanProperty(default=False)
     rating_adjustment = ndb.IntegerProperty(default=0)
+    rating_decay = ndb.IntegerProperty(default=0)
     active = ndb.BooleanProperty(default=True)
     stats_average_score = ndb.IntegerProperty(default=None)
     stats_best_score = ndb.IntegerProperty(default=None)
@@ -60,7 +61,7 @@ class Player(ndb.Model):
         if hasattr(self, "_current_rating_cached"):
             return self._current_rating_cached
         else:
-            self._current_rating_cached = PlayerResult.get_last_stats_rating(self.key)
+            self._current_rating_cached = PlayerResult.get_last_stats_rating(self.key) + self.rating_decay
             return self._current_rating_cached
 
     def set_new_rating_adjustment(self, new_rating_adjustment):
@@ -79,8 +80,8 @@ class Player(ndb.Model):
             else:
                 i += 1
 
-        # Verify that the sum of all rating adjustments are 0
         all_players = all_other_players + [self]
+        # Verify that the sum of all rating adjustments are 0
         sum = 0
         for player in all_players:
             sum += player.rating_adjustment
@@ -96,6 +97,7 @@ class Player(ndb.Model):
         if data_detail in ["simple", "full"]:
             data.update(self._get_base_data())
         if data_detail == "full":
+            data.update(self._get_full_data())
             data.update(self._get_stats_data())
         return data
 
@@ -108,39 +110,23 @@ class Player(ndb.Model):
             'nick': self.nick, 
             'rating': self.rating(),
             'rating_adjustment': self.rating_adjustment,
+            'rating_decay': self.rating_decay,
             'played': played,
             'wins': wins,
             'win_chance': None if played == 0 else int(wins * 100.0 / played),
             'claimed': True if self.userid else False,
             'verified': True if self.verified == True else False,
             'active': self.active,
-            'rating_change_prev_round': self._get_rating_change_previous_round(), # Only used for league, might need to further limit when this loads
             'settings': {
                 'default_trebuchet_allowed': self.setting_default_trebuchet_allowed,
                 'default_rule': self.setting_default_rule.id() if self.setting_default_rule else None
             }
         }
-        
-    def _get_rating_change_previous_round(self):
-        newest_player_result = PlayerResult.query(PlayerResult.player == self.key).order(-PlayerResult.game_date).get()
-        if not newest_player_result:
-            return "0"
 
-        newest_game_session_result = PlayerResult.query().order(-PlayerResult.game_date).get()
-        if not newest_game_session_result:
-            return "0"
-        else:
-            newest_game_session_date = newest_game_session_result.game_date
-
-        previous_round_date = newest_game_session_date - timedelta(days=5)
-        previous_round = PlayerResult.query(PlayerResult.player == self.key, PlayerResult.game_date < previous_round_date).order(-PlayerResult.game_date).get()
-
-        if previous_round:
-            previous_rating = previous_round.stats_rating
-        else:
-            previous_rating = PLAYER_RATING_START_VALUE + self.rating_adjustment
-
-        return newest_player_result.stats_rating - previous_rating
+    def _get_full_data(self):
+        return {
+            'rating_change_prev_round': self._get_rating_change_previous_round(),
+        }
         
     def _get_stats_data(self):
         if not self.calc_and_update_stats_if_needed():
@@ -173,6 +159,27 @@ class Player(ndb.Model):
                 'civ_fit': self.stats_civ_fit
             }
         }
+
+    def _get_rating_change_previous_round(self):
+        newest_player_result = PlayerResult.query(PlayerResult.player == self.key).order(-PlayerResult.game_date).get()
+        if not newest_player_result:
+            return "0"
+
+        newest_game_session_result = PlayerResult.query().order(-PlayerResult.game_date).get()
+        if not newest_game_session_result:
+            return "0"
+        else:
+            newest_game_session_date = newest_game_session_result.game_date
+
+        previous_round_date = newest_game_session_date - timedelta(days=5)
+        previous_round = PlayerResult.query(PlayerResult.player == self.key, PlayerResult.game_date < previous_round_date).order(-PlayerResult.game_date).get()
+
+        if previous_round:
+            previous_rating = previous_round.stats_rating
+        else:
+            previous_rating = PLAYER_RATING_START_VALUE + self.rating_adjustment
+
+        return newest_player_result.stats_rating - previous_rating
 
     def calc_and_update_stats_if_needed(self):
         if self.stats_average_score is None:
@@ -505,7 +512,7 @@ class PlayerResult(ndb.Model):
             'score': self.score,
             'team': self.team,
             'civilization': self.civilization,
-            'stats_rating': self.stats_rating,
+            'stats_rating': self.stats_rating + player.rating_decay,
             'rating_earned': self.rating_earned()
         }
 

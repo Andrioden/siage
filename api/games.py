@@ -6,7 +6,7 @@ import logging
 from models import Game, Player, PlayerResult, Rule, CivilizationStats
 from datetime import datetime
 from google.appengine.ext import ndb
-from rating import RatingCalculator
+from rating import RatingCalculator, trigger_rating_decay_for_game
 from api.utils import error_400, validate_authenticated, validate_request_data
 
 
@@ -37,7 +37,9 @@ class GamesHandler(webapp2.RequestHandler):
         if player_id:
             game_keys = [player_result.game for player_result in data]
             games_data = [game.get_data(data_detail) for game in ndb.get_multi(game_keys)]
-            self._expand_game_data_with_player_result_data(games_data, data)
+            player = ndb.Key(Player, int(player_id)).get()
+            player_rating_decay = player.rating_decay
+            self._expand_game_data_with_player_result_data(games_data, data, player_rating_decay)
         else:
             games_data = [game.get_data(data_detail) for game in data]
         
@@ -45,13 +47,13 @@ class GamesHandler(webapp2.RequestHandler):
         self.response.headers['Content-Type'] = 'application/json'
         self.response.out.write(json.dumps(games_data))
     
-    def _expand_game_data_with_player_result_data(self, games_data, player_results):
+    def _expand_game_data_with_player_result_data(self, games_data, player_results, rating_decay):
         # Set stats rating from the player_results object
         for game in games_data:
             for res in player_results:
                 if res.game.id() == game['id']:
                     game['is_winner'] = res.is_winner
-                    game['stats_rating'] = res.stats_rating
+                    game['stats_rating'] = res.stats_rating + rating_decay
 
     def post(self):
         """ --------- CREATE GAME --------- """
@@ -77,7 +79,7 @@ class GamesHandler(webapp2.RequestHandler):
         else:
             rule_key = None
 
-        game_key = Game(
+        game = Game(
             rule = rule_key,
             # After finish values
             date = game_date,
@@ -99,33 +101,38 @@ class GamesHandler(webapp2.RequestHandler):
             location = request_data['location'],
             # Special settings
             trebuchet_allowed = request_data['trebuchet_allowed']
-        ).put()
+        ).put().get()
 
         # CREATE PLAYER RESULTS
         rc = RatingCalculator()
         rc.add_player_results_from_dict(request_data['playerResults'])
         new_ratings = rc.calc_and_get_new_rating_dict()
 
+        player_results = []
         for player_result in request_data['playerResults']:
             player_key = ndb.Key(Player, int(player_result['player_id']))
             
-            PlayerResult(
+            player_result_obj = PlayerResult(
                 player = player_key,
-                game = game_key,
+                game = game.key,
                 game_date = game_date,
                 is_winner = player_result['is_winner'],
                 score = player_result['score'],
                 team = player_result['team'],
                 civilization = player_result['civilization'],
                 stats_rating = new_ratings[player_key.id()]
-            ).put()
-        
+            ).put().get()
+
+            player_results.append(player_result_obj)
+
+        trigger_rating_decay_for_game(game.date, player_results)
+
         self._clear_all_player_stats()
         ndb.delete_multi(CivilizationStats.query().fetch(keys_only=True))
 
         # RETURN RESPONSE
         self.response.headers['Content-Type'] = 'application/json'
-        self.response.out.write(json.dumps({'response': "success", 'game_id': game_key.id()}))
+        self.response.out.write(json.dumps({'response': "success", 'game_id': game.key.id()}))
 
     def _validate_no_empty_player_results(self, player_results):
         for player_result in player_results:

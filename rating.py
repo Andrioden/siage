@@ -2,15 +2,16 @@ import math
 from operator import attrgetter
 import logging
 from config import *
+from google.appengine.ext import ndb # Will break tests, but fuck it
+from models import PlayerResult, Player, Game # Will break tests, but fuck it
+from operator import attrgetter
+
 
 class RatingCalculator:
     def __init__(self):
         self.player_results = []
 
     def add_player_results_from_dict(self, player_results_dict):
-        from models import PlayerResult, Player # On demand loading modules because they break the tests
-        from google.appengine.ext import ndb # On demand loading modules because they break the tests
-
         for player_res_dict in player_results_dict:
             player_key = ndb.Key(Player, int(player_res_dict['player_id']))
             last_rating = PlayerResult.get_last_stats_rating(player_key)
@@ -20,7 +21,7 @@ class RatingCalculator:
         self._calc_ratings()
         new_ratings = {}
         for res in self.player_results:
-            new_ratings[res.player_id] = res.new_rating
+            new_ratings[res.player_id] = res.prev_rating + res.rating_change
         return new_ratings
     
     def _calc_ratings(self):
@@ -93,9 +94,9 @@ class RatingCalculator:
                 player_rating_change = int(round(team_rating_change))
 
             res.rating_change = player_rating_change
-            res.new_rating = res.prev_rating + player_rating_change
             #logging.info("Team: %s | Player: %s | winchance: %s | team rating change: %s | player score %s | score adjusted rating: %s | rating: %s to %s " % (res.team, res.player_id, win_chance, team_rating_change, res.score, player_rating_change, res.prev_rating, res.new_rating))
             #print "Team: %s | Player: %s | winchance: %s | team rating change: %s | player score %s | score adjusted rating: %s | rating: %s to %s " % (res.team, res.player_id, win_chance, team_rating_change, res.score, player_rating_change, res.prev_rating, res.new_rating)
+
         # 7. Validate that an equal amount of rating have been lost as gained.
         #    If a difference is found. Give point from top score or remove from bottom.
         total_rating_change = sum(res.rating_change for res in self.player_results)
@@ -112,15 +113,13 @@ class RatingCalculator:
         if total_rating_change != 0:
             #logging.info([str(res) for res in self.player_results])
             raise Exception("Rating algorithm failed. Difference between rating gained and lost after correction: %s" % total_rating_change)
-            
+
     def _add_rating_to_top_scored_player(self, value):
         top_scored_player = max(self.player_results, key=attrgetter('score'))
-        top_scored_player.new_rating += value
         top_scored_player.rating_change += value
         
     def _remove_rating_from_bottom_scored_player(self, value):
         bottom_scored_player = min(self.player_results, key=attrgetter('score'))
-        bottom_scored_player.new_rating -= value
         bottom_scored_player.rating_change -= value
         
     def _get_team_rating(self, team):
@@ -167,7 +166,8 @@ class RatingCalculator:
             raise Exception("Validation Error: No winner.")
         elif len(set(winner_teams_or_players)) > 1:
             raise Exception("Validation Error: There is winners on multiple teams.")
-    
+
+
 class RatingPlayerResult:
     def __init__(self, player_id, is_winner, score, team, prev_rating):
         self.player_id = player_id
@@ -175,16 +175,20 @@ class RatingPlayerResult:
         self.score = score
         self.prev_rating = prev_rating
         self.team = team
-        self.new_rating = None
         self.rating_change = None
         
     def __str__(self):
-        return "Player ID %s | Score: %s | new rating; %s | rating change: %s" % (self.player_id, self.score, self.new_rating, self.rating_change)
-    
+        return "Player ID %s | Score: %s | new rating; %s | rating change: %s" % (self.player_id, self.score, self.rating_change)
+
+
 def recalculate_ratings():
-    from models import PlayerResult, Game # On demand loading modules because they break the tests
     logging.info("----- RECALCULATING RATINGS ------")
-    for game in Game.query().order(Game.date).fetch():
+
+    logging.info("----- Reset rating decay ------")
+    _reset_rating_decay()
+
+    logging.info("----- Iterate Games ------")
+    for game in Game.query().order(Game.date):
         logging.info("Recalculating for game %s" % game.key.id())
         game_player_results = PlayerResult.query(PlayerResult.game == game.key).fetch()
         # Recalc rating
@@ -197,3 +201,48 @@ def recalculate_ratings():
         for res in game_player_results:
             res.stats_rating = recalced_rating[res.player.id()]
             res.put()
+        trigger_rating_decay_for_game(game.date, game_player_results)
+
+def _reset_rating_decay():
+    for player in Player.query().fetch():
+        player.rating_decay = 0
+        player.put()
+
+
+def trigger_rating_decay_for_game(game_date, game_player_results):
+    game_player_ids = [game_player.player.id() for game_player in game_player_results]
+    
+    player_results_with_game_before = PlayerResult.query(PlayerResult.game_date <= game_date).fetch()
+
+    skip_fetching_player_ids = []
+    players_that_will_decay = []
+    for player_res in player_results_with_game_before:
+        if not player_res.player.id() in skip_fetching_player_ids:
+            skip_fetching_player_ids.append(player_res.player.id())
+            if not player_res.player.id() in game_player_ids:
+                players_that_will_decay.append(player_res.player.get())
+
+    # Apply decay to players
+    total_decay = 0
+    for player in players_that_will_decay:
+        if player.rating_decay > -RATING_MAX_DECAY:
+            decay = max_decay(player.rating_decay)
+            player.rating_decay -= decay
+            total_decay += decay
+            player.put()
+
+    # Spread out decay to other players
+    game_player_results.sort(key=lambda x: x.score, reverse=True)
+    game_players = [game_player_result.player.get() for game_player_result in game_player_results]
+    game_player_count = len(game_players)
+    for i in range(total_decay):
+        game_players[i % game_player_count].rating_decay += 1
+
+    for game_player in game_players:
+        game_player.put()
+
+
+def max_decay(player_rating_decay):
+    decay = max(0, RATING_MAX_DECAY + player_rating_decay)
+    decay = min(decay, RATING_DECAY_PER_GAME)
+    return decay
