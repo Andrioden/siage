@@ -48,6 +48,14 @@ def validate_logged_in_admin(response):
         return True
 
 
+def validate_request_data(response, request_data, list_of_dict_keys):
+    for key in list_of_dict_keys:
+        if request_data.get(key, None) in [None, '']:
+            error_400(response, "VALIDATION_ERROR_MISSING_DATA", "The request data is missing the input value '%s'" % key)
+            return False
+    return True
+
+
 def current_user_player():
     user = users.get_current_user()
     return Player.query(Player.userid == user.user_id()).get()

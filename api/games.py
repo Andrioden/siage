@@ -7,7 +7,7 @@ from models import Game, Player, PlayerResult, Rule, CivilizationStats
 from datetime import datetime
 from google.appengine.ext import ndb
 from rating import RatingCalculator
-from api.utils import error_400, validate_authenticated
+from api.utils import error_400, validate_authenticated, validate_request_data
 
 
 class GamesHandler(webapp2.RequestHandler):
@@ -58,7 +58,9 @@ class GamesHandler(webapp2.RequestHandler):
         request_data = json.loads(self.request.body)
 
         # VALIDATING
-        if not request_data['duration_seconds']:
+        if not validate_request_data(self.response, request_data, ['location']):
+            return
+        if not request_data['duration_seconds']: # Has to be validated like this because input is 0
             error_400(self.response, "VALIDATION_ERROR_NO_DURATION", "Missing input: Duration.")
             return
         if not self._validate_no_empty_player_results(request_data['playerResults']):
@@ -124,15 +126,18 @@ class GamesHandler(webapp2.RequestHandler):
         # RETURN RESPONSE
         self.response.headers['Content-Type'] = 'application/json'
         self.response.out.write(json.dumps({'response': "success", 'game_id': game_key.id()}))
+
     def _validate_no_empty_player_results(self, player_results):
         for player_result in player_results:
             if player_result['player_id'] is None or not player_result['player_id'].isdigit():
                 error_400(self.response, "VALIDATION_ERROR_EMPTY_PLAYER_RESULTS", "Player Results contain items without a valid player id.")
                 return False
         return True
+
     def _clear_all_player_stats(self):
         for player in Player.query():
             player.clear_stats()
+
 
 class GameHandler(webapp2.RequestHandler):
     def get(self, game_id):
