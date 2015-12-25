@@ -14,7 +14,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr class="animated_list_item" ng-repeat="player_result in game.player_results |orderBy:['-is_winner','team','-score','nick']" ng-class="{winner_team: player_result.is_winner}">
+                <tr ng-repeat="player_result in game.player_results |orderBy:['-is_winner','team','-score','nick']" ng-class="{winner_team: player_result.is_winner}">
                     <td>
                         <img class="icon" title="Winner" ng-show="player_result.is_winner" src="/static/assets/img/crown_w_rock.png">
                     </td>
