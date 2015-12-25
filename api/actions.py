@@ -4,8 +4,10 @@ import webapp2
 import json
 import logging
 from google.appengine.ext import ndb
-from models import Player, Rule
-import math, random, copy
+from models import Player, Rule, CIVILIZATIONS
+import math
+import random
+import copy
 from google.appengine.api import users
 from utils import error_400, current_user_player
 from config import MAX_SETUP_GAME_ATTEMPTS
@@ -47,6 +49,13 @@ class SetupGameHandler(webapp2.RequestHandler):
         if setup_data is None:
             error_400(self.response, "ERROR_NO_SETUP_FOUND", "No setup found with the given settings within %s attempts. Please change settings." % MAX_SETUP_GAME_ATTEMPTS)
             return
+
+        # Add civilizations to setup data
+        logging.info(setup_data)
+        for game in setup_data['games']:
+            for team in game['teams']:
+                for player in team['players']:
+                    player['civ'] = random.choice(CIVILIZATIONS)
 
         # RETURN RESPONSE
         self.response.headers['Content-Type'] = 'application/json'

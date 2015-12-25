@@ -11,16 +11,30 @@
             <span ng-if="SetupGame.algorithm == 'AutoBalanceSAMR'">AutoBalance Score Adjusted Mini Random - like AutoBalance also tries to set up teams for the lowest rating difference, just that this algorithm also have a very small rating adjustment according to player score and adds a very small randomness to make it less predictive.</span>
             <span ng-if="SetupGame.algorithm == 'Random'">Random - places all players into random teams. Defaults to two teams unless the team setup (XvXvX) is given.</span>
             <span ng-if="SetupGame.algorithm == 'RandomManyTeams'">RandomManyTeams - randoms all players into a random amount of teams. The randomness is restricted by not letting a team get more than 1 player advantage over other teams.</span>
-            <br/>
+            <hr/>
             <div ng-if="['AutoBalance', 'AutoBalanceSAMR'].indexOf(SetupGame.algorithm) != -1">
                 <label>Max rating difference per game: </label>
-                <input type="number" ng-if="SetupGame.algorithm != 'RandomManyTeams'" ng-model="SetupGame.max_game_rating_dif">
-                <br/>
+                <input type="number" ng-if="SetupGame.algorithm != 'RandomManyTeams'" ng-model="SetupGame.max_game_rating_dif" class="small_input">
                 <label>Max successful attempts below max difference: </label>
-                <input type="number" ng-if="SetupGame.algorithm != 'RandomManyTeams'" ng-model="SetupGame.attempts">
-                <br/>
+                <input type="number" ng-if="SetupGame.algorithm != 'RandomManyTeams'" ng-model="SetupGame.attempts" class="small_input">
             </div>
-            <br/>
+            <hr/>
+            <div>
+                <label>MegaRandom %</label>
+                <input type="number" ng-model="SetupGame.map_style_weight.megarandom" class="small_input">
+                <label>Random Land map %</label>
+                <input type="number" ng-model="SetupGame.map_style_weight.random_land_map" class="small_input">
+                <label>The Unknown %</label>
+                <input type="number" ng-model="SetupGame.map_style_weight.the_unknown" class="small_input">
+                <label>Any %</label>
+                <input type="number" ng-model="SetupGame.map_style_weight.any" class="small_input">
+            </div>
+            <hr/>
+            <div>
+                <label>Roll game type: </label>
+                <input type="checkbox" ng-model="SetupGame.roll_game_type" class="small_input">
+            </div>
+            <hr/>
             <table class="info_table">
                 <tbody>
                 <tr ng-show="loading_players">
@@ -85,12 +99,9 @@
                         <td>
                             <table class="list_table">
                                 <tr ng-repeat="player in team.players | orderBy:['-rating','nick']" class="setup_game_player_anim">
-                                    <td>
-                                        {{player.nick}}
-                                    </td>
-                                    <td>
-                                        {{player.rating}}
-                                    </td>
+                                    <td>{{player.nick}}</td>
+                                    <td>{{player.rating}}</td>
+                                    <td>{{player.civ}}</td>
                                 </tr>
                             </table>
                         </td>
@@ -101,8 +112,12 @@
                 Total rating difference across all games: {{total_rating_dif}}
                 <br/>
                 Trebuchet: {{trebuchet_allowed | yesNo}}
-                <br>
+                <br/>
                 Rule: {{rule_choice}}
+                <br/>
+                Map Style: {{map_style_choice}}
+                <br/>
+                Game Type: {{game_type_choice}}
             </div>
         </div>
 

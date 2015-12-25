@@ -1,8 +1,19 @@
 ﻿var siAgeApp = angular.module('SiAgeApp');
 
 siAgeApp.controller('SetupGamesController',
-    function ($rootScope, $scope, Player, Rule, PlayerAction, $routeParams, $timeout) {
-        $scope.SetupGame = { 'players': [], 'max_game_rating_dif': 125, 'attempts': 500 };
+    function ($rootScope, $scope, Player, Rule, PlayerAction, $routeParams, $timeout, GameSetting) {
+        $scope.SetupGame = {
+            'players': [],
+            'max_game_rating_dif': 125,
+            'attempts': 500,
+            'map_style_weight': {
+                'megarandom': 30,
+                'random_land_map': 10,
+                'the_unknown': 10,
+                'any': 50
+            },
+            'roll_game_type': false
+        };
         $scope.algorithms = ["AutoBalance", "AutoBalanceSAMR", "Random", "RandomManyTeams",];
         $scope.SetupGame.algorithm = "AutoBalanceSAMR";
 
@@ -23,6 +34,17 @@ siAgeApp.controller('SetupGamesController',
                 $scope.rules = data;
             }
             , function (error) {
+                $scope.error = $rootScope.getFriendlyErrorText(error);
+            }
+        );
+
+        GameSetting.query().$promise.then(
+            function (value) {
+                $scope.error = "";
+                $scope.game_types = value.game_types;
+                $scope.locations = value.locations;
+            },
+            function (error) {
                 $scope.error = $rootScope.getFriendlyErrorText(error);
             }
         );
@@ -74,7 +96,9 @@ siAgeApp.controller('SetupGamesController',
             }
 
             rollTrebuchet(trebVoteList);
-            rollRuleChoice(ruleChoiceList)
+            rollRuleChoice(ruleChoiceList);
+            rollMapStyle($scope.SetupGame.map_style_weight);
+            rollGameType();
 
             $scope.games = undefined;
             $scope.total_rating_dif = undefined;
@@ -112,23 +136,43 @@ siAgeApp.controller('SetupGamesController',
             return false;
         }
 
-        function randomIntFromInterval(min, max) {
-            return Math.floor(Math.random() * (max - min + 1) + min);
+        function randomFromArray(arr) {
+            var min = 0;
+            var max = arr.length-1;
+            var choice = Math.floor(Math.random() * (max - min + 1) + min);
+            return arr[choice];
         }
 
         function rollTrebuchet(trebVoteList) {
-            var randomInt = randomIntFromInterval(0, trebVoteList.length-1);
-            $scope.trebuchet_allowed = trebVoteList[randomInt];
-            console.log("Rolling trebuchet. Not the same order as original list:");
-            console.log("Index " + randomInt + " from (" + trebVoteList + ") resulting in: " + trebVoteList[randomInt]);
+            $scope.trebuchet_allowed = randomFromArray(trebVoteList)
         }
 
         function rollRuleChoice(ruleChoiceList) {
-            console.log(ruleChoiceList)
-            var randomInt = randomIntFromInterval(0, ruleChoiceList.length-1);
-            var ruleChoiceId = ruleChoiceList[randomInt];
+            var ruleChoiceId = randomFromArray(ruleChoiceList);
             if (ruleChoiceId == null) $scope.rule_choice = "No Rule";
             else $scope.rule_choice = getRuleNameById(ruleChoiceId);
+        }
+
+        function rollMapStyle(weights) {
+            // Build map style bucket to random from based on weights
+            var mapStyleBucket = [];
+            for (var mapType in weights){
+                var weight = weights[mapType];
+                for (var i = 0; i < weight; i++) mapStyleBucket.push(mapType)
+            }
+            // ROLL
+            var mapStyleChoice = randomFromArray(mapStyleBucket);
+            if (mapStyleChoice == "megarandom") $scope.map_style_choice = "MegaRandom";
+            else if (mapStyleChoice == "random_land_map") $scope.map_style_choice = "Random Land map";
+            else if (mapStyleChoice == "the_unknown") $scope.map_style_choice = "es@the_unknown_v2 ";
+            else if (mapStyleChoice == "any") $scope.map_style_choice = randomFromArray($scope.locations);
+        }
+
+        function rollGameType() {
+            if($scope.SetupGame.roll_game_type)
+                $scope.game_type_choice = randomFromArray($scope.game_types);
+            else
+                $scope.game_type_choice = "";
         }
 
         function getRuleNameById(ruleId) {
