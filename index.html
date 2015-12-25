@@ -13,6 +13,7 @@
     <script src="static/assets/libs/angular-resource.js"></script>
     <script src="static/assets/libs/angular-animate.js"></script>
     <script src="static/assets/libs/thenBy.min.js"></script>
+    <script src="static/assets/libs/angular-file-upload.min.js"></script>
     <script src="static/app/app.js"></script>
     <script src="static/app/league/leaguecontroller.js"></script>
     <script src="static/app/civilizations/civilizationscontroller.js"></script>
@@ -59,9 +60,9 @@
                     <li><a id="civs" href="/civs">Civilizations</a></li>
                     <li><a id="globalstats" href="/globalstats">Global Stats</a></li>
                     <li><a id="setupgames" href="/setupgames">Setup games</a></li>
-                    <li><a id="registergame" href="/registergame" ng-show="user.logged_in && user.player && user.verified">Register game</a></li>
-                    <li><a id="registerplayer" href="/registerplayer" ng-show="user.logged_in && user.player && user.verified">Register player</a></li>
-                    <li><a id="registerrule" href="/registerrule" ng-show="user.logged_in && user.player && user.verified">Register rule</a></li>
+                    <li><a id="registergame" href="/registergame" ng-show="user.verified">Register game</a></li>
+                    <li><a id="registerplayer" href="/registerplayer" ng-show="user.verified">Register player</a></li>
+                    <li><a id="registerrule" href="/registerrule" ng-show="user.verified">Register rule</a></li>
                 </ul>
             </nav>
         </header>

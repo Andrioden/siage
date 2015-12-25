@@ -1,4 +1,5 @@
 from google.appengine.ext import ndb
+from google.appengine.ext import blobstore
 from datetime import datetime, date, timedelta
 from collections import Counter
 from config import PLAYER_RATING_START_VALUE
@@ -449,8 +450,9 @@ class Game(ndb.Model):
                 'all_techs': self.all_techs,
                 'location': self.location,
                 'trebuchet_allowed': self.trebuchet_allowed,
-                'player_results': [res.get_data() for res in PlayerResult.query(PlayerResult.game==self.key)],
-                'rule': self.rule.get().get_data() if self.rule else None
+                'player_results': [res.get_data() for res in PlayerResult.query(PlayerResult.game == self.key)],
+                'rule': self.rule.get().get_data() if self.rule else None,
+                'files': [game_file.get_data() for game_file in GameFile.query(GameFile.game == self.key)]
             })
         return data
 
@@ -597,6 +599,25 @@ class CivilizationStats(ndb.Model):
             player_dict['player']['nick'] = Player.get_by_id(player_dict['player']['id']).nick
             player_fit_list.append(player_dict)
         self.player_fit = player_fit_list
+
+
+class GameFile(ndb.Model):
+    game = ndb.KeyProperty(kind=Game, required=True)
+    uploader = ndb.KeyProperty(kind=Player, required=True)
+    blob = ndb.BlobKeyProperty()
+
+    def get_data(self):
+        blob_info = blobstore.BlobInfo.get(self.blob)
+        return {
+            'name': blob_info.filename,
+            'uploader': {
+                'id': self.uploader.id(),
+                'nick': self.uploader.get().nick
+            },
+            'url': "/api/actions/files/view/%s" % self.blob,
+            'creation_epoch': _date_to_epoch(blob_info.creation),
+            'size_mb': round(blob_info.size / (1024.0 * 1024.0), 1),
+        }
 
 
 def _fit_points(wins, played):

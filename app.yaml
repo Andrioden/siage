@@ -36,6 +36,9 @@ handlers:
 - url: /api/actions/admin/.*
   script: api.actions_admin.app
 
+- url: /api/actions/files/.*
+  script: api.actions_files.app
+
 - url: /api/actions/.*
   script: api.actions.app
 

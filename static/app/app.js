@@ -1,4 +1,4 @@
-﻿var siAgeApp = angular.module('SiAgeApp', ['ngRoute', 'ngResource', 'ngAnimate']);
+﻿var siAgeApp = angular.module('SiAgeApp', ['ngRoute', 'ngResource', 'ngAnimate', 'angularFileUpload']);
 
 
 siAgeApp.controller('UserController',
@@ -133,8 +133,12 @@ siAgeApp.directive('autoFocus', function ($timeout) {
 
 siAgeApp.run(function ($rootScope) {
     $rootScope.getFriendlyErrorText = function (error) {
-        if (error.data.error_message) {
-            return error.data.error_message;
+        if (error.error_message) {
+            return error.error_message;
+        }
+        else if (error.data) {
+            if (error.data.error_message)
+                return error.data.error_message;
         }
         else return error;
     }

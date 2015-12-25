@@ -66,6 +66,12 @@ siAgeApp
         });        
     })
 
+    .factory('FilesAction', function ($resource) {
+        return $resource('/api/actions/files/:action/', {}, {
+            getUploadGameFileUrl: { method: 'GET', params: { action: 'uploadgamefileurl' } },
+        });
+    })
+
     .factory('PlayerAction', function ($resource) {
         return $resource('/api/actions/:action/', {}, {
             setupGame: { method: 'POST', params: { action: 'setupgame' } },
@@ -73,3 +79,5 @@ siAgeApp
             updatePlayerSettingDefaultRule: { method: 'POST', params: { action: 'updatePlayerSettingDefaultRuleChoice' } }
         });
     })
+
+
