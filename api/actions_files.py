@@ -17,6 +17,7 @@ class UploadGameFileUrlHandler(webapp2.RequestHandler):
 
 class UploadGameFileHandler(blobstore_handlers.BlobstoreUploadHandler):
     def post(self):
+        
         if not validate_authenticated(self.response):
             return
 

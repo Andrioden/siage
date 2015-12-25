@@ -121,6 +121,7 @@
                 <li ng-repeat="item in file_uploader.queue" >
                     <span ng-bind="item.file.name"></span>
                     <button ng-click="item.upload()" ng-disabled="loading_upload_url">Upload</button>
+                    <img ng-show="item.isUploading" src="static/assets/img/ajax-loader.gif">
                 </li>
             </ul>
             <button ng-click="file_uploader.uploadAll()" ng-show="file_uploader.getNotUploadedItems().length > 0">Upload all</button>
