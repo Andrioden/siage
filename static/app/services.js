@@ -24,7 +24,7 @@ siAgeApp
 
     .factory('Game', function ($resource) {
         return $resource('/api/games/:game_id', { game_id: '@gameId' }, {
-            get: { method: 'GET', isArray: false, cache: true },
+            get: { method: 'GET', isArray: false },
             query: { method: 'GET', isArray: true },
             save: { method: 'POST' },
             update: { method: 'PUT' }
@@ -79,5 +79,3 @@ siAgeApp
             updatePlayerSettingDefaultRule: { method: 'POST', params: { action: 'updatePlayerSettingDefaultRuleChoice' } }
         });
     })
-
-
