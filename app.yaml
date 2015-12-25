@@ -42,6 +42,13 @@ handlers:
 - url: /.*
   script: main.app
 
+- url: /_ah/queue/deferred
+  script: google.appengine.ext.deferred.deferred.application
+  login: admin
+
+builtins:
+- deferred: on
+
 libraries:
 - name: webapp2
   version: "2.5.2"

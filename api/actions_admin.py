@@ -3,6 +3,7 @@
 import webapp2
 import json
 from google.appengine.ext import ndb
+from google.appengine.ext import deferred
 from rating import recalculate_ratings
 from models import *
 from api.utils import validate_logged_in_admin
@@ -12,14 +13,13 @@ from utils import *
 
 class ReCalcRatingHandler(webapp2.RequestHandler):
     def post(self):
-
         if not validate_logged_in_admin(self.response):
             return
 
-        recalculate_ratings()
+        deferred.defer(recalculate_ratings)
 
         self.response.headers['Content-Type'] = 'application/json'
-        self.response.out.write(json.dumps({'response': "Ratings recalculated"}))
+        self.response.out.write(json.dumps({'response': "Ratings recalculation started and will take more than 60 seconds."}))
 
 
 class FixDBHandler(webapp2.RequestHandler):
