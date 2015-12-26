@@ -4,7 +4,7 @@ import webapp2
 from google.appengine.ext import ndb
 from google.appengine.ext import blobstore
 from google.appengine.ext.webapp import blobstore_handlers
-from utils import set_json_response, current_user_player, validate_authenticated
+from utils import *
 from models import GameFile, Game
 import logging
 
@@ -40,6 +40,22 @@ class UploadGameFileHandler(blobstore_handlers.BlobstoreUploadHandler):
             blobstore.delete(upload.key())
 
 
+class DeleteGameFileHandler(webapp2.RequestHandler):
+    def post(self): # It is post because this allows us to get request data from the request body like every where else
+        request_data = json.loads(self.request.body)
+
+        if not validate_logged_in_admin(self.response):
+            return
+        if not validate_request_data(self.response, request_data, ['game_file_id']):
+            return
+
+        game_file = ndb.Key(GameFile, int(request_data['game_file_id'])).get()
+        blobstore.delete(game_file.blob)
+        game_file.key.delete()
+
+        set_json_response(self.response, {'response': "GameFile deleted."})
+
+
 class ViewHandler(blobstore_handlers.BlobstoreDownloadHandler):
     def get(self, blob_key):
         if not blobstore.get(blob_key):
@@ -51,5 +67,6 @@ class ViewHandler(blobstore_handlers.BlobstoreDownloadHandler):
 app = webapp2.WSGIApplication([
     (r'/api/actions/files/uploadgamefileurl/', UploadGameFileUrlHandler),
     (r'/api/actions/files/uploadgamefile/', UploadGameFileHandler),
+    (r'/api/actions/files/deletegamefile/', DeleteGameFileHandler),
     (r'/api/actions/files/view/([^/]+)?', ViewHandler),
 ], debug=True)

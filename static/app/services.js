@@ -69,6 +69,7 @@ siAgeApp
     .factory('FilesAction', function ($resource) {
         return $resource('/api/actions/files/:action/', {}, {
             getUploadGameFileUrl: { method: 'GET', params: { action: 'uploadgamefileurl' } },
+            deleteGameFile: { method: 'POST', params: { action: 'deletegamefile' } },
         });
     })
 

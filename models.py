@@ -609,6 +609,7 @@ class GameFile(ndb.Model):
     def get_data(self):
         blob_info = blobstore.BlobInfo.get(self.blob)
         return {
+            'id': self.key.id(),
             'name': blob_info.filename,
             'uploader': {
                 'id': self.uploader.id(),
