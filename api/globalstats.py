@@ -4,6 +4,7 @@ import webapp2
 import json
 import logging
 from models import PlayerResult, Player, Game
+from utils import set_json_response
 
 
 class GlobalStatsHandler(webapp2.RequestHandler):
@@ -21,6 +22,8 @@ class GlobalStatsHandler(webapp2.RequestHandler):
         longest_winning_streak_player = None
         longest_losing_streak_number = 0
         longest_losing_streak_player = None
+        games_without_treb_and_cannon_won = 0
+        games_without_treb_and_cannon_total = 0
 
         for player in players:
             player.calc_and_update_stats_if_needed()
@@ -47,6 +50,9 @@ class GlobalStatsHandler(webapp2.RequestHandler):
             if player.stats_longest_losing_streak > longest_losing_streak_number:
                 longest_losing_streak_number = player.stats_longest_losing_streak
                 longest_losing_streak_player = player
+            # Without treb or bomb cannon
+            games_without_treb_and_cannon_won += player.stats_games_without_treb_and_cannon_won
+            games_without_treb_and_cannon_total += player.stats_games_without_treb_and_cannon_total
 
         longest_game = Game.query().order(-Game.duration_seconds).get()
         shortest_game = Game.query().order(Game.duration_seconds).get()
@@ -76,11 +82,11 @@ class GlobalStatsHandler(webapp2.RequestHandler):
             'shortest_game': {
                 'duration_seconds': shortest_game.duration_seconds,
                 'id': shortest_game.key.id()
-            }
+            },
+            'games_without_treb_and_cannon_win_chance': games_without_treb_and_cannon_won * 100 / games_without_treb_and_cannon_total
         }
-        
-        self.response.headers['Content-Type'] = 'application/json'
-        self.response.out.write(json.dumps(data))
+
+        set_json_response(self.response, data)
 
     def _does_fits_list_have_with_teammate(self, teammate_fits, player1_id, player2_id):
         for teammate_fit in teammate_fits:

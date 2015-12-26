@@ -7,7 +7,7 @@ import logging
 import operator
 
 CIVILIZATIONS = ['Aztec', 'Britons', 'Byzantines', 'Celts', 'Chinese', 'Franks', 'Goths', 'Huns', 'Incas', 'Indians', 'Italians', 'Japanese', 'Koreans', 'Magyars', 'Mayans', 'Mongols', 'Persians', 'Saracens', 'Slavs', 'Spanish', 'Teutons', 'Turks', 'Vikings', 'Berbers', 'Ethiopians', 'Malians', 'Portuguese']
-
+CIVILIZATIONS_WITH_BOMB_CANNON = ['Byzantines', 'Franks', 'Goths', 'Koreans', 'Persians', 'Saracens', 'Spanish', 'Teutons', 'Turks', 'Indians', 'Italians', 'Berbers', 'Ethiopians', 'Malians', 'Portuguese']
 
 class Player(ndb.Model):
     nick = ndb.StringProperty(required=True)
@@ -29,6 +29,10 @@ class Player(ndb.Model):
     stats_worst_score_per_min_game = ndb.KeyProperty(kind='Game', default=None)
     stats_longest_winning_streak = ndb.IntegerProperty(default=None)
     stats_longest_losing_streak = ndb.IntegerProperty(default=None)
+    stats_games_with_treb_won = ndb.IntegerProperty(default=None)
+    stats_games_with_treb_total = ndb.IntegerProperty(default=None)
+    stats_games_without_treb_and_cannon_won = ndb.IntegerProperty(default=None)
+    stats_games_without_treb_and_cannon_total = ndb.IntegerProperty(default=None)
     """
     The teammate_fit is a list with data in the following format: {
         'teammate': {
@@ -155,6 +159,16 @@ class Player(ndb.Model):
                 'percentage_topping_score': self.stats_percentage_topping_score,
                 'longest_winning_streak': self.stats_longest_winning_streak,
                 'longest_losing_streak': self.stats_longest_losing_streak,
+                'games_with_treb': {
+                    'won': self.stats_games_with_treb_won,
+                    'total': self.stats_games_with_treb_total,
+                    'win_chance': self.stats_games_with_treb_won * 100 / self.stats_games_with_treb_total
+                },
+                'games_without_treb_and_cannon': {
+                    'won': self.stats_games_without_treb_and_cannon_won,
+                    'total': self.stats_games_without_treb_and_cannon_total,
+                    'win_chance': self.stats_games_without_treb_and_cannon_won * 100 / self.stats_games_without_treb_and_cannon_total
+                },
                 'teammate_fit': self.stats_teammate_fit,
                 'enemy_fit': self.stats_enemy_fit,
                 'civ_fit': self.stats_civ_fit
@@ -194,6 +208,7 @@ class Player(ndb.Model):
             self._calc_stats_teammate_fit(player_results)
             self._calc_stats_enemy_fit(player_results)
             self._calc_stats_civ_fit(player_results)
+            self._calc_stats_treb(player_results)
             self.put()
             return True
         return True
@@ -353,13 +368,29 @@ class Player(ndb.Model):
             civ_fit_list.append(civ_dict)
         self.stats_civ_fit = civ_fit_list
 
+    def _calc_stats_treb(self, player_results):
+        self.stats_games_with_treb_won = 0
+        self.stats_games_with_treb_total = 0
+        self.stats_games_without_treb_and_cannon_won = 0
+        self.stats_games_without_treb_and_cannon_total = 0
+
+        for res in player_results:
+            treb_allowed = res.game.get().trebuchet_allowed
+            civ_with_cannon = res.civilization in CIVILIZATIONS_WITH_BOMB_CANNON
+            if treb_allowed:
+                self.stats_games_with_treb_total += 1
+                if res.is_winner:
+                    self.stats_games_with_treb_won += 1
+            if not civ_with_cannon and not treb_allowed:
+                self.stats_games_without_treb_and_cannon_total += 1
+                if res.is_winner:
+                    self.stats_games_without_treb_and_cannon_won += 1
+
     def clear_stats(self):
         for variable_name in self.__dict__['_values'].keys():  # __dict__['_values'] contains all class object variables
             if 'stats_' in variable_name:
                 setattr(self, variable_name, None)
         self.put()
-
-
 
 
 class Rule(ndb.Model):

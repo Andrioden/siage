@@ -11,7 +11,7 @@
     <div id="rating_graph"></div>
 
     <div class="right_content">
-        <div class="box" style="height: 450px; overflow: auto;">
+        <div class="box" style="height: 540px; overflow: auto;">
             <table class="list_table">
                 <thead>
                     <tr>
@@ -68,6 +68,14 @@
                 <tr>
                     <td>Won/Total</td>
                     <td>{{player.wins}}/{{player.played}} ({{player.win_chance}}%)</td>
+                </tr>
+                <tr>
+                    <td>With treb</td>
+                    <td>{{player.stats.games_with_treb.won}}/{{player.stats.games_with_treb.total}} ({{player.stats.games_with_treb.win_chance}}%)</td>
+                </tr>
+                <tr>
+                    <td>Without treb and cannon</td>
+                    <td>{{player.stats.games_without_treb_and_cannon.won}}/{{player.stats.games_without_treb_and_cannon.total}} ({{player.stats.games_without_treb_and_cannon.win_chance}}%)</td>
                 </tr>
                 <tr>
                     <td>Average score</td>
