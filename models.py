@@ -118,7 +118,7 @@ class Player(ndb.Model):
             'rating_decay': self.rating_decay,
             'played': played,
             'wins': wins,
-            'win_chance': None if played == 0 else int(wins * 100.0 / played),
+            'win_chance': _safely_calc_win_chance(wins, played),
             'claimed': True if self.userid else False,
             'verified': True if self.verified == True else False,
             'active': self.active,
@@ -162,12 +162,12 @@ class Player(ndb.Model):
                 'games_with_treb': {
                     'won': self.stats_games_with_treb_won,
                     'total': self.stats_games_with_treb_total,
-                    'win_chance': self.stats_games_with_treb_won * 100 / self.stats_games_with_treb_total
+                    'win_chance': _safely_calc_win_chance(self.stats_games_with_treb_won, self.stats_games_with_treb_total)
                 },
                 'games_without_treb_and_cannon': {
                     'won': self.stats_games_without_treb_and_cannon_won,
                     'total': self.stats_games_without_treb_and_cannon_total,
-                    'win_chance': self.stats_games_without_treb_and_cannon_won * 100 / self.stats_games_without_treb_and_cannon_total
+                    'win_chance': _safely_calc_win_chance(self.stats_games_without_treb_and_cannon_won, self.stats_games_without_treb_and_cannon_total)
                 },
                 'teammate_fit': self.stats_teammate_fit,
                 'enemy_fit': self.stats_enemy_fit,
@@ -660,6 +660,11 @@ def _date_to_epoch(date_value):
     """ Duplicate of utils method, but added here because of potential circular reference between models.py and utils.py
     """
     return int((date_value - datetime(1970,1,1)).total_seconds())
+
+def _safely_calc_win_chance(won, total):
+    return None if total == 0 else int(won * 100.0 / total)
+
+
 
 # class GlobalStats(ndb.Model):
 #     worst_couple_player1 = ndb.KeyProperty(kind=Player)
