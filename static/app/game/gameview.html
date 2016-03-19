@@ -116,7 +116,7 @@
             <li ng-repeat="file in game.files |orderBy:['-date']">
                 <a href="{{file.url}}" target="_blank">{{file.creation_epoch * 1000 | date : 'dd.MM.yyyy'}}: {{file.name}} ({{file.size_mb}} MB)</a>
                 <span> by {{file.uploader.nick}}</span>
-                <button confirmed-click="deleteGameFile({{file.id}})" ng-confirm-click="Are you sure you want to delete {{file.name}}?" ng-disabled="deleting_game_file" ng-show="user.is_admin" class="button admin_action no_pad" style="width: 60px;">Delete</button>
+                <button ng-show="user.is_admin || file.uploader.nick == user.player" confirmed-click="deleteGameFile({{file.id}})" ng-confirm-click="Are you sure you want to delete {{file.name}}?" ng-disabled="deleting_game_file" class="button admin_action no_pad" style="width: 60px;">Delete</button>
             </li>
         </ul>
 

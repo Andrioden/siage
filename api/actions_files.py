@@ -4,6 +4,7 @@ import webapp2
 from google.appengine.ext import ndb
 from google.appengine.ext import blobstore
 from google.appengine.ext.webapp import blobstore_handlers
+from google.appengine.api import users
 from utils import *
 from models import GameFile, Game
 import logging
@@ -43,13 +44,15 @@ class UploadGameFileHandler(blobstore_handlers.BlobstoreUploadHandler):
 class DeleteGameFileHandler(webapp2.RequestHandler):
     def post(self): # It is post because this allows us to get request data from the request body like every where else
         request_data = json.loads(self.request.body)
+        current_user_player()
+        game_file = ndb.Key(GameFile, int(request_data['game_file_id'])).get()
 
-        if not validate_logged_in_admin(self.response):
+        if not users.is_current_user_admin() and not (game_file.uploader == current_user_player().key):
+            forbidden_403(self.response, "VALIDATION_ERROR_NOT_ALLOWED_TO_DELETE", "User is not an admin nor the uploader of the file, cant delete it.")
             return
         if not validate_request_data(self.response, request_data, ['game_file_id']):
             return
 
-        game_file = ndb.Key(GameFile, int(request_data['game_file_id'])).get()
         blobstore.delete(game_file.blob)
         game_file.key.delete()
 
