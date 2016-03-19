@@ -36,14 +36,14 @@
             <tbody>
                 <tr>
                     <td>Date</td>
-                    <td>{{game.date_epoch * 1000 | date : 'dd.MM.yyyy'}}</td>
+                    <td>{{game.date_epoch * 1000 | date : 'dd.MM.yyyy, HH:MM'}}</td>
                 </tr>
                 <tr>
                     <td>Duration</td>
                     <td>{{game.duration_seconds / 60}} minutes</td>
                 </tr>
                 <tr>
-                    <td>Map type</td>
+                    <td>Map style</td>
                     <td>{{game.location}}</td>
                 </tr>
                 <tr>
@@ -51,12 +51,12 @@
                     <td>{{game.size}}</td>
                 </tr>
                 <tr>
-                    <td>Trebuchet</td>
-                    <td>{{game.trebuchet_allowed | yesNo}}</td>
-                </tr>
-                <tr>
                     <td>Rule</td>
                     <td title="{{game.rule.description}}">{{game.rule.name}}</td>
+                </tr>
+                <tr>
+                    <td>Trebuchet</td>
+                    <td>{{game.trebuchet_allowed | yesNo}}</td>
                 </tr>
                 <tr ng-show="ShowDetails">
                     <td>Game type</td>
@@ -71,6 +71,10 @@
                     <td>{{game.resources}}</td>
                 </tr>
                 <tr ng-show="ShowDetails">
+                    <td>Population</td>
+                    <td>{{game.population}}</td>
+                </tr>
+                <tr ng-show="ShowDetails">
                     <td>Game speed</td>
                     <td>{{game.game_speed}}</td>
                 </tr>
@@ -79,16 +83,16 @@
                     <td>{{game.reveal_map}}</td>
                 </tr>
                 <tr ng-show="ShowDetails">
-                    <td>Victory</td>
-                    <td>{{game.victory}}</td>
-                </tr>
-                <tr ng-show="ShowDetails">
                     <td>Starting age</td>
                     <td>{{game.starting_age}}</td>
                 </tr>
                 <tr ng-show="ShowDetails">
-                    <td>Population</td>
-                    <td>{{game.population}}</td>
+                    <td>Treaty length</td>
+                    <td>{{game.treaty_length}}</td>
+                </tr>
+                <tr ng-show="ShowDetails">
+                    <td>Victory</td>
+                    <td>{{game.victory}}</td>
                 </tr>
                 <tr ng-show="ShowDetails">
                     <td>All techs</td>
