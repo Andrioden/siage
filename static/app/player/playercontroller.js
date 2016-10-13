@@ -86,10 +86,6 @@ siAgeApp.controller('PlayerController',
     }
 );
 
-
-
-
-
 google.load('visualization', '1', { packages: ['corechart', 'line'] });
 
 function drawRatingGraph(player_results, rating_offset) {

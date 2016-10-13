@@ -1,142 +1,145 @@
 ﻿<div id="main_content">
     <img ng-show="loading_stats" src="static/assets/img/ajax-loader.gif">
 
-    <div class="right_content"></div>
+    <table ng-show="!loading_stats" class="info_table">
+        <tbody>
+            <tr>
+                <td>Longest winning streak</td>
+                <td>{{stats.longest_winning_streak.number}} -
+                    <a href="/players/{{stats.longest_winning_streak.player.nick}}" title="View profile">{{stats.longest_winning_streak.player.nick}}</a>
+                </td>
+                <td>Longest losing streak</td>
+                <td>{{stats.longest_losing_streak.number}} -
+                    <a href="/players/{{stats.longest_losing_streak.player.nick}}" title="View profile">{{stats.longest_losing_streak.player.nick}}</a>
+                </td>
+            </tr>
+            <tr>
+                <td>Longest game</td>
+                <td><a href="/games/{{stats.longest_game.id}}" title="View profile">{{stats.longest_game.duration_seconds / 60}} minutes</a></td>
+                <td>Shortest game</td>
+                <td><a href="/games/{{stats.shortest_game.id}}" title="View profile">{{stats.shortest_game.duration_seconds / 60}} minutes</a></td>
+            </tr>
+            <tr>
+                <td>Without treb and cannon</td>
+                <td>{{stats.games_without_treb_and_cannon_win_chance}}% win</td>
+            </tr>
+        </tbody>
+    </table>
 
-    <div class="left_content">
-        <table ng-show="!loading_stats" class="info_table">
+    <div class="box margin_top">
+        <h4>Activity
+            <span ng-show="activity != null">({{activity.length}} sessions)</span>
+            <a ng-click="loadActivity()" href="">
+                <span ng-show="activity == null && !loading_activity">(load)</span>
+            </a>
+        </h4>
+        <div id="activity_graph"></div>
+        <img ng-show="loading_activity" src="static/assets/img/ajax-loader.gif">
+    </div>
+
+    <div class="box margin_top" ng-init="limit_teammate_rows_toggle = true">
+        <h4>Teammate fits
+            <a ng-click="limit_teammate_rows_toggle = !limit_teammate_rows_toggle" href="">
+                <span ng-show="!limit_teammate_rows_toggle">(hide most)</span>
+                <span ng-show="limit_teammate_rows_toggle">(show all)</span>
+            </a>
+        </h4>
+        <table class="list_table" ng-class="{'limit_table_rows' : limit_teammate_rows_toggle}">
+            <thead>
+                <tr>
+                    <td></td>
+                    <td>Games</td>
+                    <td>Wins</td>
+                    <td>Win%</td>
+                    <td>Score/M</td>
+                    <td>Points</td>
+                </tr>
+            </thead>
             <tbody>
-                <tr>
-                    <td>Longest winning streak</td>
-                    <td>{{stats.longest_winning_streak.number}} -
-                        <a href="/players/{{stats.longest_winning_streak.player.nick}}" title="View profile">{{stats.longest_winning_streak.player.nick}}</a>
+                <tr class="animated_list_item" ng-repeat="fit in stats.teammate_fits | orderBy:['-points', '-win_chance', '-wins', '-score_per_min']">
+                    <td class="no_wrap">
+                        <a ng-class="{text_highlighted: '{{user.player}}' == '{{fit.player.nick}}'}" href="/players/{{fit.player.nick}}" title="View player {{fit.player.nick}}">{{fit.player.nick}}</a>
+                        <span> + </span>
+                        <a ng-class="{text_highlighted: '{{user.player}}' == '{{fit.teammate.nick}}'}" href="/players/{{fit.teammate.nick}}" title="View player {{fit.teammate.nick}}">{{fit.teammate.nick}}</a>
                     </td>
-                    <td>Longest losing streak</td>
-                    <td>{{stats.longest_losing_streak.number}} -
-                        <a href="/players/{{stats.longest_losing_streak.player.nick}}" title="View profile">{{stats.longest_losing_streak.player.nick}}</a>
-                    </td>
-                </tr>
-                <tr>
-                    <td>Longest game</td>
-                    <td><a href="/games/{{stats.longest_game.id}}" title="View profile">{{stats.longest_game.duration_seconds / 60}} minutes</a></td>
-                    <td>Shortest game</td>
-                    <td><a href="/games/{{stats.shortest_game.id}}" title="View profile">{{stats.shortest_game.duration_seconds / 60}} minutes</a></td>
-                </tr>
-                <tr>
-                    <td>Without treb and cannon</td>
-                    <td>{{stats.games_without_treb_and_cannon_win_chance}}% win</td>
+                    <td>{{fit.played}}</td>
+                    <td>{{fit.wins}}</td>
+                    <td>{{fit.win_chance}}%</td>
+                    <td>{{fit.score_per_min}}</td>
+                    <td>{{fit.points}}</td>
                 </tr>
             </tbody>
         </table>
     </div>
 
-    <div class="bottom_content">
+    <div class="box margin_top" ng-init="limit_enemy_rows_toggle = true">
+        <h4>Enemy fits
+            <a ng-click="limit_enemy_rows_toggle = !limit_enemy_rows_toggle" href="">
+                <span ng-show="!limit_enemy_rows_toggle">(hide most)</span>
+                <span ng-show="limit_enemy_rows_toggle">(show all)</span>
+            </a>
+        </h4>
+        <table class="list_table" ng-class="{'limit_table_rows' : limit_enemy_rows_toggle}">
+            <thead>
+                <tr>
+                    <td></td>
+                    <td>Games</td>
+                    <td>Wins</td>
+                    <td>Win%</td>
+                    <td>Score/M</td>
+                    <td>Points</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="animated_list_item" ng-repeat="fit in stats.enemy_fits | orderBy:['-points', '-win_chance', '-wins', '-score_per_min']">
+                    <td class="no_wrap">
+                        <a ng-class="{text_highlighted: '{{user.player}}' == '{{fit.player.nick}}'}" href="/players/{{fit.player.nick}}" title="View player {{fit.player.nick}}">{{fit.player.nick}}</a>
+                        <span> beat </span>
+                        <a ng-class="{text_highlighted: '{{user.player}}' == '{{fit.enemy.nick}}'}" href="/players/{{fit.enemy.nick}}" title="View player {{fit.enemy.nick}}">{{fit.enemy.nick}}</a>
+                    </td>
+                    <td>{{fit.played}}</td>
+                    <td>{{fit.wins}}</td>
+                    <td>{{fit.win_chance}}%</td>
+                    <td>{{fit.score_per_min}}</td>
+                    <td>{{fit.points}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 
-        <div class="box margin_top" ng-init="limit_teammate_rows_toggle = true">
-            <h4>Teammate fits
-                <a ng-click="limit_teammate_rows_toggle = !limit_teammate_rows_toggle" href="">
-                    <span ng-show="!limit_teammate_rows_toggle">(hide most)</span>
-                    <span ng-show="limit_teammate_rows_toggle">(show all)</span>
-                </a>
-            </h4>
-            <table class="list_table" ng-class="{'limit_table_rows' : limit_teammate_rows_toggle}">
-                <thead>
-                    <tr>
-                        <td></td>
-                        <td>Games</td>
-                        <td>Wins</td>
-                        <td>Win%</td>
-                        <td>Score/M</td>
-                        <td>Points</td>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr class="animated_list_item" ng-repeat="fit in stats.teammate_fits | orderBy:['-points', '-win_chance', '-wins', '-score_per_min']">
-                        <td class="no_wrap">
-                            <a ng-class="{text_highlighted: '{{user.player}}' == '{{fit.player.nick}}'}" href="/players/{{fit.player.nick}}" title="View player {{fit.player.nick}}">{{fit.player.nick}}</a>
-                            <span> + </span>
-                            <a ng-class="{text_highlighted: '{{user.player}}' == '{{fit.teammate.nick}}'}" href="/players/{{fit.teammate.nick}}" title="View player {{fit.teammate.nick}}">{{fit.teammate.nick}}</a>
-                        </td>
-                        <td>{{fit.played}}</td>
-                        <td>{{fit.wins}}</td>
-                        <td>{{fit.win_chance}}%</td>
-                        <td>{{fit.score_per_min}}</td>
-                        <td>{{fit.points}}</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <div class="box margin_top" ng-init="limit_enemy_rows_toggle = true">
-            <h4>Enemy fits
-                <a ng-click="limit_enemy_rows_toggle = !limit_enemy_rows_toggle" href="">
-                    <span ng-show="!limit_enemy_rows_toggle">(hide most)</span>
-                    <span ng-show="limit_enemy_rows_toggle">(show all)</span>
-                </a>
-            </h4>
-            <table class="list_table" ng-class="{'limit_table_rows' : limit_enemy_rows_toggle}">
-                <thead>
-                    <tr>
-                        <td></td>
-                        <td>Games</td>
-                        <td>Wins</td>
-                        <td>Win%</td>
-                        <td>Score/M</td>
-                        <td>Points</td>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr class="animated_list_item" ng-repeat="fit in stats.enemy_fits | orderBy:['-points', '-win_chance', '-wins', '-score_per_min']">
-                        <td class="no_wrap">
-                            <a ng-class="{text_highlighted: '{{user.player}}' == '{{fit.player.nick}}'}" href="/players/{{fit.player.nick}}" title="View player {{fit.player.nick}}">{{fit.player.nick}}</a>
-                            <span> beat </span>
-                            <a ng-class="{text_highlighted: '{{user.player}}' == '{{fit.enemy.nick}}'}" href="/players/{{fit.enemy.nick}}" title="View player {{fit.enemy.nick}}">{{fit.enemy.nick}}</a>
-                        </td>
-                        <td>{{fit.played}}</td>
-                        <td>{{fit.wins}}</td>
-                        <td>{{fit.win_chance}}%</td>
-                        <td>{{fit.score_per_min}}</td>
-                        <td>{{fit.points}}</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <div class="box margin_top" ng-init="limit_civ_rows_toggle = true">
-            <h4>Civilization fits
-                <a ng-click="limit_civ_rows_toggle = !limit_civ_rows_toggle" href="">
-                    <span ng-show="!limit_civ_rows_toggle">(hide most)</span>
-                    <span ng-show="limit_civ_rows_toggle">(show all)</span>
-                </a>
-            </h4>
-            <table class="list_table" ng-class="{'limit_table_rows' : limit_civ_rows_toggle}">
-                <thead>
-                    <tr>
-                        <td></td>
-                        <td>Games</td>
-                        <td>Wins</td>
-                        <td>Win%</td>
-                        <td>Score/M</td>
-                        <td>Points</td>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr class="animated_list_item" ng-repeat="fit in stats.civ_fits | orderBy:['-points', '-win_chance', '-wins', '-score_per_min']">
-                        <td class="no_wrap">
-                            <a ng-class="{text_highlighted: '{{user.player}}' == '{{fit.player.nick}}'}" href="/players/{{fit.player.nick}}" title="View player {{fit.player.nick}}">{{fit.player.nick}}</a>
-                            <span> as </span>
-                            <a href="/civs/{{fit.civ}}" title="View civilization {{civilization.civ}}">{{fit.civ}}</a>
-                        </td>
-                        <td>{{fit.played}}</td>
-                        <td>{{fit.wins}}</td>
-                        <td>{{fit.win_chance}}%</td>
-                        <td>{{fit.score_per_min}}</td>
-                        <td>{{fit.points}}</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
+    <div class="box margin_top" ng-init="limit_civ_rows_toggle = true">
+        <h4>Civilization fits
+            <a ng-click="limit_civ_rows_toggle = !limit_civ_rows_toggle" href="">
+                <span ng-show="!limit_civ_rows_toggle">(hide most)</span>
+                <span ng-show="limit_civ_rows_toggle">(show all)</span>
+            </a>
+        </h4>
+        <table class="list_table" ng-class="{'limit_table_rows' : limit_civ_rows_toggle}">
+            <thead>
+                <tr>
+                    <td></td>
+                    <td>Games</td>
+                    <td>Wins</td>
+                    <td>Win%</td>
+                    <td>Score/M</td>
+                    <td>Points</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="animated_list_item" ng-repeat="fit in stats.civ_fits | orderBy:['-points', '-win_chance', '-wins', '-score_per_min']">
+                    <td class="no_wrap">
+                        <a ng-class="{text_highlighted: '{{user.player}}' == '{{fit.player.nick}}'}" href="/players/{{fit.player.nick}}" title="View player {{fit.player.nick}}">{{fit.player.nick}}</a>
+                        <span> as </span>
+                        <a href="/civs/{{fit.civ}}" title="View civilization {{civilization.civ}}">{{fit.civ}}</a>
+                    </td>
+                    <td>{{fit.played}}</td>
+                    <td>{{fit.wins}}</td>
+                    <td>{{fit.win_chance}}%</td>
+                    <td>{{fit.score_per_min}}</td>
+                    <td>{{fit.points}}</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 
     <span class="error">{{error}}</span>

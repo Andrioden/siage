@@ -3,6 +3,8 @@
 siAgeApp.controller('GameController',
     function ($rootScope, $scope, Game, $routeParams, FilesAction, FileUploader) {
 
+        // CONSTRUCTOR
+
         $scope.file_uploader = new FileUploader({
             onAfterAddingFile: setFileUploadItemUrl,
             onCompleteItem: function(item, response, status, headers) {

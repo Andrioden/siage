@@ -42,8 +42,9 @@ siAgeApp
     })
 
     .factory('GlobalStats', function ($resource) {
-        return $resource('/api/globalstats/', {}, {
-            query: { method: 'GET', isArray: false }
+        return $resource('/api/globalstats/:data/', {}, {
+            base: { method: 'GET', params: {"data": "base"}, isArray: false },
+            activity: { method: 'GET', params: {"data": "activity"}, isArray: true }
         });
     })
 

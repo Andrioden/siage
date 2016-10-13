@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
 import webapp2
-import json
 import logging
+import datetime
 from models import PlayerResult, Player, Game
-from utils import set_json_response
+from utils import *
 
 
 class GlobalStatsHandler(webapp2.RequestHandler):
@@ -97,6 +97,29 @@ class GlobalStatsHandler(webapp2.RequestHandler):
         return False
 
 
+class GlobalStatsActivityHandler(webapp2.RequestHandler):
+    def get(self):
+        activity = []
+
+        start_date_of_current_session = PlayerResult.query().order(PlayerResult.game_date).get().game_date
+        players_current_session= []
+
+        for player_res in PlayerResult.query().order(PlayerResult.game_date).fetch():
+            if (player_res.game_date - start_date_of_current_session).total_seconds() > 15*60*60:
+                activity.append({'date_epoch': date_to_epoch(start_date_of_current_session), 'player_count': len(players_current_session)})
+                start_date_of_current_session = player_res.game_date
+                players_current_session = []
+
+            if player_res.player not in players_current_session:
+                players_current_session.append(player_res.player)
+
+        activity.append({'date_epoch': date_to_epoch(start_date_of_current_session), 'player_count': len(players_current_session)})
+        logging.info("NEW SESSION with date %s" % start_date_of_current_session)
+
+        set_json_response(self.response, activity)
+
+
 app = webapp2.WSGIApplication([
-    (r'/api/globalstats/', GlobalStatsHandler),
+    (r'/api/globalstats/base/', GlobalStatsHandler),
+    (r'/api/globalstats/activity/', GlobalStatsActivityHandler),
 ], debug=True)
