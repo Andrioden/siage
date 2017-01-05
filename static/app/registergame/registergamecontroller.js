@@ -188,7 +188,7 @@ siAgeApp.controller('RegisterGameController',
             $scope.game.reveal_map = "Normal";
             $scope.game.starting_age = "Standard";
             $scope.game.treaty_length = null;
-            $scope.game.victory = "Standard";
+            $scope.game.victory = "Conquest";
             $scope.game.all_techs = false;
             $scope.game.team_together = true;
             $scope.game.trebuchet_allowed = false;

@@ -6,8 +6,166 @@ from config import PLAYER_RATING_START_VALUE
 import logging
 import operator
 
-CIVILIZATIONS = ['Aztec', 'Britons', 'Byzantines', 'Celts', 'Chinese', 'Franks', 'Goths', 'Huns', 'Incas', 'Indians', 'Italians', 'Japanese', 'Koreans', 'Magyars', 'Mayans', 'Mongols', 'Persians', 'Saracens', 'Slavs', 'Spanish', 'Teutons', 'Turks', 'Vikings', 'Berbers', 'Ethiopians', 'Malians', 'Portuguese']
-CIVILIZATIONS_WITH_BOMB_CANNON = ['Byzantines', 'Franks', 'Goths', 'Koreans', 'Persians', 'Saracens', 'Spanish', 'Teutons', 'Turks', 'Indians', 'Italians', 'Berbers', 'Ethiopians', 'Malians', 'Portuguese']
+CIVILIZATIONS = [
+    'Aztec',
+    'Britons',
+    'Byzantines',
+    'Celts',
+    'Chinese',
+    'Franks',
+    'Goths',
+    'Huns',
+    'Incas',
+    'Indians',
+    'Italians',
+    'Japanese',
+    'Koreans',
+    'Magyars',
+    'Mayans',
+    'Mongols',
+    'Persians',
+    'Saracens',
+    'Slavs',
+    'Spanish',
+    'Teutons',
+    'Turks',
+    'Vikings',
+    'Berbers',
+    'Ethiopians',
+    'Malians',
+    'Portuguese',
+    'Burmese',
+    'Khmer',
+    'Malay',
+    'Vietnamese'
+]
+CIVILIZATIONS_WITH_BOMB_CANNON = [
+    'Byzantines',
+    'Franks',
+    'Goths',
+    'Koreans',
+    'Persians',
+    'Saracens',
+    'Spanish',
+    'Teutons',
+    'Turks',
+    'Indians',
+    'Italians',
+    'Berbers',
+    'Ethiopians',
+    'Malians',
+    'Portuguese',
+    'Burmese'
+    'Khmer',
+    'Malay',
+    'Vietnamese'
+]
+
+LOCATIONS = [
+    # Standard
+    'Acropolis',
+    'Arabia',
+    'Archipelago',
+    'Arena',
+    'Baltic',
+    'Black Forest',
+    'Bog Islands',
+    'Budapest',
+    'Cenotes',
+    'Crater Laker',
+    'Coastal',
+    'Continental',
+    'Crater Lake',
+    'Fortress',
+    'Ghost Lake',
+    'Gold Rush',
+    'Golden Pit',
+    'Hamburger',
+    'Hideout',
+    'Highland',
+    'Islands',
+    'Kilimanjaro',
+    'Lombardia',
+    'Mangrove Jungle',
+    'Mediterranean',
+    'Migration',
+    'Mongolia',
+    'Mountain Pass',
+    'Nile Delta',
+    'Nomad',
+    'Oasis',
+    'Pacific Islands',
+    'Rivers',
+    'Salt Marsh',
+    'Sandbank',
+    'Scandinavia',
+    'Serengeti',
+    'Socotra',
+    'Steppe',
+    'Team Islands',
+    'Valley',
+    'Water Nomad',
+    'Yucatan',
+
+    # Real World
+    'Amazon',
+    'Australia',
+    'Bohemia',
+    'Britain',
+    'Byzantium',
+    'Central America',
+    'China',
+    'Earth',
+    'France',
+    'Horn of Africa',
+    'Iberia',
+    'India',
+    'Indochina',
+    'Indonesia',
+    'Italy',
+    'Madagascar',
+    'Mideast',
+    'Norse Lands',
+    'Philippines',
+    'Sea of Japan',
+    'Strait of Malacca',
+    'Texas',
+    'West Africa',
+
+    # Special Maps
+    'Canyons',
+    'Enemy Archipelago',
+    'Enemy Islands',
+    'Far Out',
+    'Front Line',
+    'Holy Line',
+    'Inner Circle',
+    'Jungle Islands',
+    'Jungle Lanes',
+    'Motherland',
+    'Open Plains',
+    'Ring of Water',
+    'Snakepit',
+    'The Eye',
+    'Yin Yang',
+
+    # Custom
+    'es@canals_v2',
+    'es@capricious_v2',
+    'es@dingos_v2',
+    'es@graveyards_v2',
+    'es@metropolis_v2',
+    'es@moats_v2',
+    'es@paradiseisland_v2',
+    'es@pilgrims_v2',
+    'es@prairie_v2',
+    'es@seasons_v2',
+    'es@sherwood_forest_v2',
+    'es@sherwood_heroes_v2',
+    'es@shipwreck_v2',
+    'es@team_glaciers_v2',
+    'es@the_unknown_v2'
+]
 
 class Player(ndb.Model):
     nick = ndb.StringProperty(required=True)
@@ -426,7 +584,7 @@ class Game(ndb.Model):
     team_together = ndb.BooleanProperty(required=False)
     all_techs = ndb.BooleanProperty(required=False)
     # Settings from Objective screen ingame
-    location = ndb.StringProperty(required=False, choices=['Arabia', 'Archipelago', 'Arena', 'Baltic', 'Black Forest', 'Coastal', 'Continental', 'Crater Laker', 'Fortress', 'Ghost Lake', 'Gold Rush', 'Highland', 'Islands', 'Mediterranean', 'Migration', 'Mongolia', 'Nomad', 'Oasis', 'Rivers', 'Salt Marsh', 'Scandinavia', 'Team Islands', 'Yucatan', 'Acropolis', 'Budapest', 'Cenotes', 'City of Lakes', 'Golden Pit', 'Hideout', 'Hill Fort', 'Lombardia', 'Steppe', 'Valley', 'MegaRandom', 'Hamburger', 'Canyons', 'Enemy Archipelago', 'Enemy Islands', 'Far Out', 'Front Line', 'Inner Circle', 'Motherland', 'Open Plains', 'Ring of Water', 'Snakepit', 'The Eye', 'es@canals_v2', 'es@capricious_v2', 'es@dingos_v2', 'es@graveyards_v2', 'es@metropolis_v2', 'es@moats_v2', 'es@paradiseisland_v2', 'es@pilgrims_v2', 'es@prairie_v2', 'es@seasons_v2', 'es@sherwood_forest_v2', 'es@sherwood_heroes_v2', 'es@shipwreck_v2', 'es@team_glaciers_v2', 'es@the_unknown_v2', 'Random Land Map'])
+    location = ndb.StringProperty(required=False, choices=LOCATIONS)
     # Special settings
     trebuchet_allowed = ndb.BooleanProperty(required=False)
     # Values that are not neccesarry to store but stored to avoid having to recompute values every time the value is needed
