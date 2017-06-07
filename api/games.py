@@ -7,7 +7,7 @@ from models import Game, Player, PlayerResult, Rule, CivilizationStats
 from datetime import datetime
 from google.appengine.ext import ndb
 from rating import RatingCalculator, trigger_rating_decay_for_game
-from api.utils import error_400, validate_authenticated, validate_request_data
+from api.utils import *
 
 
 class GamesHandler(webapp2.RequestHandler):
@@ -44,9 +44,8 @@ class GamesHandler(webapp2.RequestHandler):
             games_data = [game.get_data(data_detail) for game in data]
         
         # RETURN RESPONSE
-        self.response.headers['Content-Type'] = 'application/json'
-        self.response.out.write(json.dumps(games_data))
-    
+        set_json_response(self.response, games_data)
+
     def _expand_game_data_with_player_result_data(self, games_data, player_results, rating_decay):
         # Set stats rating from the player_results object
         for game in games_data:
@@ -63,7 +62,7 @@ class GamesHandler(webapp2.RequestHandler):
         if not validate_request_data(self.response, request_data, ['location']):
             return
         if not request_data['duration_seconds']: # Has to be validated like this because input is 0
-            error_400(self.response, "VALIDATION_ERROR_NO_DURATION", "Missing input: Duration.")
+            error(400, self.response, "VALIDATION_ERROR_NO_DURATION", "Missing input: Duration.")
             return
         if not self._validate_no_empty_player_results(request_data['playerResults']):
             return
@@ -131,13 +130,12 @@ class GamesHandler(webapp2.RequestHandler):
         ndb.delete_multi(CivilizationStats.query().fetch(keys_only=True))
 
         # RETURN RESPONSE
-        self.response.headers['Content-Type'] = 'application/json'
-        self.response.out.write(json.dumps({'response': "success", 'game_id': game.key.id()}))
+        set_json_response(self.response, {'response': "success", 'game_id': game.key.id()})
 
     def _validate_no_empty_player_results(self, player_results):
         for player_result in player_results:
             if player_result['player_id'] is None or not player_result['player_id'].isdigit():
-                error_400(self.response, "VALIDATION_ERROR_EMPTY_PLAYER_RESULTS", "Player Results contain items without a valid player id.")
+                error(400, self.response, "VALIDATION_ERROR_EMPTY_PLAYER_RESULTS", "Player Results contain items without a valid player id.")
                 return False
         return True
 
@@ -156,15 +154,9 @@ class GameHandler(webapp2.RequestHandler):
 
         # RETURN RESPONSE
         if game:
-            self.response.headers['Content-Type'] = 'application/json'
-            self.response.out.write(json.dumps(game.get_data(data_detail)))
+            set_json_response(self.response, game.get_data(data_detail))
         else:
-            self.response.out.write(json.dumps({'error': "GAME_NOT_FOUND"}))
-
-    def put(self, gameId):
-        self.response.headers['Content-Type'] = 'application/text'
-        self.response.out.write("PUT (Update) received with data, no action taken: " + self.request.body)
-
+            error(404, self.response, "GAME_NOT_FOUND", "Game with ID '%s' not found" % game_id)
 
 
 app = webapp2.WSGIApplication([

@@ -4,28 +4,26 @@ import webapp2
 import json
 import logging
 from models import CivilizationStats, CIVILIZATIONS
-from utils import error_400
+from utils import *
 
 
 class CivsHandler(webapp2.RequestHandler):
     def get(self):
         """ --------- GET CIVLIST DATA --------- """
-        self.response.headers['Content-Type'] = 'application/json'
         civs_stats_data = [_get_stats_for_civ(civ) for civ in CIVILIZATIONS]
-        self.response.out.write(json.dumps(civs_stats_data))
+        set_json_response(self.response, civs_stats_data)
 
 
 class CivHandler(webapp2.RequestHandler):
     def get(self, civ_name):
         """ --------- GET SINGLE CIV --------- """
-        self.response.headers['Content-Type'] = 'application/json'
 
         # Validate if actual civ
-        if not civ_name in CIVILIZATIONS:
-            error_400(self.response, "VALIDATION_ERROR_UNKNOWN_CIV", "The civilization %s is unknown" % civ_name)
+        if civ_name not in CIVILIZATIONS:
+            error(400, self.response, "VALIDATION_ERROR_UNKNOWN_CIV", "The civilization %s is unknown" % civ_name)
             return
 
-        self.response.out.write(json.dumps(_get_stats_for_civ(civ_name)))
+        set_json_response(self.response, _get_stats_for_civ(civ_name))
 
 
 def _get_stats_for_civ(civ_name):

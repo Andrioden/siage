@@ -9,7 +9,7 @@ import math
 import random
 import copy
 from google.appengine.api import users
-from utils import error_400, current_user_player
+from utils import *
 from config import MAX_SETUP_GAME_ATTEMPTS
 
 
@@ -47,7 +47,7 @@ class SetupGameHandler(webapp2.RequestHandler):
             setup_data = self._random_setup_best_attempt_score_and_minirandomized_rating(players, attempts, team_setup, max_game_rating_dif)
 
         if setup_data is None:
-            error_400(self.response, "ERROR_NO_SETUP_FOUND", "No setup found with the given settings within %s attempts. Please change settings." % MAX_SETUP_GAME_ATTEMPTS)
+            error(400, self.response, "ERROR_NO_SETUP_FOUND", "No setup found with the given settings within %s attempts. Please change settings." % MAX_SETUP_GAME_ATTEMPTS)
             return
 
         # Add civilizations to setup data
@@ -58,8 +58,7 @@ class SetupGameHandler(webapp2.RequestHandler):
                     player['civ'] = random.choice(CIVILIZATIONS)
 
         # RETURN RESPONSE
-        self.response.headers['Content-Type'] = 'application/json'
-        self.response.out.write(json.dumps(setup_data))
+        set_json_response(self.response, setup_data)
 
     def _random_setup_best_attempt_score_and_minirandomized_rating(self, players, attempts, team_setup, max_game_rating_dif):
         setup_avg_score_per_min = sum([player['score_per_min'] for player in players])
@@ -168,10 +167,10 @@ class SetupGameHandler(webapp2.RequestHandler):
     def _validate_team_setup(self, player_count, team_setup):
         team_setup_player_slots = sum([int(team_size) for team_size in team_setup.split('v')])
         if player_count > 8:
-            error_400(self.response, "TEAM_SETUP_ERROR", "The algorithm does not support predefined team setup with more than 8 players. You tried with %s" % player_count)
+            error(400, self.response, "TEAM_SETUP_ERROR", "The algorithm does not support predefined team setup with more than 8 players. You tried with %s" % player_count)
             return False
         elif not player_count == team_setup_player_slots:
-            error_400(self.response, "TEAM_SETUP_ERROR", "The amount of players (%s) do not match the team setup player slots (%s)" % (player_count, team_setup_player_slots))
+            error(400, self.response, "TEAM_SETUP_ERROR", "The amount of players (%s) do not match the team setup player slots (%s)" % (player_count, team_setup_player_slots))
             return False
         else:
             return True
@@ -183,18 +182,18 @@ class ClaimPlayerHandler(webapp2.RequestHandler):
         user = users.get_current_user()
         
         if player.userid:
-            error_400(self.response, "PLAYER_CLAIMED", "The player %s has already been claimed by %s" % (player.nick, player.userid))
+            error(400, self.response, "PLAYER_CLAIMED", "The player %s has already been claimed by %s" % (player.nick, player.userid))
         else:
             if user:
                 previously_claimed_player = Player.query(Player.userid == user.user_id()).get()
                 if previously_claimed_player:
-                    error_400(self.response, "CAN_ONLY_CLAIM_ONE_PLAYER", "The logged inn user has already claimed player %s" % previously_claimed_player.nick)
+                    error(400, self.response, "CAN_ONLY_CLAIM_ONE_PLAYER", "The logged inn user has already claimed player %s" % previously_claimed_player.nick)
                 else:
                     player.userid = user.user_id()
                     player.put()
                     return webapp2.redirect("/players/" + player.nick)
             else:
-                error_400(self.response, "NOT_LOGGED_INN", "The visiting user is not logged inn.")
+                error(400, self.response, "NOT_LOGGED_INN", "The visiting user is not logged inn.")
 
 
 class UpdatePlayerSettingTrebuchetDefaultChoiceHandler(webapp2.RequestHandler):
@@ -205,8 +204,7 @@ class UpdatePlayerSettingTrebuchetDefaultChoiceHandler(webapp2.RequestHandler):
         player.setting_default_trebuchet_allowed = request_data['choice']
         player.put()
 
-        self.response.headers['Content-Type'] = 'application/json'
-        self.response.out.write(json.dumps({'response': "Updated setting"}))
+        set_json_response(self.response, {'response': "Updated setting"})
 
 
 class UpdatePlayerSettingRuleDefaultChoiceHandler(webapp2.RequestHandler):
@@ -220,8 +218,8 @@ class UpdatePlayerSettingRuleDefaultChoiceHandler(webapp2.RequestHandler):
             player.setting_default_rule = None
         player.put()
 
-        self.response.headers['Content-Type'] = 'application/json'
-        self.response.out.write(json.dumps({'response': "Updated setting"}))
+        set_json_response(self.response, {'response': "Updated setting"})
+
 
 app = webapp2.WSGIApplication([
     (r'/api/actions/setupgame/', SetupGameHandler),

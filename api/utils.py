@@ -4,22 +4,18 @@ from models import Player
 from datetime import datetime
 
 
-def error_400(response, code, message):
+def error(status, response, code, message):
     response.headers['Content-Type'] = 'application/json'
-    response.set_status(400)
+    response.set_status(status)
     response.out.write(json.dumps({'error_code': code, 'error_message': message}))
 
 
 def unauthorized_401(response, code, message):
-    response.headers['Content-Type'] = 'application/json'
-    response.set_status(401)
-    response.out.write(json.dumps({'error_code': code, 'error_message': message}))
+    error(401, response, code, message)
 
 
 def forbidden_403(response, code, message):
-    response.headers['Content-Type'] = 'application/json'
-    response.set_status(403)
-    response.out.write(json.dumps({'error_code': code, 'error_message': message}))
+    error(403, response, code, message)
 
 
 def validate_authenticated(response):
@@ -51,7 +47,7 @@ def validate_logged_in_admin(response):
 def validate_request_data(response, request_data, list_of_dict_keys):
     for key in list_of_dict_keys:
         if request_data.get(key, None) in [None, '']:
-            error_400(response, "VALIDATION_ERROR_MISSING_DATA", "The request data is missing the input value '%s'" % key)
+            error(400, response, "VALIDATION_ERROR_MISSING_DATA", "The request data is missing the input value '%s'" % key)
             return False
     return True
 

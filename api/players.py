@@ -4,7 +4,8 @@ import webapp2
 import json
 import logging
 from models import Player
-from utils import error_400, validate_authenticated, validate_logged_in_admin
+from utils import *
+
 
 class PlayersHandler(webapp2.RequestHandler):
     def get(self):
@@ -23,8 +24,7 @@ class PlayersHandler(webapp2.RequestHandler):
         players_data = [player.get_data(data_detail) for player in player_query]
 
         # RETURN RESPONSE
-        self.response.headers['Content-Type'] = 'application/json'
-        self.response.out.write(json.dumps(players_data))
+        set_json_response(self.response, players_data)
 
     def post(self):
         """ --------- CREATE PLAYER --------- """
@@ -38,11 +38,11 @@ class PlayersHandler(webapp2.RequestHandler):
 
         existing_player_with_nick = Player.query(Player.nick == nick).get()
         if existing_player_with_nick:
-            error_400(self.response, "NICK_TAKEN", "Nick %s is taken" % nick)
+            error(400, self.response, "NICK_TAKEN", "Nick %s is taken" % nick)
         else:
             new_player = Player(nick = nick).put().get()
-            self.response.headers['Content-Type'] = 'application/json'
-            self.response.out.write(json.dumps({'response': "Player %s saved successfully" % new_player.nick, 'player': new_player.get_data()}))
+            data = {'response': "Player %s saved successfully" % new_player.nick, 'player': new_player.get_data()}
+            set_json_response(self.response, data)
 
 
 class PlayerHandler(webapp2.RequestHandler):
@@ -58,10 +58,9 @@ class PlayerHandler(webapp2.RequestHandler):
         
         # RETURN RESPONSE
         if player:
-            self.response.headers['Content-Type'] = 'application/json'
-            self.response.out.write(json.dumps(player.get_data("full")))
+            set_json_response(self.response, player.get_data("full"))
         else:
-            self.response.out.write(json.dumps({'error': "PLAYER_NOT_FOUND"}))
+            error(404, self.response, "GAME_NOT_FOUND", "Player with ID or nick '%s' not found" % player_id_or_nick)
 
     def put(self, player_id_or_nick):
         """ --------- UPDATE SINGLE PLAYER --------- """
@@ -87,8 +86,8 @@ class PlayerHandler(webapp2.RequestHandler):
 
         player.put()
 
-        self.response.headers['Content-Type'] = 'application/json'
-        self.response.out.write(json.dumps(player.get_data("simple")))
+        set_json_response(self.response, player.get_data("simple"))
+
 
 app = webapp2.WSGIApplication([
     (r'/api/players/', PlayersHandler),

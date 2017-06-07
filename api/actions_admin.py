@@ -18,8 +18,7 @@ class ReCalcRatingHandler(webapp2.RequestHandler):
 
         deferred.defer(recalculate_ratings)
 
-        self.response.headers['Content-Type'] = 'application/json'
-        self.response.out.write(json.dumps({'response': "Ratings recalculation started and will take more than 60 seconds."}))
+        set_json_response(self.response, {'response': "Ratings recalculation started and will take more than 60 seconds."})
 
 
 class FixDBHandler(webapp2.RequestHandler):
@@ -59,8 +58,7 @@ class FixDBHandler(webapp2.RequestHandler):
         #     player.active = True
         #     player.put()
 
-        self.response.headers['Content-Type'] = 'application/json'
-        self.response.out.write(json.dumps({'response': "The database has been cleaned"}))
+        set_json_response(self.response, {'response': "The database has been cleaned"})
 
     def _delete_property(self, obj, property_name):
         if property_name in obj._properties:
@@ -77,8 +75,7 @@ class ClearStatsHandler(webapp2.RequestHandler):
             player.clear_stats()
         ndb.delete_multi(CivilizationStats.query().fetch(keys_only=True))
 
-        self.response.headers['Content-Type'] = 'application/json'
-        self.response.out.write(json.dumps({'response': "Player statistics have been cleared"}))
+        set_json_response(self.response, {'response': "Player statistics have been cleared"})
 
 
 class AdjustRatingHandler(webapp2.RequestHandler):
@@ -94,8 +91,7 @@ class AdjustRatingHandler(webapp2.RequestHandler):
         player = Player.get_by_id(int(player_id))
         player.set_new_rating_adjustment(new_rating_adjustment)
 
-        self.response.headers['Content-Type'] = 'application/json'
-        self.response.out.write(json.dumps({'response': "%s now has an rating adjustment at %s. Remember to recalculate ratings if player have been part of games." % (player.nick, new_rating_adjustment)}))
+        set_json_response(self.response, {'response': "%s now has an rating adjustment at %s. Remember to recalculate ratings if player have been part of games." % (player.nick, new_rating_adjustment)})
 
 
 class ResetRatingAdjustment(webapp2.RequestHandler):
@@ -108,8 +104,7 @@ class ResetRatingAdjustment(webapp2.RequestHandler):
             player.rating_adjustment = 0
             player.put()
 
-        self.response.headers['Content-Type'] = 'application/json'
-        self.response.out.write(json.dumps({'response': "Rating adjustment reset. Remember to recalculate ratings if player have been part of games."}))
+        set_json_response(self.response, {'response': "Rating adjustment reset. Remember to recalculate ratings if player have been part of games."})
 
 
 class DataImportPythonScript(webapp2.RequestHandler):
