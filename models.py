@@ -106,6 +106,9 @@ LOCATIONS = [
     'Valley',
     'Water Nomad',
     'Yucatan',
+    'MegaRandom',
+    'Random Land Map',
+    'City of Lakes',
 
     # Real World
     'Amazon',
