@@ -191,7 +191,7 @@ siAgeApp.controller('RegisterGameController',
             $scope.game.victory = "Conquest";
             $scope.game.all_techs = false;
             $scope.game.team_together = true;
-            $scope.game.trebuchet_allowed = false;
+            $scope.game.trebuchet_allowed = true;
             $scope.game.playerResults = [];
             for (i = 0; i < 8; i++) {
                 $scope.game.playerResults.push({
