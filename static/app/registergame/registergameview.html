@@ -24,6 +24,12 @@
                         </td>
                     </tr>
                     <tr>
+                        <td>Game type</td>
+                        <td>
+                            <select ng-model="game.game_type" ng-options="gametype as gametype for gametype in game_types | orderBy:false"></select>
+                        </td>
+                    </tr>
+                    <tr>
                         <td>Map style</td>
                         <td>
                             <select ng-model="game.location" ng-options="location as location for location in locations | orderBy:false"></select>
@@ -46,12 +52,6 @@
                     <tr>
                         <td>
                             <label><input style="width:auto;" type="checkbox" ng-model="game.trebuchet_allowed" /> Trebuchet</label>
-                        </td>
-                    </tr>
-                    <tr ng-show="ShowDetails">
-                        <td >Game type</td>
-                        <td>
-                            <select ng-model="game.game_type" ng-options="gametype as gametype for gametype in game_types | orderBy:false"></select>
                         </td>
                     </tr>
                     <tr ng-show="ShowDetails">
