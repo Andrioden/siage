@@ -26,22 +26,21 @@
                     <tr>
                         <td>Map style</td>
                         <td>
-                            <select ng-model="game.location"
-                                    ng-options="location as location for location in locations | orderBy:false"></select>
+                            <select ng-model="game.location" ng-options="location as location for location in locations | orderBy:false"></select>
                         </td>
                     </tr>
                     <tr>
                         <td>Size</td>
                         <td>
-                            <select ng-model="game.size"
-                                    ng-options="size as size for size in sizes | orderBy:false"></select>
+                            <select ng-model="game.size" ng-options="size as size for size in sizes | orderBy:false"></select>
                         </td>
                     </tr>
                     <tr>
                         <td>Rule</td>
                         <td>
-                            <select ng-model="game.rule"
-                                    ng-options="rule.id as rule.name for rule in allRules | orderBy:false"></select>
+                            <select ng-model="game.rule" ng-options="rule.id as rule.name for rule in allRules | orderBy:false">
+                                <option></option> <!--Allow blank selection-->
+                            </select>
                         </td>
                     </tr>
                     <tr>
@@ -52,64 +51,57 @@
                     <tr ng-show="ShowDetails">
                         <td >Game type</td>
                         <td>
-                            <select ng-model="game.game_type"
-                                    ng-options="gametype as gametype for gametype in game_types | orderBy:false"></select>
+                            <select ng-model="game.game_type" ng-options="gametype as gametype for gametype in game_types | orderBy:false"></select>
                         </td>
                     </tr>
                     <tr ng-show="ShowDetails">
                         <td >Difficulty</td>
                         <td>
-                            <select ng-model="game.difficulty"
-                                    ng-options="difficulty as difficulty for difficulty in difficulties | orderBy:false"></select>
+                            <select ng-model="game.difficulty" ng-options="difficulty as difficulty for difficulty in difficulties | orderBy:false"></select>
                         </td>
                     </tr>
                     <tr ng-show="ShowDetails">
                         <td>Resources</td>
                         <td>
-                            <select ng-model="game.resources"
-                                    ng-options="resources as resources for resources in resources_list | orderBy:false"></select>
+                            <select ng-model="game.resources" ng-options="resources as resources for resources in resources_list | orderBy:false"></select>
                         </td>
                     </tr>
                     <tr ng-show="ShowDetails">
                         <td>Population</td>
                         <td>
-                            <select ng-model="game.population"
-                                    ng-options="population as population for population in populations | orderBy:false"></select>
+                            <select ng-model="game.population" ng-options="population as population for population in populations | orderBy:false"></select>
                         </td>
                     </tr>
                     <tr ng-show="ShowDetails">
                         <td>Game Speed</td>
                         <td>
-                            <select ng-model="game.game_speed"
-                                    ng-options="gamespeed as gamespeed for gamespeed in game_speeds | orderBy:false"></select>
+                            <select ng-model="game.game_speed" ng-options="gamespeed as gamespeed for gamespeed in game_speeds | orderBy:false"></select>
                         </td>
                     </tr>
                     <tr ng-show="ShowDetails">
                         <td>Reveal map</td>
                         <td>
-                            <select ng-model="game.reveal_map"
-                                    ng-options="reveal_map as reveal_map for reveal_map in reveal_map | orderBy:false"></select>
+                            <select ng-model="game.reveal_map" ng-options="reveal_map as reveal_map for reveal_map in reveal_map | orderBy:false"></select>
                         </td>
                     </tr>
                     <tr ng-show="ShowDetails">
                         <td>Starting age</td>
                         <td>
-                            <select ng-model="game.starting_age"
-                                    ng-options="starting_age as starting_age for starting_age in starting_ages | orderBy:false"></select>
+                            <select ng-model="game.starting_age" ng-options="starting_age as starting_age for starting_age in starting_ages | orderBy:false"></select>
                         </td>
                     </tr>
                     <tr ng-show="ShowDetails">
                         <td>Treaty length</td>
                         <td>
-                            <select ng-model="game.treaty_length"
-                                    ng-options="treaty_length as treaty_length for treaty_length in treaty_lengths | orderBy:false"></select>
+                            <select ng-model="game.treaty_length" ng-options="treaty_length as treaty_length for treaty_length in treaty_lengths | orderBy:false">
+                                <option></option> <!--Allow blank selection-->
+                            </select>
                         </td>
                     </tr>
                     <tr ng-show="ShowDetails">
                         <td>Victory</td>
                         <td>
-                            <select ng-model="game.victory"
-                                    ng-options="victory as victory for victory in victory_list | orderBy:false"></select>
+                            <select ng-model="game.victory" ng-options="victory as victory for victory in victory_list | orderBy:false"></select>
                         </td>
                     </tr>
                     <tr ng-show="ShowDetails">
