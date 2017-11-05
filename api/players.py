@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 
 import webapp2
+from google.appengine.ext import ndb
 import json
 import logging
-from models import Player
+from models import *
 from utils import *
 
 
@@ -66,23 +67,39 @@ class PlayerHandler(webapp2.RequestHandler):
         """ --------- UPDATE SINGLE PLAYER --------- """
         request_data = json.loads(self.request.body)
 
-        if not validate_logged_in_admin(self.response):
-            return
-
         # PROCESS REQUEST
         if player_id_or_nick.isdigit():
             player = Player.get_by_id(int(player_id_or_nick))
         else:
             player = Player.query(Player.nick == player_id_or_nick).get()
 
+        require_admin = False
+
         if request_data.has_key('userid'):
             player.userid = request_data['userid']
+            require_admin = True
 
         if request_data.has_key('verified'):
             player.verified = request_data['verified']
+            require_admin = True
 
         if request_data.has_key('active'):
             player.active = request_data['active']
+            require_admin = True
+
+        if request_data.has_key('setting_default_trebuchet_allowed'):
+            player.setting_default_trebuchet_allowed = request_data['setting_default_trebuchet_allowed']
+
+        if request_data.has_key('setting_default_rule_id'):
+            setting_default_rule_id = request_data['setting_default_rule_id']
+            if setting_default_rule_id is None:
+                player.setting_default_rule = None
+            else:
+                player.setting_default_rule = ndb.Key(Rule, int(setting_default_rule_id))
+
+        if require_admin:
+            if not validate_logged_in_admin(self.response):
+                return
 
         player.put()
 

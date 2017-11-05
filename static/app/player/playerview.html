@@ -38,14 +38,14 @@
                 <tr>
                     <td>Trebuchet vote</td>
                     <td>
-                        <input type="checkbox" class="checkbox" ng-model="player.settings.default_trebuchet_allowed" ng-change="updateSettingTrebuchet()" ng-disabled="user.player != player.nick" />
+                        <input type="checkbox" class="checkbox" ng-model="player.settings.default_trebuchet_allowed" ng-change="updateSettingTrebuchet()" ng-disabled="user.player != player.nick && !user.is_admin" />
                         <span class="success">{{player_setting_trebuchet_response}}</span>
                     </td>
                 </tr>
                 <tr>
                     <td>Rule choice</td>
                     <td>
-                        <select ng-model="player.settings.default_rule" ng-options="rule.id as rule.name for rule in rules" ng-change="updateSettingRule()" class="small_select" ng-disabled="user.player != player.nick">
+                        <select ng-model="player.settings.default_rule" ng-options="rule.id as rule.name for rule in rules" ng-change="updateSettingRule()" class="small_select" ng-disabled="user.player != player.nick && !user.is_admin">
                             <option value=""></option>
                         </select>
                         <span class="success">{{player_setting_rule_response}}</span>

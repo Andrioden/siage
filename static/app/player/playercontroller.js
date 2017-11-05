@@ -28,38 +28,12 @@ siAgeApp.controller('PlayerController',
 
         $scope.updateSettingTrebuchet = function() {
             $scope.player_setting_trebuchet_response = "";
-            PlayerAction.updatePlayerSettingDefaultTrebuchet({choice: $scope.player.settings.default_trebuchet_allowed}).$promise.then(
-                //success
-                function (data) {
-                    $scope.player_setting_trebuchet_response = data.response;
-                    $timeout(function () {
-                        $scope.player_setting_trebuchet_response = "";
-                    }, 5000);
-                },
-                //error
-                function (error) {
-                    $scope.settingUpGame = false;
-                    $scope.error = $rootScope.getFriendlyErrorText(error);
-                }
-            );
+            update({setting_default_trebuchet_allowed: $scope.player.settings.default_trebuchet_allowed}, 'player_setting_trebuchet_response');
         }
 
         $scope.updateSettingRule = function() {
             $scope.player_setting_rule_response = "";
-            PlayerAction.updatePlayerSettingDefaultRule({choice: $scope.player.settings.default_rule}).$promise.then(
-                //success
-                function (data) {
-                    $scope.player_setting_rule_response = data.response;
-                    $timeout(function () {
-                        $scope.player_setting_rule_response = "";
-                    }, 5000);
-                },
-                //error
-                function (error) {
-                    $scope.settingUpGame = false;
-                    $scope.error = $rootScope.getFriendlyErrorText(error);
-                }
-            );
+            update({setting_default_rule_id: $scope.player.settings.default_rule}, 'player_setting_rule_response');
         }
 
         $scope.navigate = function (route) {
@@ -78,6 +52,22 @@ siAgeApp.controller('PlayerController',
                 }
                 , function (error) {
                     $scope.loading_games = false;
+                    $scope.error = $rootScope.getFriendlyErrorText(error);
+                }
+            );
+        }
+
+        function update(data, scopeResponseVariable) {
+            Player.update({ player_id: $scope.player.nick }, data).$promise.then(
+                //success
+                function (data) {
+                    $scope[scopeResponseVariable] = "Updated setting";
+                    $timeout(function () {
+                        $scope[scopeResponseVariable] = "";
+                    }, 5000);
+                },
+                //error
+                function (error) {
                     $scope.error = $rootScope.getFriendlyErrorText(error);
                 }
             );

@@ -196,34 +196,8 @@ class ClaimPlayerHandler(webapp2.RequestHandler):
                 error(400, self.response, "NOT_LOGGED_INN", "The visiting user is not logged inn.")
 
 
-class UpdatePlayerSettingTrebuchetDefaultChoiceHandler(webapp2.RequestHandler):
-    def post(self):
-        request_data = json.loads(self.request.body)
-        player = current_user_player()
-
-        player.setting_default_trebuchet_allowed = request_data['choice']
-        player.put()
-
-        set_json_response(self.response, {'response': "Updated setting"})
-
-
-class UpdatePlayerSettingRuleDefaultChoiceHandler(webapp2.RequestHandler):
-    def post(self):
-        request_data = json.loads(self.request.body)
-        player = current_user_player()
-
-        if request_data['choice']:
-            player.setting_default_rule = ndb.Key(Rule, int(request_data['choice']))
-        else:
-            player.setting_default_rule = None
-        player.put()
-
-        set_json_response(self.response, {'response': "Updated setting"})
-
 
 app = webapp2.WSGIApplication([
     (r'/api/actions/setupgame/', SetupGameHandler),
     (r'/api/actions/claimplayer/(\d+)', ClaimPlayerHandler),
-    (r'/api/actions/updatePlayerSettingDefaultTrebuchetChoice/', UpdatePlayerSettingTrebuchetDefaultChoiceHandler),
-    (r'/api/actions/updatePlayerSettingDefaultRuleChoice/', UpdatePlayerSettingRuleDefaultChoiceHandler),
 ], debug=True)
