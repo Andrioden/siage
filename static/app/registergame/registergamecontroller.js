@@ -1,7 +1,8 @@
 ﻿var siAgeApp = angular.module('SiAgeApp');
 
 siAgeApp.controller('RegisterGameController',
-    function ($rootScope, $scope, GameSetting, Player, Rule, Game, $timeout) {
+    function ($rootScope, $scope, GameSetting, Player, Rule, Game, $timeout, $routeParams) {
+
         GameSetting.query().$promise.then(
             function (value) {
                 $scope.error = "";
@@ -18,29 +19,12 @@ siAgeApp.controller('RegisterGameController',
                 $scope.populations = value.populations;
                 $scope.difficulties = value.difficulties;
                 $scope.reveal_map = value.reveal_map;
+                $scope.allPlayers = [{ 'player_id': "", 'first': true }].concat(value.players); // Adds loaded list to empty choice
+                $scope.allRules = value.rules;
 
                 $scope.initGame();
             },
             function (error) {
-                $scope.error = $rootScope.getFriendlyErrorText(error);
-            }
-        );
-
-        Player.query().$promise.then(
-            function (value) {
-                emptyPlayerHelper = [{ 'player_id': "", 'first': true }];
-                $scope.allPlayers = emptyPlayerHelper.concat(value);
-            },
-            function (value) {
-                $scope.error = $rootScope.getFriendlyErrorText(error);
-            }
-        );
-
-        Rule.query().$promise.then(
-            function (value) {
-                $scope.allRules = value;
-            },
-            function (value) {
                 $scope.error = $rootScope.getFriendlyErrorText(error);
             }
         );
@@ -51,7 +35,7 @@ siAgeApp.controller('RegisterGameController',
                 $scope.error = "Select a winner!";
                 return;
             }
-            cleanPlayerResults();
+            removeEmptyPlayerResults();
             $scope.submitting = true;
             $scope.game.duration_seconds = $scope.game.duration_minutes * 60;
             $scope.game.date_epoch = Math.round($scope.game.date.getTime() / 1000);
@@ -79,7 +63,7 @@ siAgeApp.controller('RegisterGameController',
                 }
             );
 
-            function cleanPlayerResults() {
+            function removeEmptyPlayerResults() {
                 for (i = 0; i < $scope.game.playerResults.length; i++) {
                     if ($scope.game.playerResults[i].player_id == "") {
                         $scope.game.playerResults.splice(i, 1);
@@ -179,8 +163,10 @@ siAgeApp.controller('RegisterGameController',
             $scope.game = new Game();
             $scope.game.date = new Date();
             $scope.game.duration_seconds = null;
-            $scope.game.game_type = "Random Map";
-            $scope.game.location = null;
+            $scope.game.game_type = getRouteParam("type", "Random Map");
+            $scope.game.location = getRouteParam("map", null);
+            $scope.game.rule = getRouteParamInt("rule", null);
+            $scope.game.trebuchet_allowed = getRouteParamBool("treb", true);
             $scope.game.difficulty = "Standard";
             $scope.game.resources = "Standard";
             $scope.game.population = 200;
@@ -191,18 +177,60 @@ siAgeApp.controller('RegisterGameController',
             $scope.game.victory = "Conquest";
             $scope.game.all_techs = false;
             $scope.game.team_together = true;
-            $scope.game.trebuchet_allowed = true;
+
             $scope.game.playerResults = [];
             for (i = 0; i < 8; i++) {
-                $scope.game.playerResults.push({
+                var playerResult = {
                     'player_id': "",
                     'civilization': null,
                     'team': null,
                     'score': null,
                     'is_winner': false
-                });
+                };
+
+                var playerRouteParam = getRouteParam("player" + (i+1), null);
+                if (playerRouteParam != null) {
+                    playerRouteParamSplit = playerRouteParam.split('-');
+                    playerResult.player_id = parseInt(playerRouteParamSplit[0]);
+                    playerResult.civilization = playerRouteParamSplit[1];
+                    playerResult.team = parseInt(playerRouteParamSplit[2]);
+                }
+
+                $scope.game.playerResults.push(playerResult);
             }
         };
+
+        function getRouteParamBool(param, defaultValue) {
+            var paramStr = getRouteParam(param, defaultValue.toString());
+            if (paramStr == "true")
+                return true;
+            else if (paramStr == "false")
+                return false;
+            else
+                return defaultValue;
+        }
+
+        function getRouteParamInt(param, defaultValue) {
+            var paramStr = getRouteParam(param, defaultValue);
+            var paramInt = parseInt(paramStr);
+            if (!isNaN(paramInt))
+                return paramInt;
+            else
+                return defaultValue;
+        }
+
+        function getRouteParam(param, defaultValue) {
+            if (hasOwnProperty($routeParams, param) && !$routeParams[param].isEmpty())
+                return $routeParams[param];
+            else
+                return defaultValue;
+        }
+
+        // From: https://stackoverflow.com/a/136411
+        function hasOwnProperty(obj, prop) {
+            var proto = obj.__proto__ || obj.constructor.prototype;
+            return (prop in obj) && (!(prop in proto) || proto[prop] !== obj[prop]);
+        }
 
         function reAddEmptyPlayers() {
             while ($scope.game.playerResults.length < 8) {

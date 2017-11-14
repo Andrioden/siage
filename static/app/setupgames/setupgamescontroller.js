@@ -4,7 +4,7 @@ siAgeApp.controller('SetupGamesController',
     function ($rootScope, $scope, Player, Rule, PlayerAction, $routeParams, $timeout, GameSetting) {
         $scope.SetupGame = {
             'players': [],
-            'max_game_rating_dif': 125,
+            'max_game_rating_dif': 9999,
             'attempts': 500,
             'map_style_weight': {
                 'megarandom': 30,
@@ -110,11 +110,11 @@ siAgeApp.controller('SetupGamesController',
                     $scope.games = data.games;
                     $scope.total_rating_dif = data.total_rating_dif;
                     $scope.settingUpGame = false;
+                    $scope.registerGameUrls = buildRegisterGameUrls();
                     // Scroll down, but give angularjs some time to draw the new games at the bottom.
                     $timeout(function () {
                         scrollToBottomOfPage();
                     }, 200);
-
                 },
                 //error
                 function (error) {
@@ -148,9 +148,11 @@ siAgeApp.controller('SetupGamesController',
         }
 
         function rollRuleChoice(ruleChoiceList) {
-            var ruleChoiceId = randomFromArray(ruleChoiceList);
-            if (ruleChoiceId == null) $scope.rule_choice = "No Rule";
-            else $scope.rule_choice = getRuleNameById(ruleChoiceId);
+            $scope.rule_choice_id = randomFromArray(ruleChoiceList);
+            if ($scope.rule_choice_id == null)
+                $scope.rule_choice = "No Rule";
+            else
+                $scope.rule_choice = getRuleNameById($scope.rule_choice_id);
         }
 
         function rollMapStyle(weights) {
@@ -180,6 +182,33 @@ siAgeApp.controller('SetupGamesController',
                 if ($scope.rules[i].id == ruleId) return $scope.rules[i].name;
             }
             return "RuleNotFound: " + ruleId;
+        }
+
+        function buildRegisterGameUrls() {
+            var urls = []
+            for (var i = 0; i < $scope.games.length; i++) {
+                urls.push(
+                    "/registergame"
+                    + "?treb=" + $scope.trebuchet_allowed
+                    + "&rule=" + $scope.rule_choice_id
+                    + "&map=" + $scope.map_style_choice
+                    + "&type=" + $scope.game_type_choice
+                    + buildPlayersGameUrl($scope.games[i])
+                );
+            }
+            return urls;
+        }
+
+        function buildPlayersGameUrl(game) {
+            var playersParams = "";
+            var playerCounter = 0;
+            for (var t = 0; t < game.teams.length; t++) {
+                for (var p = 0; p < game.teams[t].players.length; p++) {
+                    playerCounter++;
+                    playersParams += "&player" + (playerCounter) + "=" + game.teams[t].players[p].id + "-" + game.teams[t].players[p].civ + "-" + (t+1);
+                }
+            }
+            return playersParams;
         }
 
         function scrollToBottomOfPage() {

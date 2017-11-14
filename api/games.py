@@ -59,7 +59,7 @@ class GamesHandler(webapp2.RequestHandler):
         request_data = json.loads(self.request.body)
 
         # VALIDATING
-        if not validate_request_data(self.response, request_data, ['location']):
+        if not validate_request_data(self.response, request_data, ['location', 'size']):
             return
         if not request_data['duration_seconds']: # Has to be validated like this because input is 0
             error(400, self.response, "VALIDATION_ERROR_NO_DURATION", "Missing input: Duration.")
@@ -134,7 +134,7 @@ class GamesHandler(webapp2.RequestHandler):
 
     def _validate_no_empty_player_results(self, player_results):
         for player_result in player_results:
-            if player_result['player_id'] is None or not player_result['player_id'].isdigit():
+            if player_result['player_id'] is None or not player_result['player_id']:
                 error(400, self.response, "VALIDATION_ERROR_EMPTY_PLAYER_RESULTS", "Player Results contain items without a valid player id.")
                 return False
         return True

@@ -258,6 +258,12 @@ class Player(ndb.Model):
         for player in all_players:
             player.put()
 
+    def get_data_id_and_nick(self):
+        return {
+            'id': self.key.id(),
+            'nick': self.nick
+        }
+
     def get_data(self, data_detail="simple"):
         data = {}
         if data_detail in ["simple", "full"]:
@@ -558,6 +564,12 @@ class Rule(ndb.Model):
     name = ndb.StringProperty(required=True)
     description = ndb.StringProperty(required=True)
     creator = ndb.KeyProperty(kind=Player, required=True)
+
+    def get_data_id_and_name(self):
+        return {
+            'id': self.key.id(),
+            'name': self.name
+        }
 
     def get_data(self):
         return {

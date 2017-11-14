@@ -119,6 +119,12 @@
                 <br/>
                 Game Type: {{game_type_choice}}
             </div>
+            <br />
+            <ul ng-show="registerGameUrls.length > 0">
+                <li ng-repeat="url in registerGameUrls">
+                    <a ng-href="{{url}}" >Register game {{$index + 1}}</a>
+                </li>
+            </ul>
         </div>
 
     </div>
