@@ -29,20 +29,12 @@ siAgeApp.controller('SetupGamesController',
             }
         );
 
-        Rule.query(
-            function (data) {
-                $scope.rules = data;
-            }
-            , function (error) {
-                $scope.error = $rootScope.getFriendlyErrorText(error);
-            }
-        );
-
         GameSetting.query().$promise.then(
             function (value) {
                 $scope.error = "";
                 $scope.game_types = value.game_types;
                 $scope.locations = value.locations;
+                $scope.rules = value.rules;
             },
             function (error) {
                 $scope.error = $rootScope.getFriendlyErrorText(error);

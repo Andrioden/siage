@@ -13,7 +13,7 @@ class GameSettingsHandler(webapp2.RequestHandler):
         set_json_response(self.response, all_settings)
 
     def _get_players_id_and_nick(self):
-        return [player.get_data_id_and_nick() for player in Player.query().fetch(projection=[Player.nick])]
+        return [player.get_data_id_and_nick() for player in Player.query(Player.active == True).fetch(projection=[Player.nick])]
 
     def _get_rules_id_and_name(self):
         return [rule.get_data_id_and_name() for rule in Rule.query().fetch(projection=[Rule.name])]

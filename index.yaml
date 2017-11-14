@@ -12,6 +12,11 @@ indexes:
 
 - kind: Player
   properties:
+  - name: active
+  - name: nick
+
+- kind: Player
+  properties:
   - name: verified
   - name: userid
 
