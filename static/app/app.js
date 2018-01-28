@@ -1,4 +1,4 @@
-﻿var siAgeApp = angular.module('SiAgeApp', ['ngRoute', 'ngResource', 'ngAnimate', 'angularFileUpload']);
+﻿var siAgeApp = angular.module('SiAgeApp', ['ngRoute', 'ngResource', 'ngAnimate', 'angularFileUpload', 'datetime']);
 
 
 siAgeApp.controller('UserController',
