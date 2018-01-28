@@ -115,6 +115,8 @@
                     <td>{{player.nick}}</td>
                     <td>
                         <button ng-show="player.active" ng-disabled="updating_player_processing" class="button admin_action no_pad" ng-click="setPlayerActiveState(player, false)">Set inactive</button>
+                    </td>
+                    <td>
                         <button ng-show="!player.active" ng-disabled="updating_player_processing" class="button admin_action no_pad" ng-click="setPlayerActiveState(player, true)">Set active</button>
                     </td>
                     <td>
