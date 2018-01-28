@@ -50,12 +50,7 @@ class SetupGameHandler(webapp2.RequestHandler):
             error(400, self.response, "ERROR_NO_SETUP_FOUND", "No setup found with the given settings within %s attempts. Please change settings." % MAX_SETUP_GAME_ATTEMPTS)
             return
 
-        # Add civilizations to setup data
-        logging.info(setup_data)
-        for game in setup_data['games']:
-            for team in game['teams']:
-                for player in team['players']:
-                    player['civ'] = random.choice(CIVILIZATIONS)
+        self._add_civilization_to_players(setup_data['games'])
 
         # RETURN RESPONSE
         set_json_response(self.response, setup_data)
@@ -64,10 +59,10 @@ class SetupGameHandler(webapp2.RequestHandler):
         setup_avg_score_per_min = sum([player['score_per_min'] for player in players])
 
         for player in players:
-            skill_guess = player['rating'] + random.randint(-5,5)
             percent_of_setup_avg = player['score_per_min'] / setup_avg_score_per_min
-            score_skill_change = 10 * (percent_of_setup_avg - 1)
-            skill_guess += score_skill_change
+            skill_score_impact = 10 * (percent_of_setup_avg - 1)
+            skill_randomness = random.randint(-5,5)
+            skill_guess = player['rating'] + skill_score_impact + skill_randomness
             player['rating'] = int(skill_guess)
 
         return self._random_setup_best_attempt(players, attempts, team_setup, max_game_rating_dif)
@@ -100,7 +95,7 @@ class SetupGameHandler(webapp2.RequestHandler):
 
         # 2. Split the players into the different games randomly
         for i in range(len(players)):
-            game_index = 0 if (i % (game_count*2)) <= 1 else 1
+            game_index = (i/2) % game_count
             random_player = players.pop(random.randint(0, len(players)-1))
             games_players[game_index].append(random_player)
 
@@ -174,6 +169,12 @@ class SetupGameHandler(webapp2.RequestHandler):
             return False
         else:
             return True
+
+    def _add_civilization_to_players(self, games):
+        for game in games:
+            for team in game['teams']:
+                for player in team['players']:
+                    player['civ'] = random.choice(CIVILIZATIONS)
 
 
 class ClaimPlayerHandler(webapp2.RequestHandler):
